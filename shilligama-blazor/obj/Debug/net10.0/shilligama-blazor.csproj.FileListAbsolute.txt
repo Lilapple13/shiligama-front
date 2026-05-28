@@ -1,0 +1,88 @@
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\EmbeddedAttribute.cs
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\ValidatableTypeAttribute.cs
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.GeneratedMSBuildEditorConfig.editorconfig
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.AssemblyInfoInputs.cache
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.AssemblyInfo.cs
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.csproj.CoreCompileInputs.cache
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.sourcelink.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\appsettings.Development.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\appsettings.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\rjimswa.dswa.cache.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\scopedcss\Components\Layout\MainLayout.razor.rz.scp.css
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\scopedcss\Components\Layout\ReconnectModal.razor.rz.scp.css
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\staticwebassets.build.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\staticwebassets.build.json.cache
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\staticwebassets.development.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\staticwebassets.build.endpoints.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\swae.build.ex.cache
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.genruntimeconfig.cache
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.staticwebassets.runtime.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.staticwebassets.endpoints.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.exe
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.deps.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.runtimeconfig.json
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.dll
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.pdb
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama_blazor.MvcApplicationPartsAssemblyInfo.cache
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\scopedcss\bundle\shilligama_blazor.styles.css
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\scopedcss\projectbundle\shilligama_blazor.bundle.scp.css
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-rjwcqoegui-rjwcqoegui.gz
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\2t7tdq530p-{0}-ivg7ggtozk-ivg7ggtozk.gz
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\04teec2vld-{0}-7kus8binzu-7kus8binzu.gz
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\afqpcx2okj-{0}-abdmv1u4y3-abdmv1u4y3.gz
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\19cv9oe5r3-{0}-kz6ahhcd3c-kz6ahhcd3c.gz
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\t5hdcxfsxq-{0}-kz6ahhcd3c-kz6ahhcd3c.gz
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama_blazor.dll
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\refint\shilligama_blazor.dll
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama_blazor.pdb
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\ref\shilligama_blazor.dll
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\20v04azdi9-{0}-ej96puwv3k-ej96puwv3k.gz
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\7nw2g7hxxi-{0}-cj5793hgrt-cj5793hgrt.gz
+C:\PROGRA3\FRONT END SHILIGAMA\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\appsettings.Development.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\appsettings.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.staticwebassets.runtime.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.staticwebassets.endpoints.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.exe
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.deps.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.runtimeconfig.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.dll
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.pdb
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\EmbeddedAttribute.cs
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\ValidatableTypeAttribute.cs
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\rpswa.dswa.cache.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.AssemblyInfoInputs.cache
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.AssemblyInfo.cs
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.csproj.CoreCompileInputs.cache
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama_blazor.MvcApplicationPartsAssemblyInfo.cache
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.sourcelink.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\rjimswa.dswa.cache.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\scopedcss\Components\Layout\MainLayout.razor.rz.scp.css
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\scopedcss\Components\Layout\ReconnectModal.razor.rz.scp.css
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\scopedcss\bundle\shilligama_blazor.styles.css
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\scopedcss\projectbundle\shilligama_blazor.bundle.scp.css
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\04teec2vld-{0}-7kus8binzu-7kus8binzu.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\afqpcx2okj-{0}-abdmv1u4y3-abdmv1u4y3.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\20v04azdi9-{0}-ej96puwv3k-ej96puwv3k.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\7nw2g7hxxi-{0}-cj5793hgrt-cj5793hgrt.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\19cv9oe5r3-{0}-kz6ahhcd3c-kz6ahhcd3c.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\t5hdcxfsxq-{0}-kz6ahhcd3c-kz6ahhcd3c.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\staticwebassets.build.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\staticwebassets.build.json.cache
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\staticwebassets.development.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\staticwebassets.build.endpoints.json
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\swae.build.ex.cache
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama_blazor.dll
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\refint\shilligama_blazor.dll
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama_blazor.pdb
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.genruntimeconfig.cache
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\ref\shilligama_blazor.dll
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-1ehzimoigc-1ehzimoigc.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\a6g5htdkqg-{0}-c4layj22zn-c4layj22zn.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\FrontEND\pantallasprueba-shilligama\pantallasprueba-shilligama\shilligama-blazor\obj\Debug\net10.0\compressed\2t7tdq530p-{0}-acaxtnupyi-acaxtnupyi.gz

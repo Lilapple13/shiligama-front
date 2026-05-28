@@ -1,0 +1,109 @@
+@page "/mis-pedidos"
+@layout MainLayout
+@inject SalesService SalesSvc
+@inject AuthService Auth
+@inject NavigationManager Navigation
+
+@code {
+    private List<Order> _myOrders = new();
+
+    protected override void OnInitialized()
+    {
+        if (!Auth.IsLoggedIn())
+        {
+            // Redirect to login if not authenticated
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        var userName = Auth.CurrentUser?.Name ?? "Juan Cliente";
+        // Get all orders matching user name or general online seed orders if none exist
+        _myOrders = SalesSvc.GetRecentOrders()
+            .Where(o => o.Customer.Equals(userName, StringComparison.OrdinalIgnoreCase) || o.Channel == "Online")
+            .ToList();
+    }
+
+    private string GetStatusClass(string status) => status.ToLower() switch
+    {
+        "entregado" => "bg-success-subtle text-success border border-success-subtle",
+        "en_camino" => "bg-primary-subtle text-primary border border-primary-subtle",
+        "preparando" => "bg-warning-subtle text-warning border border-warning-subtle",
+        "pendiente" => "bg-secondary text-muted-foreground border border-border",
+        "cancelado" => "bg-danger-subtle text-danger border border-danger-subtle",
+        _ => "bg-light text-dark"
+    };
+
+    private string GetStatusLabel(string status) => status.ToLower() switch
+    {
+        "entregado" => "Entregado",
+        "en_camino" => "En Camino",
+        "preparando" => "Preparando",
+        "pendiente" => "Pendiente",
+        "cancelado" => "Cancelado",
+        _ => status
+    };
+}
+
+<PageTitle>Mis Pedidos – Shiligama</PageTitle>
+
+<div class="container-xl px-3 px-sm-4 py-4" style="max-width: 900px;">
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="d-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-3" style="width: 48px; height: 48px;">
+            <Icons Name="FileText" Class="w-6 h-6" />
+        </div>
+        <div>
+            <h1 class="fs-3 fw-bold text-foreground mb-0">Mis Pedidos</h1>
+            <p class="text-muted-foreground small mt-1 mb-0">Historial y estado de tus compras en línea</p>
+        </div>
+    </div>
+
+    @if (!_myOrders.Any())
+    {
+        <div class="card p-5 text-center bg-card border border-border rounded-4">
+            <div class="fs-1 mb-3">📦</div>
+            <h3 class="text-foreground fw-semibold fs-5">Aún no tienes pedidos</h3>
+            <p class="text-muted-foreground text-sm max-w-md mx-auto">
+                Realiza tu primera compra en nuestro catálogo digital y podrás ver el seguimiento de tu pedido en esta sección.
+            </p>
+            <a href="/catalogo" class="btn btn-primary mt-3 px-4 py-2" style="border-radius: var(--radius);">
+                Explorar catálogo
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-3">
+            @foreach (var order in _myOrders)
+            {
+                <div class="card p-4 bg-card border border-border rounded-4 transition-all hover-shadow">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 pb-3 border-bottom border-color-default">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="fs-6 fw-bold text-primary">@order.Id</span>
+                            <span class="text-muted-foreground small">@order.Date.ToString("dd MMM yyyy, h:mm tt")</span>
+                        </div>
+                        <span class="badge rounded-pill px-3 py-1.5 small fw-semibold @(GetStatusClass(order.Status))" style="border-radius: var(--radius) !important; font-size: 0.8rem;">
+                            @GetStatusLabel(order.Status)
+                        </span>
+                    </div>
+
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 pt-3">
+                        <div class="d-flex align-items-center gap-4">
+                            <div>
+                                <p class="text-xs text-muted-foreground uppercase tracking-wider mb-1">Productos</p>
+                                <p class="fw-semibold text-foreground m-0">@order.Items @(order.Items == 1 ? "artículo" : "artículos")</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-muted-foreground uppercase tracking-wider mb-1">Método de entrega</p>
+                                <p class="fw-semibold text-foreground m-0">@order.Channel</p>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <p class="text-xs text-muted-foreground uppercase tracking-wider mb-1">Total Pagado</p>
+                            <p class="fs-4 fw-bold text-primary m-0">S/. @order.Total.ToString("0.00")</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,326 @@
+@page "/trabajador"
+@layout TrabajadorLayout
+@inject SalesService SalesSvc
+
+@code {
+    private List<Order> _allOrders = new();
+    private string _searchTerm = "";
+    private string _selectedFilter = "todos";
+    private Order? _detailOrder = null;
+    private bool _showDetailModal = false;
+
+    protected override void OnInitialized() => RefreshList();
+
+    private void RefreshList()
+    {
+        _allOrders = SalesSvc.GetRecentOrders();
+    }
+
+    private IEnumerable<Order> FilteredOrders => _allOrders.Where(o =>
+    {
+        bool matchSearch = string.IsNullOrEmpty(_searchTerm) ||
+            o.Id.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase) ||
+            o.Customer.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase);
+
+        bool matchFilter = _selectedFilter switch
+        {
+            "pendiente"   => o.Status == "pendiente",
+            "preparando"  => o.Status == "preparando",
+            "en_camino"   => o.Status == "en_camino",
+            "entregado"   => o.Status == "entregado",
+            "cancelado"   => o.Status == "cancelado",
+            _             => true
+        };
+        return matchSearch && matchFilter;
+    });
+
+    private int CountByStatus(string s)  => _allOrders.Count(o => o.Status == s);
+    private void SetFilter(string f)     => _selectedFilter = f;
+
+    private void UpdateStatus(string id, string newStatus)
+    {
+        SalesSvc.UpdateOrderStatus(id, newStatus);
+        RefreshList();
+        if (_detailOrder?.Id == id)
+            _detailOrder = _allOrders.FirstOrDefault(o => o.Id == id);
+    }
+
+    private void VerDetalle(Order o) { _detailOrder = o; _showDetailModal = true; }
+    private void CloseModal()        => _showDetailModal = false;
+
+    private void SiguienteAccion(Order o)
+    {
+        var next = o.Status switch
+        {
+            "pendiente"  => "preparando",
+            "preparando" => "en_camino",
+            "en_camino"  => "entregado",
+            _ => ""
+        };
+        if (!string.IsNullOrEmpty(next)) UpdateStatus(o.Id, next);
+    }
+
+    private void CancelarOrder(Order o) => UpdateStatus(o.Id, "cancelado");
+
+    private string GetStatusLabel(string s) => s switch
+    {
+        "pendiente"  => "Pendiente",
+        "preparando" => "En preparación",
+        "en_camino"  => "En camino",
+        "entregado"  => "Entregado",
+        "cancelado"  => "Cancelado",
+        _            => s
+    };
+
+    private string GetStatusBadgeStyle(string s) => s switch
+    {
+        "pendiente"  => "background:#fff3e0;color:#e67e22;",
+        "preparando" => "background:#e3f2fd;color:#1976d2;",
+        "en_camino"  => "background:#e8f5e9;color:#2e7d32;",
+        "entregado"  => "background:#ede7f6;color:#5e35b1;",
+        "cancelado"  => "background:#ffebee;color:#c62828;",
+        _            => "background:#f5f5f5;color:#555;"
+    };
+
+    private string GetBorderColor(string s) => s switch
+    {
+        "pendiente"  => "#e67e22",
+        "preparando" => "#1976d2",
+        "en_camino"  => "#2e7d32",
+        "entregado"  => "#5e35b1",
+        "cancelado"  => "#c62828",
+        _            => "var(--border)"
+    };
+
+    private string GetNextActionLabel(string s) => s switch
+    {
+        "pendiente"  => "Iniciar Preparación",
+        "preparando" => "Enviar / Despachar",
+        "en_camino"  => "Confirmar Entrega",
+        _            => ""
+    };
+}
+
+<PageTitle>Gestión de Pedidos – Shiligama</PageTitle>
+
+<div class="d-flex flex-column gap-4">
+    <!-- Header -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div>
+            <h1 class="fs-4 fw-bold text-foreground mb-0">
+                <i class="fas fa-clipboard-list me-2 text-primary"></i>Gestión de Pedidos
+            </h1>
+            <p class="text-muted-foreground small mt-1 mb-0">Procesa y gestiona los pedidos de los clientes</p>
+        </div>
+        <button class="btn btn-secondary btn-sm d-flex align-items-center gap-2" @onclick="RefreshList" style="border-radius:var(--radius);">
+            <i class="fas fa-sync-alt"></i> Actualizar
+        </button>
+    </div>
+
+    <!-- Métricas -->
+    <div class="row g-3">
+        <div class="col-6 col-xl-3">
+            <div class="metric-card-kpi">
+                <div>
+                    <div class="metric-kpi-value text-foreground">@CountByStatus("pendiente")</div>
+                    <div class="metric-kpi-label">Pendientes</div>
+                </div>
+                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#e67e22 15%,transparent);color:#e67e22;">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="metric-card-kpi">
+                <div>
+                    <div class="metric-kpi-value text-foreground">@CountByStatus("preparando")</div>
+                    <div class="metric-kpi-label">En preparación</div>
+                </div>
+                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#1976d2 15%,transparent);color:#1976d2;">
+                    <i class="fas fa-box-open"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="metric-card-kpi">
+                <div>
+                    <div class="metric-kpi-value text-foreground">@CountByStatus("en_camino")</div>
+                    <div class="metric-kpi-label">En camino</div>
+                </div>
+                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#2e7d32 15%,transparent);color:#2e7d32;">
+                    <i class="fas fa-truck"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="metric-card-kpi">
+                <div>
+                    <div class="metric-kpi-value text-foreground">@CountByStatus("entregado")</div>
+                    <div class="metric-kpi-label">Entregados hoy</div>
+                </div>
+                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#5e35b1 15%,transparent);color:#5e35b1;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Búsqueda + Filtros -->
+    <div class="d-flex flex-column gap-2">
+        <div class="position-relative" style="max-width:420px;">
+            <i class="fas fa-search position-absolute top-50 translate-middle-y text-muted-foreground" style="left:14px;font-size:0.85rem;"></i>
+            <input type="search" @bind="_searchTerm" @bind:event="oninput"
+                   class="form-control text-foreground"
+                   placeholder="Buscar por # orden o cliente..."
+                   style="padding-left:38px;" />
+        </div>
+
+        <div class="filter-pills">
+            <button class="filter-pill @(_selectedFilter=="todos"?"active":"")"      @onclick='@(()=>SetFilter("todos"))'>
+                Todos (@_allOrders.Count)
+            </button>
+            <button class="filter-pill @(_selectedFilter=="pendiente"?"active":"")"  @onclick='@(()=>SetFilter("pendiente"))'>
+                <i class="fas fa-clock me-1"></i>Pendiente (@CountByStatus("pendiente"))
+            </button>
+            <button class="filter-pill @(_selectedFilter=="preparando"?"active":"")" @onclick='@(()=>SetFilter("preparando"))'>
+                <i class="fas fa-box-open me-1"></i>Preparando (@CountByStatus("preparando"))
+            </button>
+            <button class="filter-pill @(_selectedFilter=="en_camino"?"active":"")"  @onclick='@(()=>SetFilter("en_camino"))'>
+                <i class="fas fa-truck me-1"></i>En camino (@CountByStatus("en_camino"))
+            </button>
+            <button class="filter-pill @(_selectedFilter=="entregado"?"active":"")"  @onclick='@(()=>SetFilter("entregado"))'>
+                <i class="fas fa-check-circle me-1"></i>Entregado (@CountByStatus("entregado"))
+            </button>
+            <button class="filter-pill @(_selectedFilter=="cancelado"?"active":"")"  @onclick='@(()=>SetFilter("cancelado"))'>
+                <i class="fas fa-times me-1"></i>Cancelado (@CountByStatus("cancelado"))
+            </button>
+        </div>
+    </div>
+
+    <!-- Grid de Pedidos -->
+    @if (!FilteredOrders.Any())
+    {
+        <div class="card p-5 text-center">
+            <i class="fas fa-clipboard-list text-muted-foreground mb-3" style="font-size:2.5rem;"></i>
+            <h3 class="text-foreground fw-semibold fs-5">Sin pedidos</h3>
+            <p class="text-muted-foreground small m-0">No hay pedidos que coincidan con los filtros seleccionados.</p>
+        </div>
+    }
+    else
+    {
+        <div class="orders-grid">
+            @foreach (var order in FilteredOrders)
+            {
+                <div class="order-card" style="border-left:4px solid @GetBorderColor(order.Status);">
+                    <!-- Header de la tarjeta -->
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <span class="fw-bold text-foreground small">@order.Id</span>
+                            <span class="badge ms-2" style="@GetStatusBadgeStyle(order.Status);font-size:0.7rem;border-radius:9999px;">
+                                @GetStatusLabel(order.Status)
+                            </span>
+                        </div>
+                        <span class="badge bg-muted text-muted-foreground" style="font-size:0.7rem;border-radius:9999px;">
+                            <i class="fas @(order.Channel=="Online"?"fa-globe":"fa-store") me-1"></i>@order.Channel
+                        </span>
+                    </div>
+
+                    <!-- Hora -->
+                    <div class="text-muted-foreground small mb-2">
+                        <i class="fas fa-clock me-1"></i>@order.Date.ToString("HH:mm") — @order.Date.ToString("dd MMM")
+                    </div>
+
+                    <!-- Cliente -->
+                    <div class="mb-2">
+                        <div class="fw-semibold text-foreground small">@order.Customer</div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-color-default mb-3">
+                        <span class="text-muted-foreground small">
+                            <i class="fas fa-box me-1"></i>@order.Items @(order.Items == 1 ? "producto" : "productos")
+                        </span>
+                        <span class="fw-bold text-primary">S/. @order.Total.ToString("0.00")</span>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="d-flex gap-2 align-items-center">
+                        <button class="btn btn-secondary btn-sm flex-shrink-0" @onclick="@(() => VerDetalle(order))" style="border-radius:var(--radius);font-size:0.78rem;">
+                            <i class="fas fa-eye me-1"></i>Detalle
+                        </button>
+                        @if (!string.IsNullOrEmpty(GetNextActionLabel(order.Status)))
+                        {
+                            <button class="btn btn-primary btn-sm flex-grow-1" @onclick="@(() => SiguienteAccion(order))" style="border-radius:var(--radius);font-size:0.78rem;">
+                                @GetNextActionLabel(order.Status)
+                            </button>
+                        }
+                        @if (order.Status != "entregado" && order.Status != "cancelado")
+                        {
+                            <button class="btn btn-sm flex-shrink-0 d-flex align-items-center justify-content-center"
+                                    @onclick="@(() => CancelarOrder(order))"
+                                    style="width:32px;height:32px;border-radius:50%;background:#ffebee;border:none;color:#c62828;"
+                                    title="Cancelar">
+                                <i class="fas fa-times" style="font-size:0.75rem;"></i>
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- Modal Detalle de Pedido -->
+@if (_showDetailModal && _detailOrder != null)
+{
+    <div class="modal-overlay" @onclick="CloseModal">
+        <div class="modal-container" style="max-width:480px;" @onclick:stopPropagation>
+            <div class="p-4 border-bottom border-color-default d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="fw-bold text-foreground m-0">Detalle del Pedido</h5>
+                    <p class="text-muted-foreground small m-0">@_detailOrder.Id — @_detailOrder.Date.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+                <button class="btn btn-ghost p-1" @onclick="CloseModal" style="border-radius:50%;">
+                    <i class="fas fa-times text-muted-foreground"></i>
+                </button>
+            </div>
+            <div class="modal-body-scroll">
+                <div class="d-flex flex-column gap-3 py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted-foreground small fw-medium">Estado</span>
+                        <span class="badge" style="@GetStatusBadgeStyle(_detailOrder.Status);font-size:0.78rem;border-radius:9999px;padding:5px 12px;">
+                            @GetStatusLabel(_detailOrder.Status)
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted-foreground small fw-medium">Cliente</span>
+                        <span class="text-foreground small fw-semibold">@_detailOrder.Customer</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted-foreground small fw-medium">Canal</span>
+                        <span class="text-foreground small">
+                            <i class="fas @(_detailOrder.Channel=="Online"?"fa-globe":"fa-store") me-1"></i>@_detailOrder.Channel
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted-foreground small fw-medium">Artículos</span>
+                        <span class="text-foreground small">@_detailOrder.Items</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-color-default">
+                        <span class="fw-bold text-foreground">Total</span>
+                        <span class="fw-bold text-primary fs-5">S/. @_detailOrder.Total.ToString("0.00")</span>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-top border-color-default d-flex gap-2 justify-content-end">
+                <button class="btn btn-secondary" @onclick="CloseModal" style="border-radius:var(--radius);">Cerrar</button>
+                @if (!string.IsNullOrEmpty(GetNextActionLabel(_detailOrder.Status)))
+                {
+                    <button class="btn btn-primary fw-semibold" @onclick="@(() => { SiguienteAccion(_detailOrder); CloseModal(); })" style="border-radius:var(--radius);">
+                        @GetNextActionLabel(_detailOrder.Status)
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,53 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\FrontEND\\pantallasprueba-shilligama\\pantallasprueba-shilligama\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|d:\\users\\diogo\\desktop\\26-1\\clases\\programacion_3\\ta\\frontend\\pantallasprueba-shilligama\\pantallasprueba-shilligama\\shilligama-blazor\\components\\pages\\catalogo.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\catalogo.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|d:\\users\\diogo\\desktop\\26-1\\clases\\programacion_3\\ta\\frontend\\pantallasprueba-shilligama\\pantallasprueba-shilligama\\shilligama-blazor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Catalogo.razor",
+              "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\FrontEND\\pantallasprueba-shilligama\\pantallasprueba-shilligama\\shilligama-blazor\\Components\\Pages\\Catalogo.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Catalogo.razor",
+              "ToolTip": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\FrontEND\\pantallasprueba-shilligama\\pantallasprueba-shilligama\\shilligama-blazor\\Components\\Pages\\Catalogo.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Catalogo.razor",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAjwF8AAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-28T13:52:44.9Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\FrontEND\\pantallasprueba-shilligama\\pantallasprueba-shilligama\\shilligama-blazor\\Program.cs",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Program.cs",
+              "ToolTip": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\FrontEND\\pantallasprueba-shilligama\\pantallasprueba-shilligama\\shilligama-blazor\\Program.cs",
+              "RelativeToolTip": "shilligama-blazor\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T20:01:02.489Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

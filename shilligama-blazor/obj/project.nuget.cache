@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "Mo0wN3/WNqI=",
+  "success": true,
+  "projectFilePath": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\FrontEND\\pantallasprueba-shilligama\\pantallasprueba-shilligama\\shilligama-blazor\\shilligama-blazor.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\DIOGO\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.8\\microsoft.aspnetcore.app.internal.assets.10.0.8.nupkg.sha512"
+  ],
+  "logs": []
+}

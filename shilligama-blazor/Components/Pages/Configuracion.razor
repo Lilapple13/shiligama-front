@@ -1,0 +1,132 @@
+@page "/configuracion"
+@layout MainLayout
+@inject AuthService Auth
+@inject NavigationManager Navigation
+
+@code {
+    private string _name = "";
+    private string _dni = "12345678";
+    private string _phone = "987654321";
+    private string _address = "Av. Los Olivos 123, Lima";
+    private bool _success = false;
+
+    protected override void OnInitialized()
+    {
+        if (!Auth.IsLoggedIn())
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        _name = Auth.CurrentUser?.Name ?? "Juan Pérez";
+    }
+
+    private async Task SaveChanges()
+    {
+        _success = true;
+        await Task.Delay(2000);
+        _success = false;
+        StateHasChanged();
+    }
+}
+
+<PageTitle>Configuración – Shiligama</PageTitle>
+
+<div class="container-xl px-3 px-sm-4 py-4" style="max-width: 680px;">
+    <!-- Back Button -->
+    <nav class="mb-3">
+        <a href="/catalogo" class="text-muted-foreground text-decoration-none small d-inline-flex align-items-center gap-2" style="transition: color 0.2s; font-weight: 500;">
+            <i class="fa-solid fa-chevron-left" style="font-size: 0.85rem;"></i> Volver al catálogo
+        </a>
+    </nav>
+
+    <h1 class="fs-2 fw-bold text-foreground mb-1" style="font-family: 'Outfit', sans-serif; color: #111827 !important;">Configuración</h1>
+    <p class="text-muted-foreground small mt-1 mb-4" style="font-size: 0.9rem; color: #4b5563 !important;">Administra tu información personal y preferencias de entrega</p>
+
+    @if (_success)
+    {
+        <div class="alert alert-success alert-dismissible fade show p-3 d-flex align-items-center gap-2 mb-4" style="border-radius: var(--radius);" role="alert">
+            <i class="fa-solid fa-check text-success" style="font-size: 1.1rem;"></i>
+            <div>¡Tus cambios han sido guardados con éxito!</div>
+            <button type="button" class="btn-close" @onclick="@(() => _success = false)"></button>
+        </div>
+    }
+
+    <EditForm Model="this" OnValidSubmit="SaveChanges" class="d-flex flex-column gap-4">
+        <!-- 1. Personal Information Card -->
+        <div class="card p-4 d-flex flex-column gap-3 shadow-sm" style="border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); background-color: var(--card);">
+            <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 40px; height: 40px; background-color: #E8F5E9; flex-shrink: 0;">
+                    <i class="fa-regular fa-user" style="color: #0D4525; font-size: 1.1rem;"></i>
+                </div>
+                <div>
+                    <h3 class="fw-bold text-foreground mb-0" style="font-size: 1.05rem; font-family: 'Outfit', sans-serif;">Información Personal</h3>
+                    <p class="text-muted-foreground small mb-0" style="font-size: 0.8rem;">Tu nombre y documento de identidad</p>
+                </div>
+            </div>
+            
+            <div class="row g-3 mt-1">
+                <div class="col-md-7">
+                    <label class="form-label small fw-medium text-foreground mb-1.5">Nombre completo</label>
+                    <input type="text" @bind="_name" required class="form-control text-foreground" style="height: 44px; border-radius: 8px; border: 1px solid #d1d5db;" />
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label small fw-medium text-foreground mb-1.5">DNI</label>
+                    <div class="position-relative">
+                        <i class="fa-regular fa-id-card text-muted-foreground position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.95rem;"></i>
+                        <input type="text" @bind="_dni" required class="form-control text-foreground" style="height: 44px; padding-left: 42px; border-radius: 8px; border: 1px solid #d1d5db;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Contact Information Card -->
+        <div class="card p-4 d-flex flex-column gap-3 shadow-sm" style="border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); background-color: var(--card);">
+            <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 40px; height: 40px; background-color: #E8F5E9; flex-shrink: 0;">
+                    <i class="fa-solid fa-phone" style="color: #0D4525; font-size: 1.1rem;"></i>
+                </div>
+                <div>
+                    <h3 class="fw-bold text-foreground mb-0" style="font-size: 1.05rem; font-family: 'Outfit', sans-serif;">Contacto</h3>
+                    <p class="text-muted-foreground small mb-0" style="font-size: 0.8rem;">Tu número de teléfono para coordinar entregas</p>
+                </div>
+            </div>
+            
+            <div class="mt-1">
+                <label class="form-label small fw-medium text-foreground mb-1.5">Teléfono</label>
+                <div class="position-relative">
+                    <i class="fa-solid fa-phone text-muted-foreground position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.95rem;"></i>
+                    <input type="tel" @bind="_phone" required class="form-control text-foreground" style="height: 44px; padding-left: 42px; border-radius: 8px; border: 1px solid #d1d5db;" />
+                </div>
+                <div class="form-text text-muted-foreground mt-1.5" style="font-size: 0.75rem;">Usaremos este número para contactarte sobre tus pedidos.</div>
+            </div>
+        </div>
+
+        <!-- 3. Delivery Address Card -->
+        <div class="card p-4 d-flex flex-column gap-3 shadow-sm" style="border-radius: 12px; border: 1px solid rgba(0,0,0,0.08); background-color: var(--card);">
+            <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 40px; height: 40px; background-color: #E8F5E9; flex-shrink: 0;">
+                    <i class="fa-solid fa-location-dot" style="color: #0D4525; font-size: 1.1rem;"></i>
+                </div>
+                <div>
+                    <h3 class="fw-bold text-foreground mb-0" style="font-size: 1.05rem; font-family: 'Outfit', sans-serif;">Dirección de Entrega</h3>
+                    <p class="text-muted-foreground small mb-0" style="font-size: 0.8rem;">La dirección donde recibirás tus pedidos</p>
+                </div>
+            </div>
+            
+            <div class="mt-1">
+                <label class="form-label small fw-medium text-foreground mb-1.5">Dirección completa</label>
+                <textarea @bind="_address" required class="form-control text-foreground py-2.5" rows="3" style="border-radius: 8px; border: 1px solid #d1d5db; resize: none; font-size: 0.95rem;"></textarea>
+                <div class="form-text text-muted-foreground mt-1.5" style="font-size: 0.75rem;">Incluye referencias para facilitar la entrega (cerca de, frente a, etc.)</div>
+            </div>
+        </div>
+
+        <!-- Bottom Save Bar -->
+        <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 mt-2 mb-4">
+            <span class="text-muted-foreground" style="font-size: 0.85rem;">Los cambios se guardarán automáticamente en tu perfil.</span>
+            <button type="submit" class="btn text-white px-4 py-2.5 fw-semibold d-flex align-items-center justify-content-center gap-2 w-100 w-sm-auto" style="background-color: #0D4525; border-radius: 8px; font-size: 0.95rem; border: none; transition: background-color 0.2s;">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
+            </button>
+        </div>
+    </EditForm>
+</div>
