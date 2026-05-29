@@ -112,6 +112,7 @@ public class ProductService
                 Category = "limpieza",
                 Stock = 42,
                 IsPromo = true,
+                MinStock = 15,
                 Description = "Jabón de lavar ropa de alta calidad. Elimina manchas difíciles y cuida tus prendas. Pack económico de 3 barras."
             },
             new() {
@@ -121,6 +122,7 @@ public class ProductService
                 Image = "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=300&h=300&fit=crop",
                 Category = "carnes",
                 Stock = 8,
+                MinStock = 12,
                 Description = "Pechuga de pollo fresca sin hueso. Alta en proteínas y baja en grasa. Perfecta para dietas saludables."
             },
             new() {
@@ -158,6 +160,7 @@ public class ProductService
                 Image = "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=300&h=300&fit=crop",
                 Category = "congelados",
                 Stock = 12,
+                MinStock = 15, 
                 IsPromo = true,
                 Description = "Helado cremoso de vainilla y chocolate. El postre perfecto para compartir en familia. Envase de 1 litro."
             },
@@ -168,6 +171,7 @@ public class ProductService
                 Image = "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&h=300&fit=crop",
                 Category = "bebes",
                 Stock = 15,
+                MinStock = 20,
                 Description = "Pañales ultra absorbentes talla M. Protección por hasta 12 horas. Suaves con la piel del bebé."
             },
             new() {
@@ -176,7 +180,7 @@ public class ProductService
                 Price = 3.20m,
                 Image = "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300&h=300&fit=crop",
                 Category = "bebidas",
-                Stock = 200,
+                Stock = 20,
                 Description = "Agua mineral natural de manantial. Pureza garantizada. Hidratación para toda la familia."
             },
             new() {
@@ -232,6 +236,7 @@ public class ProductService
                 Image = "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=300&h=300&fit=crop",
                 Category = "limpieza",
                 Stock = 15,
+                MinStock = 15,
                 IsPromo = true,
                 Description = "Detergente en polvo multiusos para el cuidado de prendas de color y blancas."
             },
@@ -242,6 +247,7 @@ public class ProductService
                 Image = "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=300&h=300&fit=crop",
                 Category = "carnes",
                 Stock = 12,
+                MinStock = 15,
                 Description = "Corte de carne de res sumamente tierno y jugoso para parrilladas o lomo saltado."
             },
             new() {
@@ -269,6 +275,7 @@ public class ProductService
                 Image = "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=300&h=300&fit=crop",
                 Category = "congelados",
                 Stock = 20,
+                MinStock = 15,
                 Description = "Papas cortadas estilo francés listas para freír u hornear."
             },
             new() {
@@ -279,6 +286,7 @@ public class ProductService
                 Image = "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&h=300&fit=crop",
                 Category = "bebes",
                 Stock = 18,
+                MinStock = 20,
                 IsPromo = true,
                 Description = "Cereal infantil fortificado con hierro y vitaminas para bebés a partir de 6 meses."
             },

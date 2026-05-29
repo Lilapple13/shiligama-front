@@ -11,4 +11,5 @@ public class Product
     public int Stock { get; set; }
     public bool IsPromo { get; set; }
     public string Description { get; set; } = string.Empty;
+    public int MinStock { get; set; } = 10;
 }

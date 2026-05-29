@@ -3,6 +3,34 @@
   "WorkspaceRootPath": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\cliente\\mispedidos.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\cliente\\mispedidos.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\cliente\\productodetalle.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\cliente\\productodetalle.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\cliente\\checkout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\cliente\\checkout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\cliente\\catalogo.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\cliente\\catalogo.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\cliente\\carrito.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\cliente\\carrito.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\layout\\adminlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\layout\\adminlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -29,10 +57,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\admin\\dashboard.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\admin\\dashboard.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\carrito.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\carrito.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\admin\\pedidos.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -67,22 +91,6 @@
       "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\productodetalle.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\productodetalle.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\catalogo.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\catalogo.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\mispedidos.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\mispedidos.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\components\\pages\\checkout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\checkout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|c:\\users\\binny\\onedrive\\escritorio\\binny\\6to_ciclo\\progra3\\ta\\front\\shiligama-front\\shilligama-blazor\\services\\salesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\services\\salesservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -106,49 +114,151 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Configuracion.razor",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Configuracion.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Configuracion.razor",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Configuracion.razor",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Configuracion.razor",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABcAAABDAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-29T11:35:06.582Z",
+              "DocumentIndex": 0,
+              "Title": "ProductService.cs",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Services\\ProductService.cs",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Services\\ProductService.cs",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Services\\ProductService.cs",
+              "RelativeToolTip": "shilligama-blazor\\Services\\ProductService.cs",
+              "ViewState": "AgIAAJUAAAAAAAAAAAAgwKoAAABpAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-29T12:08:11.17Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Perfil.razor",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Perfil.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Perfil.razor",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Perfil.razor",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Perfil.razor",
-              "ViewState": "AgIAABAAAAAAAAAAAAAAAB4AAAAJAAAAAAAAAA==",
+              "Title": "Product.cs",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Models\\Product.cs",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Models\\Product.cs",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Models\\Product.cs",
+              "RelativeToolTip": "shilligama-blazor\\Models\\Product.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-29T12:07:06.659Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Pedidos.razor",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Pedidos.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Pedidos.razor",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Pedidos.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Pedidos.razor",
+              "ViewState": "AgIAAIAAAAAAAAAAAAAmwJEAAABlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-29T11:33:42.02Z",
+              "WhenOpened": "2026-05-29T04:35:33.413Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "app.css",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\wwwroot\\app.css",
+              "RelativeDocumentMoniker": "shilligama-blazor\\wwwroot\\app.css",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\wwwroot\\app.css",
+              "RelativeToolTip": "shilligama-blazor\\wwwroot\\app.css",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAswFkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-05-28T22:41:26.281Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Carrito.razor",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Cliente\\Carrito.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Cliente\\Carrito.razor",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Cliente\\Carrito.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Cliente\\Carrito.razor",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAANEAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-28T23:12:31.237Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Catalogo.razor",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Cliente\\Catalogo.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Cliente\\Catalogo.razor",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Cliente\\Catalogo.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Cliente\\Catalogo.razor",
+              "ViewState": "AgIAAPAAAAAAAAAAAAAAAKEAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-28T13:52:44.9Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ProductoDetalle.razor",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Cliente\\ProductoDetalle.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Cliente\\ProductoDetalle.razor",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Cliente\\ProductoDetalle.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Cliente\\ProductoDetalle.razor",
+              "ViewState": "AgIAAJEAAAAAAAAAAAAswLQAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-28T23:45:55.469Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MisPedidos.razor",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Cliente\\MisPedidos.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Cliente\\MisPedidos.razor",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Cliente\\MisPedidos.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Cliente\\MisPedidos.razor",
+              "ViewState": "AgIAAJUBAAAAAAAAAAAswI8BAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-28T22:23:41.935Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AdminLayout.razor",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Layout\\AdminLayout.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Layout\\AdminLayout.razor",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Layout\\AdminLayout.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Layout\\AdminLayout.razor",
+              "ViewState": "AgIAALgAAAAAAAAAAAAtwM0AAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-29T03:30:11.833Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 12,
-              "Title": "Ventas.razor",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Ventas.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Ventas.razor",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Ventas.razor",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Ventas.razor",
-              "ViewState": "AgIAAGQAAAAAAAAAAAAmwHcAAAAEAAAAAAAAAA==",
+              "Title": "Productos.razor",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Productos.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Productos.razor",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Productos.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Productos.razor",
+              "ViewState": "AgIAADQAAAAAAAAAAAAmwEAAAABTAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-29T04:38:17.414Z"
+              "WhenOpened": "2026-05-29T04:37:26.453Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 4,
+              "Title": "Checkout.razor",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Cliente\\Checkout.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Cliente\\Checkout.razor",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Cliente\\Checkout.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Cliente\\Checkout.razor",
+              "ViewState": "AgIAAG8AAAAAAAAAAAAAADcCAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-28T22:33:05.598Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
               "Title": "Inventario.razor",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Inventario.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Inventario.razor",
@@ -160,59 +270,43 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Productos.razor",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Productos.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Productos.razor",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Productos.razor",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Productos.razor",
-              "ViewState": "AgIAADQAAAAAAAAAAAAmwEAAAABTAAAAAAAAAA==",
+              "DocumentIndex": 18,
+              "Title": "Ventas.razor",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Ventas.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Ventas.razor",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Ventas.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Ventas.razor",
+              "ViewState": "AgIAAGQAAAAAAAAAAAAmwHcAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-29T04:37:26.453Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T04:38:17.414Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AdminLayout.razor",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Layout\\AdminLayout.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Layout\\AdminLayout.razor",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Layout\\AdminLayout.razor*",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Layout\\AdminLayout.razor*",
-              "ViewState": "AgIAALgAAAAAAAAAAAAtwMYAAAALAAAAAAAAAA==",
+              "DocumentIndex": 10,
+              "Title": "Perfil.razor",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Perfil.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Perfil.razor",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Perfil.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Perfil.razor",
+              "ViewState": "AgIAABAAAAAAAAAAAAAAAB4AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-29T03:30:11.833Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T11:33:42.02Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Pedidos.razor",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Pedidos.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Pedidos.razor",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Pedidos.razor",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Pedidos.razor",
-              "ViewState": "AgIAAIAAAAAAAAAAAAAmwJEAAABlAAAAAAAAAA==",
+              "DocumentIndex": 9,
+              "Title": "Configuracion.razor",
+              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Configuracion.razor",
+              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Configuracion.razor",
+              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Configuracion.razor",
+              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Configuracion.razor",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABcAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-29T04:35:33.413Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T11:35:06.582Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "app.css",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\wwwroot\\app.css",
-              "RelativeDocumentMoniker": "shilligama-blazor\\wwwroot\\app.css",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\wwwroot\\app.css",
-              "RelativeToolTip": "shilligama-blazor\\wwwroot\\app.css",
-              "ViewState": "AgIAAEIAAAAAAAAAAAAswFkAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-05-28T22:41:26.281Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 11,
               "Title": "Notificaciones.razor",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Notificaciones.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Notificaciones.razor",
@@ -220,12 +314,11 @@
               "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Notificaciones.razor",
               "ViewState": "AgIAAA0AAAAAAAAAAAAmwB4AAABVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-29T04:39:18.433Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T04:39:18.433Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 17,
               "Title": "Proveedores.razor",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Proveedores.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Proveedores.razor",
@@ -237,7 +330,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 13,
               "Title": "Dashboard.razor",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Dashboard.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Dashboard.razor",
@@ -245,25 +338,11 @@
               "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Dashboard.razor",
               "ViewState": "AgIAAMMAAAAAAAAAAAAAAMMAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-29T11:13:34.95Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-29T11:13:34.95Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Carrito.razor",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Carrito.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Carrito.razor",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Carrito.razor",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Carrito.razor",
-              "ViewState": "AgIAAH4AAAAAAAAAAAAAANEAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T23:12:31.237Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 16,
               "Title": "Personal.razor",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Personal.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Personal.razor",
@@ -275,7 +354,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 15,
               "Title": "Devoluciones.razor",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Admin\\Devoluciones.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Devoluciones.razor",
@@ -287,31 +366,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "MisPedidos.razor",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\MisPedidos.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\MisPedidos.razor",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\MisPedidos.razor",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\MisPedidos.razor",
-              "ViewState": "AgIAAJUBAAAAAAAAAAAswI8BAABRAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T22:23:41.935Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "Catalogo.razor",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Catalogo.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Catalogo.razor",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Catalogo.razor",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Catalogo.razor",
-              "ViewState": "AgIAAJUAAAAAAAAAAAArwKYAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T13:52:44.9Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 20,
               "Title": "MainLayout.razor",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Layout\\MainLayout.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Layout\\MainLayout.razor",
@@ -323,19 +378,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "ProductoDetalle.razor",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\ProductoDetalle.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\ProductoDetalle.razor",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\ProductoDetalle.razor",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\ProductoDetalle.razor",
-              "ViewState": "AgIAAAgBAAAAAAAAAAAAAB0BAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T23:45:55.469Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 21,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Program.cs",
               "RelativeDocumentMoniker": "shilligama-blazor\\Program.cs",
@@ -347,7 +390,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "carousel.js",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\wwwroot\\js\\carousel.js",
               "RelativeDocumentMoniker": "shilligama-blazor\\wwwroot\\js\\carousel.js",
@@ -359,7 +402,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 24,
               "Title": "Order.cs",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Models\\Order.cs",
               "RelativeDocumentMoniker": "shilligama-blazor\\Models\\Order.cs",
@@ -371,7 +414,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 23,
               "Title": "TrackingStep.cs",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Models\\TrackingStep.cs",
               "RelativeDocumentMoniker": "shilligama-blazor\\Models\\TrackingStep.cs",
@@ -383,19 +426,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "Checkout.razor",
-              "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Checkout.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Checkout.razor",
-              "ToolTip": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Components\\Pages\\Checkout.razor",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Checkout.razor",
-              "ViewState": "AgIAACICAAAAAAAAAAAAADcCAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-28T22:33:05.598Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 22,
               "Title": "SalesService.cs",
               "DocumentMoniker": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\Services\\SalesService.cs",
               "RelativeDocumentMoniker": "shilligama-blazor\\Services\\SalesService.cs",

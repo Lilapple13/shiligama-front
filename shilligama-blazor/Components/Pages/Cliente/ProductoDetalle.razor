@@ -173,9 +173,12 @@ else
                                     +
                                 </button>
                             </div>
-                            <span class="text-muted-foreground small fw-medium" style="font-size:0.9rem;">
-                                @_product.Stock disponibles
-                            </span>
+                            @if (_product.Stock <= _product.MinStock)
+                            {
+                                <span class="small fw-medium" style="font-size:0.9rem; color:#f59e0b;">
+                                    <i class="fa-solid fa-triangle-exclamation me-1"></i>Solo @_product.Stock disponibles
+                                </span>
+                            }
                         </div>
                     </div>
 
@@ -234,7 +237,7 @@ else
                                     <p class="fw-semibold text-foreground mb-0 small">@p.Name</p>
                                 </a>
                                 <div class="d-flex align-items-baseline gap-2">
-                                    <span class="fw-bold text-primary" style="font-size:.95rem;">
+                                    <span class="fw-bold" style="font-size:1.2rem; color:var(--primary);">
                                         S/. @p.Price.ToString("0.00")
                                     </span>
                                     @if (p.OriginalPrice.HasValue)

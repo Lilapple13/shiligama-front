@@ -98,48 +98,48 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxWZW50YXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Carrito.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDYXJyaXRvLnJhem9y
+[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Carrito.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXENhcnJpdG8ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Catalogo.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDYXRhbG9nby5yYXpvcg==
+[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Catalogo.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXENhdGFsb2dvLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Checkout.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDaGVja291dC5yYXpvcg==
+[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Checkout.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXENoZWNrb3V0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Configuracion.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDb25maWd1cmFjaW9uLnJhem9y
+[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Configuracion.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXENvbmZpZ3VyYWNpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXEhvbWUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/MisPedidos.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXE1pc1BlZGlkb3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Ofertas.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXE9mZXJ0YXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/ProductoDetalle.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXFByb2R1Y3RvRGV0YWxsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/PromoSnacks.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXFByb21vU25hY2tzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Home.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/MisPedidos.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xNaXNQZWRpZG9zLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/NotFound.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xOb3RGb3VuZC5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Ofertas.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xPZmVydGFzLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/ProductoDetalle.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9kdWN0b0RldGFsbGUucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/PromoSnacks.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9tb1NuYWNrcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Trabajador/Dashboard.razor]
