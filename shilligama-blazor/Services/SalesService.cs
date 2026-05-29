@@ -15,12 +15,104 @@ public class SalesService
         // Seed recent customer orders
         _orders = new List<Order>
         {
-            new() { Id = "ORD-001", Customer = "María García", Date = DateTime.Now.AddHours(-9), Total = 125.50m, Items = 8, Status = "entregado", Channel = "Online" },
-            new() { Id = "ORD-002", Customer = "Carlos Mendoza", Date = DateTime.Now.AddHours(-10), Total = 89.00m, Items = 5, Status = "en_camino", Channel = "Online" },
-            new() { Id = "ORD-003", Customer = "Ana Rodríguez", Date = DateTime.Now.AddHours(-11), Total = 234.80m, Items = 12, Status = "preparando", Channel = "Presencial" },
-            new() { Id = "ORD-004", Customer = "Luis Torres", Date = DateTime.Now.AddHours(-12), Total = 56.00m, Items = 3, Status = "pendiente", Channel = "Online" },
-            new() { Id = "ORD-005", Customer = "Rosa Sánchez", Date = DateTime.Now.AddHours(-13), Total = 178.90m, Items = 9, Status = "entregado", Channel = "Presencial" },
-            new() { Id = "ORD-006", Customer = "Pedro Díaz", Date = DateTime.Now.AddDays(-1), Total = 312.40m, Items = 15, Status = "cancelado", Channel = "Online" }
+            new() {
+                Id = "SHI-2024-0156", Customer = "Juan Cliente",
+                Date = new DateTime(2024, 12, 15, 14, 30, 0),
+                Subtotal = 102.50m, DeliveryFee = 5.00m, Total = 107.50m,
+                Items = 4, Status = "entregado", DeliveryMethod = "delivery",
+                PaymentMethod = "yape", Address = "Av. Los Álamos 123, San Isidro",
+                Products = new() {
+                    new() { Id=1, Name="Arroz Costeño 5kg",   Price=24.90m, Quantity=2 },
+                    new() { Id=2, Name="Aceite Primor 1L",     Price=12.50m, Quantity=1 },
+                    new() { Id=3, Name="Leche Gloria 1L",      Price=5.20m,  Quantity=6 },
+                    new() { Id=4, Name="Azúcar Rubia 1kg",     Price=4.80m,  Quantity=2 },
+                },
+                TimelinePedidoRecibido  = new DateTime(2024,12,15,14,30,0),
+                TimelineEnPreparacion   = new DateTime(2024,12,15,14,45,0),
+                TimelineListo           = new DateTime(2024,12,15,15,10,0),
+                TimelineEnCamino        = new DateTime(2024,12,15,15,20,0),
+                TimelineEntregado       = new DateTime(2024,12,15,15,45,0),
+            },
+            new() {
+                Id = "SHI-2024-0155", Customer = "Juan Cliente",
+                Date = new DateTime(2024, 12, 14, 10, 15, 0),
+                Subtotal = 40.40m, DeliveryFee = 5.00m, Total = 45.40m,
+                Items = 3, Status = "en_camino", DeliveryMethod = "delivery",
+                PaymentMethod = "plin", Address = "Jr. Las Flores 456, Miraflores",
+                Products = new() {
+                    new() { Id=1, Name="Gaseosa Inca Kola 3L", Price=12.00m, Quantity=2 },
+                    new() { Id=2, Name="Galletas Oreo 6-pack", Price=8.50m,  Quantity=1 },
+                    new() { Id=3, Name="Pan de Molde Bimbo",   Price=7.90m,  Quantity=1 },
+                },
+                TimelinePedidoRecibido  = new DateTime(2024,12,14,10,15,0),
+                TimelineEnPreparacion   = new DateTime(2024,12,14,10,30,0),
+                TimelineListo           = new DateTime(2024,12,14,11, 0,0),
+                TimelineEnCamino        = new DateTime(2024,12,14,11,15,0),
+            },
+            new() {
+                Id = "SHI-2024-0150", Customer = "Juan Cliente",
+                Date = new DateTime(2024, 12, 12, 16, 45, 0),
+                Subtotal = 47.90m, DeliveryFee = 0m, Total = 47.90m,
+                Items = 2, Status = "cancelado", DeliveryMethod = "pickup",
+                PaymentMethod = "efectivo", Address = "",
+                Products = new() {
+                    new() { Id=1, Name="Detergente Bolivar 2kg", Price=28.90m, Quantity=1 },
+                    new() { Id=2, Name="Jabón Bolívar Pack x3",  Price=9.50m,  Quantity=2 },
+                },
+                TimelinePedidoRecibido = new DateTime(2024,12,12,16,45,0),
+                TimelineCancelado      = new DateTime(2024,12,12,17, 0,0),
+            },
+
+            new() {
+                Id = "SHI-2024-0148", Customer = "Juan Cliente",
+                Date = new DateTime(2024, 12, 10, 9, 20, 0),
+                Subtotal = 68.00m, DeliveryFee = 0m, Total = 68.00m,
+                Items = 5, Status = "entregado", DeliveryMethod = "pickup",
+                PaymentMethod = "tarjeta", Address = "",
+                Products = new() {
+                    new() { Id=1, Name="Yogurt Gloria 1L",        Price=8.90m,  Quantity=3 },
+                    new() { Id=2, Name="Queso Fresco 500g",        Price=15.00m, Quantity=1 },
+                    new() { Id=3, Name="Jamón del Norte 200g",     Price=12.50m, Quantity=1 },
+                    new() { Id=4, Name="Pan Francés x10",          Price=3.00m,  Quantity=2 },
+                    new() { Id=5, Name="Mantequilla Gloria 200g",  Price=7.80m,  Quantity=1 },
+                },
+                TimelinePedidoRecibido = new DateTime(2024,12,10, 9,20,0),
+                TimelineEnPreparacion  = new DateTime(2024,12,10, 9,35,0),
+                TimelineListo          = new DateTime(2024,12,10,10, 0,0),
+                TimelineEntregado      = new DateTime(2024,12,10,10,30,0),
+            },
+            new() {
+                Id = "SHI-2024-0145", Customer = "Juan Cliente",
+                Date = new DateTime(2024, 12, 8, 18, 0, 0),
+                Subtotal = 52.00m, DeliveryFee = 5.00m, Total = 57.00m,
+                Items = 4, Status = "entregado", DeliveryMethod = "delivery",
+                PaymentMethod = "yape", Address = "Av. Los Álamos 123, San Isidro",
+                Products = new() {
+                    new() { Id=1, Name="Pollo Entero 2.5kg", Price=32.50m, Quantity=1 },
+                    new() { Id=2, Name="Papa Blanca 3kg",    Price=9.00m,  Quantity=1 },
+                    new() { Id=3, Name="Cebolla Roja 1kg",   Price=4.50m,  Quantity=1 },
+                    new() { Id=4, Name="Ají Amarillo 250g",  Price=3.00m,  Quantity=2 },
+                },
+                TimelinePedidoRecibido = new DateTime(2024,12, 8,18, 0,0),
+                TimelineEnPreparacion  = new DateTime(2024,12, 8,18,15,0),
+                TimelineListo          = new DateTime(2024,12, 8,18,40,0),
+                TimelineEnCamino       = new DateTime(2024,12, 8,18,50,0),
+                TimelineEntregado      = new DateTime(2024,12, 8,19,20,0),
+            },
+            new() {
+                Id = "SHI-2024-0140", Customer = "Juan Cliente",
+                Date = new DateTime(2024, 12, 5, 11, 0, 0),
+                Subtotal = 35.50m, DeliveryFee = 5.00m, Total = 40.50m,
+                Items = 3, Status = "preparando", DeliveryMethod = "delivery",
+                PaymentMethod = "plin", Address = "Jr. Las Flores 456, Miraflores",
+                Products = new() {
+                    new() { Id=1, Name="Fideos Don Vittorio 500g", Price=4.50m,  Quantity=4 },
+                    new() { Id=2, Name="Salsa de Tomate 200g",     Price=3.50m,  Quantity=2 },
+                    new() { Id=3, Name="Atún Florida 170g x3",     Price=14.50m, Quantity=1 },
+                },
+                TimelinePedidoRecibido = new DateTime(2024,12, 5,11, 0,0),
+                TimelineEnPreparacion  = new DateTime(2024,12, 5,11,15,0),
+            },
         };
 
         // Seed administrative sales history
@@ -42,32 +134,39 @@ public class SalesService
 
     public List<Sale> GetSales() => _sales;
 
-    public void AddOrder(string customerName, List<CartItem> items, decimal total, string channel)
+    public void AddOrder(string customerName, List<CartItem> items, decimal subtotal,
+                     decimal deliveryFee, decimal total,
+                     string paymentMethod, string deliveryMethod, string address)
     {
         var count = _orders.Count + 1;
-        var orderId = $"ORD-{count:D3}";
+        var orderId = $"SHI-2024-{count:D4}";
         _orders.Insert(0, new Order
         {
             Id = orderId,
             Customer = customerName,
             Date = DateTime.Now,
+            Subtotal = subtotal,
+            DeliveryFee = deliveryFee,
             Total = total,
             Items = items.Sum(i => i.Quantity),
             Status = "pendiente",
-            Channel = channel
+            DeliveryMethod = deliveryMethod,
+            PaymentMethod = paymentMethod,
+            Address = address,
+            Products = new List<CartItem>(items),
+            TimelinePedidoRecibido = DateTime.Now,
         });
 
-        // Also record as a Sale
         var saleId = $"VTA-{_sales.Count + 1:D3}";
         _sales.Insert(0, new Sale
         {
             Id = saleId,
             Fecha = DateTime.Now,
             Cliente = customerName,
-            Canal = channel.ToLower() == "online" ? "web" : "presencial",
+            Canal = "web",
             Productos = items,
             Total = total,
-            MetodoPago = "tarjeta",
+            MetodoPago = paymentMethod,
             Comprobante = "boleta",
             Estado = "pendiente"
         });

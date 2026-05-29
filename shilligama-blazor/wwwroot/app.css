@@ -497,3 +497,248 @@ body {
 /* ── hover-shadow ── */
 .hover-shadow { transition: box-shadow 0.2s ease; }
 .hover-shadow:hover { box-shadow: var(--shadow-md) !important; }
+
+/* ── Badges de estado de pedido ── */
+.badge-entregado {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+.badge-encamino {
+    background-color: #ede9fe;
+    color: #5b21b6;
+    border: 1px solid #c4b5fd;
+}
+
+.badge-preparando {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+.badge-pendiente {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.badge-cancelado {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+/* ── Responsive: borde lateral en desktop en cards de pedido ── */
+@media (min-width: 992px) {
+    .border-lg-start {
+        border-left: 1px solid var(--bs-border-color) !important;
+    }
+
+    .border-lg-top-0 {
+        border-top: 0 !important;
+    }
+}
+
+/* ── Dark mode: badges de estado ── */
+.dark .badge-entregado {
+    background-color: #064e3b;
+    color: #6ee7b7;
+    border-color: #065f46;
+}
+
+.dark .badge-encamino {
+    background-color: #2e1065;
+    color: #c4b5fd;
+    border-color: #5b21b6;
+}
+
+.dark .badge-preparando {
+    background-color: #1e3a5f;
+    color: #93c5fd;
+    border-color: #1e40af;
+}
+
+.dark .badge-pendiente {
+    background-color: #451a03;
+    color: #fcd34d;
+    border-color: #92400e;
+}
+
+.dark .badge-cancelado {
+    background-color: #450a0a;
+    color: #fca5a5;
+    border-color: #991b1b;
+}
+
+/* ── Dark mode: inputs de fecha con borde visible ── */
+.dark input[type="date"],
+.dark .form-control,
+.dark .form-select {
+    background-color: var(--card) !important;
+    color: var(--foreground) !important;
+    border-color: var(--border) !important;
+}
+
+/* ── Dark mode: cards y fondos ── */
+.dark .bg-secondary-subtle {
+    background-color: var(--secondary) !important;
+}
+
+.dark .bg-primary-subtle {
+    background-color: color-mix(in srgb, var(--primary) 20%, transparent) !important;
+}
+
+.dark .text-primary {
+    color: var(--primary) !important;
+}
+
+/* ── Dark mode: modal body ── */
+.dark .modal-content {
+    background-color: var(--card) !important;
+    color: var(--foreground) !important;
+    border-color: var(--border) !important;
+}
+
+/* ── Dark mode: botones outline ── */
+.dark .btn-outline-secondary {
+    color: var(--foreground);
+    border-color: var(--border);
+}
+
+    .dark .btn-outline-secondary:hover {
+        background-color: var(--secondary);
+        color: var(--foreground);
+    }
+
+/* ── Dark mode: input-group-text ── */
+.dark .input-group-text {
+    background-color: var(--secondary) !important;
+    color: var(--foreground) !important;
+    border-color: var(--border) !important;
+}
+
+/* ── Dark mode: resumen pedido y timeline ── */
+.dark [style*="background:#dbeafe"] {
+    background: #1e3a5f !important;
+}
+
+.dark [style*="background:#dcfce7"] {
+    background: #064e3b !important;
+}
+
+.dark [style*="background:#fee2e2"] {
+    background: #450a0a !important;
+}
+
+.dark [style*="background:#f0fdf4"] {
+    background: #052e16 !important;
+}
+
+.dark [style*="background:#fffbeb"] {
+    background: #451a03 !important;
+}
+
+/* ── Dark mode: checkout efectivo/yape fondos ── */
+.dark [style*="background:white"] {
+    background: var(--card) !important;
+}
+
+.dark [style*="background: white"] {
+    background: var(--card) !important;
+}
+
+.dark [style*="background-color: #009EE3"] {
+    background-color: #007ab8 !important;
+}
+
+.dark [style*="linear-gradient(135deg,#7c3aed"] {
+    background: linear-gradient(135deg,#6d28d9,#5b21b6) !important;
+}
+
+.dark [style*="linear-gradient(135deg,#16a34a"] {
+    background: linear-gradient(135deg,#15803d,#166534) !important;
+}
+
+/* ── Dark mode: carrito delivery option active ── */
+.dark .delivery-option.active {
+    background-color: rgba(13, 69, 37, 0.25) !important;
+    color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+/* ── Dark mode: card en hover ── */
+.dark .card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* ── Dark mode: alert-light ── */
+.dark .alert-light {
+    background-color: var(--secondary) !important;
+    color: var(--foreground) !important;
+    border-color: var(--border) !important;
+}
+
+/* ── Dark mode: btn-group botones ── */
+.dark .btn-group .btn-outline-secondary {
+    color: var(--foreground);
+    border-color: var(--border);
+    background-color: var(--card);
+}
+
+    .dark .btn-group .btn-outline-secondary:hover {
+        background-color: var(--secondary);
+    }
+
+/* ── Badge En stock: light + dark ── */
+.badge-en-stock {
+    background-color: #E8F5E9;
+    color: #1B5E20;
+}
+
+.dark .badge-en-stock {
+    background-color: #064e3b;
+    color: #6ee7b7;
+}
+
+/* ── Dark mode: nombre producto cards (quitar override hardcodeado) ── */
+.dark .card .text-foreground {
+    color: var(--foreground) !important;
+}
+
+/* ── Dark mode: card border visible ── */
+.dark .card {
+    border-color: var(--border) !important;
+}
+
+/* ── Dark mode: precio de producto (var --primary ya se adapta) ── */
+.dark .pagination-nav-btn,
+.dark .pagination-num-btn {
+    background-color: var(--card) !important;
+    color: var(--foreground) !important;
+    border-color: var(--border) !important;
+}
+
+/* ── Dark mode: inputs rango de precio ── */
+.dark .dual-range-track {
+    background-color: var(--border);
+}
+
+.dark .dual-range-highlight {
+    background-color: var(--primary);
+}
+
+.dark .dual-range-slider::-webkit-slider-thumb {
+    background: var(--card);
+    border-color: var(--primary);
+}
+
+.dark .dual-range-slider::-moz-range-thumb {
+    background: var(--card);
+    border-color: var(--primary);
+}
+
+/* ── Dark mode: descripcion producto hardcoded colors ── */
+.dark .text-muted-foreground {
+    color: var(--muted-foreground) !important;
+}

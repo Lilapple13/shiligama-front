@@ -72,6 +72,35 @@
     }
 }
 
+<style>
+    .dropdown-menu {
+        background-color: var(--card) !important;
+        border-color: var(--border) !important;
+    }
+
+    .dropdown-item {
+        color: var(--foreground) !important;
+        background-color: transparent;
+        transition: background-color 0.15s;
+    }
+
+        .dropdown-item:hover,
+        .dropdown-item:focus {
+            background-color: var(--secondary) !important;
+            color: var(--foreground) !important;
+        }
+
+        .dropdown-item.text-danger:hover,
+        .dropdown-item.text-danger:focus {
+            background-color: color-mix(in srgb, var(--destructive) 12%, transparent) !important;
+            color: var(--destructive) !important;
+        }
+
+    .dropdown-divider {
+        border-color: var(--border) !important;
+    }
+</style>
+
 <div class="d-flex flex-column min-vh-100 bg-background text-foreground" @onclick="CloseUserDropdown">
     <!-- Navbar Header -->
     <header class="sticky-top z-3 w-100 border-bottom bg-card shadow-sm border-color-default" style="backdrop-filter: blur(8px); background-color: rgba(var(--bs-body-bg-rgb), 0.95);">
