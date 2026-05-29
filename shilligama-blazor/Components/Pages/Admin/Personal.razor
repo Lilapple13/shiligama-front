@@ -128,21 +128,35 @@
     </div>
 
     <!-- Filters -->
-    <div class="card p-3">
-        <div class="row g-2">
+    <div class="card p-4" style="border-radius: 12px;">
+        <div class="row g-2 align-items-center">
+
+            <!-- Buscar usuario -->
             <div class="col-md-8">
                 <div class="position-relative">
-                    <Icons Name="Search" Class="position-absolute top-50 translate-middle-y text-muted-foreground" style="left:14px;width:16px;height:16px;" />
-                    <input type="search" @bind="_search" @bind:event="oninput" class="form-control text-foreground" placeholder="Buscar por nombre, DNI o correo..." style="padding-left:40px;" />
+                    <i class="fa-solid fa-magnifying-glass position-absolute top-50 translate-middle-y text-muted"
+                       style="left: 16px; font-size: 14px;"></i>
+
+                    <input type="search"
+                           @bind="_search"
+                           @bind:event="oninput"
+                           class="form-control text-foreground"
+                           placeholder="Buscar por nombre, DNI o correo..."
+                           style="height: 56px; border-radius: 10px; padding-left: 42px;" />
                 </div>
             </div>
+
+            <!-- Filtro de roles -->
             <div class="col-md-4">
-                <select @bind="_roleFilter" class="form-select text-foreground">
+                <select @bind="_roleFilter"
+                        class="form-select text-foreground"
+                        style="height: 56px; border-radius: 10px;">
                     <option value="">Todos los roles</option>
                     <option value="administrador">Administradores</option>
                     <option value="trabajador">Trabajadores</option>
                 </select>
             </div>
+
         </div>
     </div>
 
@@ -165,42 +179,65 @@
                     {
                         <tr class="border-bottom border-color-default">
                             <td class="px-4 py-3 d-flex align-items-center gap-3">
-                                <img src="@s.Avatar" alt="@s.Nombre" class="rounded-circle flex-shrink-0 object-fit-cover" style="width:40px;height:40px;" onerror="this.src='https://placehold.co/40/e0e0e0/555?text=U'" />
+                                <img src="@s.Avatar"
+                                     alt="@s.Nombre"
+                                     class="rounded-circle flex-shrink-0 object-fit-cover"
+                                     style="width:40px;height:40px;"
+                                     onerror="this.src='https://placehold.co/40/e0e0e0/555?text=U'" />
+
                                 <div>
                                     <span class="fw-semibold text-foreground d-block small">@s.Nombre</span>
                                     <span class="text-xs text-muted-foreground">@s.Correo</span>
                                 </div>
                             </td>
+
                             <td class="px-4 py-3 text-capitalize small">
                                 <span class="badge @(s.Rol == "administrador" ? "bg-primary-subtle text-primary" : "bg-secondary text-muted-foreground")" style="border-radius: var(--radius);">
                                     @s.Rol
                                 </span>
                             </td>
+
                             <td class="px-4 py-3 text-muted-foreground small d-none d-md-table-cell">
                                 @s.Dni
                             </td>
+
                             <td class="px-4 py-3 text-muted-foreground small d-none d-md-table-cell">
                                 @s.FechaIngreso.ToString("dd MMM yyyy")
                             </td>
+
                             <td class="px-4 py-3">
                                 <span class="badge @(s.Estado == "activo" ? "bg-success" : "bg-danger") px-2 py-1" style="border-radius: var(--radius);">
                                     @s.Estado
                                 </span>
                             </td>
+
                             <td class="px-4 py-3 text-end">
-                                <div class="d-flex align-items-center justify-content-end gap-1">
-                                    <button @onclick="@(() => OpenEdit(s))" class="btn btn-ghost btn-sm text-muted-foreground" style="border-radius: var(--radius);" title="Editar">
-                                        <Icons Name="Edit2" Class="w-4 h-4" />
+                                <div class="d-flex align-items-center justify-content-end gap-2">
+
+                                    <button @onclick="@(() => OpenEdit(s))"
+                                            class="btn btn-sm btn-light text-muted"
+                                            style="border-radius: var(--radius);"
+                                            title="Editar">
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
-                                    <button @onclick="@(() => ToggleStatus(s.Id))" class="btn btn-ghost btn-sm @(s.Estado == "activo" ? "text-warning" : "text-success")" style="border-radius: var(--radius);" title="@(s.Estado == "activo" ? "Suspender" : "Activar")">
-                                        <Icons Name="EyeOff" Class="w-4 h-4" />
+
+                                    <button @onclick="@(() => ToggleStatus(s.Id))"
+                                            class="btn btn-sm btn-light @(s.Estado == "activo" ? "text-warning" : "text-success")"
+                                            style="border-radius: var(--radius);"
+                                            title="@(s.Estado == "activo" ? "Suspender" : "Activar")">
+                                        <i class="fa-solid @(s.Estado == "activo" ? "fa-eye-slash" : "fa-eye")"></i>
                                     </button>
+
                                     @if (s.Id != "STF-001")
                                     {
-                                        <button @onclick="@(() => Delete(s.Id))" class="btn btn-ghost btn-sm text-danger" style="border-radius: var(--radius);" title="Eliminar">
-                                            <Icons Name="Trash2" Class="w-4 h-4" />
+                                        <button @onclick="@(() => Delete(s.Id))"
+                                                class="btn btn-sm btn-light text-danger"
+                                                style="border-radius: var(--radius);"
+                                                title="Eliminar">
+                                            <i class="fa-solid fa-trash"></i>
                                         </button>
                                     }
+
                                 </div>
                             </td>
                         </tr>

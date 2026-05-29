@@ -90,30 +90,49 @@
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
             <h1 class="fs-4 fw-bold text-foreground mb-0">Directorio de Proveedores</h1>
-            <p class="text-muted-foreground small mt-1 mb-0">Administra los contactos de distribuidores oficiales de mercadería</p>
+            <p class="text-muted-foreground small mt-1 mb-0">
+                Administra los contactos de distribuidores oficiales de mercadería
+            </p>
         </div>
-        <button @onclick="OpenCreate" class="btn btn-primary d-flex align-items-center gap-2 fw-semibold" style="border-radius: var(--radius);">
-            <Icons Name="Plus" Class="w-4 h-4" />
+
+        <button @onclick="OpenCreate"
+                class="btn btn-primary d-flex align-items-center gap-2 fw-semibold"
+                style="border-radius: var(--radius);">
+            <i class="fa-solid fa-plus"></i>
             Nuevo Proveedor
         </button>
     </div>
 
     <!-- Filters -->
-    <div class="card p-3">
-        <div class="row g-2">
+    <div class="card p-4" style="border-radius: 12px;">
+        <div class="row g-2 align-items-center">
+
+            <!-- Buscar proveedor -->
             <div class="col-md-8">
                 <div class="position-relative">
-                    <Icons Name="Search" Class="position-absolute top-50 translate-middle-y text-muted-foreground" style="left:14px;width:16px;height:16px;" />
-                    <input type="search" @bind="_search" @bind:event="oninput" class="form-control text-foreground" placeholder="Buscar por Razón Social, RUC o contacto..." style="padding-left:40px;" />
+                    <i class="fa-solid fa-magnifying-glass position-absolute top-50 translate-middle-y text-muted"
+                       style="left: 16px; font-size: 14px;"></i>
+
+                    <input type="search"
+                           @bind="_search"
+                           @bind:event="oninput"
+                           class="form-control text-foreground"
+                           placeholder="Buscar por Razón Social, RUC o contacto..."
+                           style="height: 56px; border-radius: 10px; padding-left: 42px;" />
                 </div>
             </div>
+
+            <!-- Filtro de estados -->
             <div class="col-md-4">
-                <select @bind="_statusFilter" class="form-select text-foreground">
+                <select @bind="_statusFilter"
+                        class="form-select text-foreground"
+                        style="height: 56px; border-radius: 10px;">
                     <option value="">Todos los estados</option>
                     <option value="activo">Activos</option>
                     <option value="inactivo">Inactivos</option>
                 </select>
             </div>
+
         </div>
     </div>
 

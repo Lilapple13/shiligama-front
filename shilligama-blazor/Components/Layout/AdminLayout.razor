@@ -38,12 +38,12 @@
     </button>
 
     <!-- Sidebar - Desktop (Fixed) -->
-    <aside class="d-none d-lg-flex flex-column position-fixed top-0 bottom-0 start-0 z-2 bg-sidebar text-white shadow-sm" style="width: 260px; background-color: var(--sidebar) !important;">
+    <aside class="d-none d-lg-flex flex-column position-fixed top-0 bottom-0 start-0 z-2 bg-sidebar text-white shadow-sm" style="width: 270px; background-color: #0E4927 !important; color: #F4FFF8 !important;">
         <!-- Sidebar Brand -->
         <div class="p-4 border-bottom border-white-10">
             <a href="/admin" class="d-flex align-items-center gap-3 text-decoration-none text-white">
-                <div class="d-flex align-items-center justify-content-center rounded bg-white-10" style="width: 40px; height: 40px; background: rgba(255,255,255,0.15);">
-                    <Icons Name="ShoppingCart" Class="w-6 h-6 text-white" />
+                <div class="d-flex align-items-center justify-content-center rounded bg-white-10 flex-shrink-0" style="width: 42px; height: 42px; background: rgba(255,255,255,0.15);">
+                    <Icons Name="ShoppingCart" Class="text-white" Style="width: 24px; height: 24px; color: #FFFFFF;" />
                 </div>
                 <div>
                     <h1 class="text-lg font-bold m-0 leading-none" style="font-family: 'Outfit', sans-serif;">Shiligama</h1>
@@ -54,43 +54,44 @@
 
         <!-- Sidebar Navigation -->
         <nav class="flex-grow-1 p-3 overflow-y-auto d-flex flex-column gap-1">
-            <a href="/admin" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin") && !IsActive("/admin/pedidos") && !IsActive("/admin/productos") && !IsActive("/admin/inventario") && !IsActive("/admin/ventas") && !IsActive("/admin/proveedores") && !IsActive("/admin/personal") && !IsActive("/admin/reportes") && !IsActive("/admin/devoluciones") && !IsActive("/admin/notificaciones") ? "active" : "")">
+            <a href="/admin" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin") && !IsActive("/admin/pedidos") && !IsActive("/admin/productos") && !IsActive("/admin/inventario") && !IsActive("/admin/ventas") && !IsActive("/admin/proveedores") && !IsActive("/admin/personal") && !IsActive("/admin/reportes") && !IsActive("/admin/devoluciones") && !IsActive("/admin/notificaciones") ? "active" : "")">
                 <Icons Name="Store" Class="w-5 h-5" />
                 Dashboard
             </a>
-            <a href="/admin/pedidos" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/pedidos") ? "active" : "")">
+
+            <a href="/admin/pedidos" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/pedidos") ? "active" : "") style="color: ##EAF7EE;">
                 <Icons Name="FileText" Class="w-5 h-5" />
                 Pedidos
             </a>
-            <a href="/admin/productos" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/productos") ? "active" : "")">
+            <a href="/admin/productos" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/productos") ? "active" : "") style="color: #EAF7EE;">
                 <Icons Name="Package" Class="w-5 h-5" />
                 Productos
             </a>
-            <a href="/admin/inventario" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/inventario") ? "active" : "")">
+            <a href="/admin/inventario" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/inventario") ? "active" : "") style="color: #EAF7EE;">
                 <Icons Name="Building2" Class="w-5 h-5" />
                 Inventario
             </a>
-            <a href="/admin/ventas" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/ventas") ? "active" : "")">
+            <a href="/admin/ventas" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/ventas") ? "active" : "") style="color: #EAF7EE;">
                 <Icons Name="TrendingUp" Class="w-5 h-5" />
                 Ventas
             </a>
-            <a href="/admin/proveedores" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/proveedores") ? "active" : "")">
+            <a href="/admin/proveedores" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/proveedores") ? "active" : "") style="color: #EAF7EE;">
                 <Icons Name="Truck" Class="w-5 h-5" />
                 Proveedores
             </a>
-            <a href="/admin/personal" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/personal") ? "active" : "")">
+            <a href="/admin/personal" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/personal") ? "active" : "") style="color: #EAF7EE;">
                 <Icons Name="User" Class="w-5 h-5" />
                 Personal
             </a>
-            <a href="/admin/reportes" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/reportes") ? "active" : "")">
+            <a href="/admin/reportes" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/reportes") ? "active" : "") style="color: #EAF7EE;">
                 <Icons Name="FileText" Class="w-5 h-5" />
                 Reportes
             </a>
-            <a href="/admin/devoluciones" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/devoluciones") ? "active" : "")">
+            <a href="/admin/devoluciones" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/devoluciones") ? "active" : "") style="color: #EAF7EE;">
                 <Icons Name="HelpCircle" Class="w-5 h-5" />
                 Devoluciones
             </a>
-            <a href="/admin/notificaciones" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/notificaciones") ? "active" : "")">
+            <a href="/admin/notificaciones" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/notificaciones") ? "active" : "") style="color: #EAF7EE;">
                 <Icons Name="Bell" Class="w-5 h-5" />
                 Notificaciones
             </a>
@@ -98,11 +99,11 @@
 
         <!-- Sidebar Footer -->
         <div class="p-3 border-top border-white-10 d-flex flex-column gap-1">
-            <a href="/admin/configuracion" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/configuracion") ? "active" : "")">
+            <a href="/admin/configuracion" class="d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/configuracion") ? "active" : "")" style="color: #EAF7EE;">
                 <Icons Name="Settings" Class="w-5 h-5" />
                 Configuración
             </a>
-            <button type="button" @onclick="HandleLogout" class="btn btn-link d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 border-0 text-start w-100 shadow-none" style="font-size: inherit; color: inherit;">
+            <button type="button" @onclick="HandleLogout" class="btn btn-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 border-0 text-start w-100 shadow-none" style="color: #EAF7EE;">
                 <Icons Name="LogOut" Class="w-5 h-5" />
                 Cerrar sesión
             </button>
@@ -199,7 +200,7 @@
                 <!-- Search bar filter mock -->
                 <div class="flex-grow-1 max-w-md" style="max-width: 400px;">
                     <div class="position-relative w-100">
-                        <Icons Name="Search" Class="position-absolute start-3 top-50 translate-middle-y w-4 h-4 text-muted-foreground" style="left: 12px;" />
+                        <Icons Name="Search" Class="admin-search-icon position-absolute start-3 top-50 translate-middle-y mt-2 pt-1 w-4 h-4 text-muted-foreground" style="left: 12px;" />
                         <input
                             type="search"
                             placeholder="Buscar productos, pedidos, personal..."
@@ -217,7 +218,7 @@
 
                     <!-- Notifications Link -->
                     <a href="/admin/notificaciones" class="btn btn-ghost p-2 position-relative text-foreground" style="border-radius: var(--radius);" title="Notificaciones">
-                        <Icons Name="Bell" Class="w-5 h-5" />
+                        <Icons Name="Bell" Class="admin-notification-icon mt-1" />
                         <span class="position-absolute top-1 start-100 translate-middle badge bg-danger border border-light rounded-circle d-flex align-items-center justify-content-center" style="width: 18px; height: 18px; font-size: 0.65rem; left: 80%;">
                             3
                         </span>
@@ -230,7 +231,7 @@
                                 <Icons Name="User" Class="w-4 h-4" />
                             </div>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end card border shadow-lg p-2" style="width: 220px; border-radius: var(--radius);">
+                        <ul class="dropdown-menu dropdown-menu-end  border shadow-lg p-2" style="width: 220px; border-radius: var(--radius);">
                             <li class="px-3 py-2 border-bottom border-color-default mb-1">
                                 <p class="text-sm font-semibold text-foreground m-0">@(Auth.CurrentUser?.Name ?? "Administrador")</p>
                                 <p class="text-xs text-muted-foreground m-0 text-truncate">@(Auth.CurrentUser?.Email ?? "admin@shiligama.com")</p>

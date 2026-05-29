@@ -65,8 +65,11 @@
             <h1 class="fs-4 fw-bold text-foreground mb-0">Gestión de Productos</h1>
             <p class="text-muted-foreground small mt-1 mb-0">@_products.Count productos registrados</p>
         </div>
-        <button @onclick="OpenCreate" class="btn btn-primary d-flex align-items-center gap-2 fw-medium" style="border-radius:var(--radius);">
-            <Icons Name="Plus" Class="w-4 h-4" />
+
+        <button @onclick="OpenCreate"
+                class="btn btn-primary d-flex align-items-center gap-2 fw-medium"
+                style="border-radius:var(--radius);">
+            <i class="fa-solid fa-plus"></i>
             Nuevo Producto
         </button>
     </div>
@@ -74,10 +77,19 @@
     <!-- Search -->
     <div class="card p-3">
         <div class="position-relative">
-            <Icons Name="Search" Class="position-absolute top-50 translate-middle-y text-muted-foreground" style="left:14px;width:16px;height:16px;" />
-            <input type="search" @bind="_search" @bind:event="oninput" class="form-control text-foreground" placeholder="Buscar productos..." style="padding-left:40px;" />
+
+            <i class="fa-solid fa-magnifying-glass position-absolute top-50 translate-middle-y text-muted"
+               style="left:14px;"></i>
+
+            <input type="search"
+                   @bind="_search"
+                   @bind:event="oninput"
+                   class="form-control text-foreground"
+                   placeholder="Buscar productos..."
+                   style="padding-left:40px;" />
         </div>
     </div>
+
 
     <!-- Table -->
     <div class="card overflow-hidden">

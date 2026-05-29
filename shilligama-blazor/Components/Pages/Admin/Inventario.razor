@@ -107,29 +107,54 @@
     }
 
     <!-- Search / Filter Card -->
-    <div class="card p-3">
+    <div class="card p-4" style="border-radius: 12px;">
         <div class="row g-2 align-items-center">
+
+            <!-- Buscar producto -->
             <div class="col-md-5">
                 <div class="position-relative">
-                    <Icons Name="Search" Class="position-absolute top-50 translate-middle-y text-muted-foreground" style="left:14px;width:16px;height:16px;" />
-                    <input type="search" @bind="_search" @bind:event="oninput" class="form-control text-foreground" placeholder="Buscar por producto..." style="padding-left:40px;" />
+                    <i class="fa-solid fa-magnifying-glass position-absolute top-50 translate-middle-y text-muted"
+                       style="left: 16px; font-size: 14px;"></i>
+
+                    <input type="search"
+                           @bind="_search"
+                           @bind:event="oninput"
+                           class="form-control text-foreground"
+                           placeholder="Buscar por producto..."
+                           style="height: 56px; border-radius: 10px; padding-left: 42px;" />
                 </div>
             </div>
+
+            <!-- Categorías -->
             <div class="col-md-3">
-                <select @bind="_categoryFilter" class="form-select text-foreground">
+                <select @bind="_categoryFilter"
+                        class="form-select text-foreground"
+                        style="height: 56px; border-radius: 10px;">
                     <option value="">Categorías (todas)</option>
+
                     @foreach (var cat in ProductSvc.GetCategories())
                     {
                         <option value="@cat.Id">@cat.Name</option>
                     }
                 </select>
             </div>
+
+            <!-- Checkbox existencias bajas -->
             <div class="col-md-4">
-                <div class="form-check form-check-inline m-0 py-2">
-                    <input class="form-check-input" type="checkbox" id="lowStockChk" @bind="_lowStockOnly" />
-                    <label class="form-check-label text-foreground small fw-medium" for="lowStockChk">Solo existencias bajas (&lt; 10)</label>
+                <div class="form-check d-flex align-items-center gap-2 m-0">
+                    <input class="form-check-input mt-0"
+                           type="checkbox"
+                           id="lowStockChk"
+                           @bind="_lowStockOnly"
+                           style="width: 24px; height: 24px;" />
+
+                    <label class="form-check-label text-foreground small fw-medium"
+                           for="lowStockChk">
+                        Solo existencias bajas (&lt; 10)
+                    </label>
                 </div>
             </div>
+
         </div>
     </div>
 
