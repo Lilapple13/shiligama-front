@@ -30,28 +30,94 @@
 }
 
 .dark {
-  --background: oklch(0.15 0.02 145);
-  --foreground: oklch(0.95 0.01 145);
-  --card: oklch(0.18 0.02 145);
-  --card-foreground: oklch(0.95 0.01 145);
-  --popover: oklch(0.18 0.02 145);
-  --popover-foreground: oklch(0.95 0.01 145);
-  --primary: oklch(0.52 0.12 145);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.25 0.03 145);
-  --secondary-foreground: oklch(0.95 0.01 145);
-  --muted: oklch(0.25 0.02 145);
-  --muted-foreground: oklch(0.65 0.03 145);
-  --accent: oklch(0.45 0.1 145);
-  --accent-foreground: oklch(0.99 0 0);
-  --destructive: oklch(0.5 0.2 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.3 0.03 145);
-  --input: oklch(0.25 0.02 145);
-  --ring: oklch(0.52 0.12 145);
-  --sidebar: oklch(0.25 0.08 145);
-  --sidebar-foreground: oklch(0.95 0.01 145);
+    --background: oklch(0.15 0.02 145);
+    --foreground: oklch(0.95 0.01 145);
+    --card: oklch(0.18 0.02 145);
+    --card-foreground: oklch(0.95 0.01 145);
+    --popover: oklch(0.18 0.02 145);
+    --popover-foreground: oklch(0.95 0.01 145);
+    --primary: oklch(0.52 0.12 145);
+    --primary-foreground: oklch(0.99 0 0);
+    --secondary: oklch(0.25 0.03 145);
+    --secondary-foreground: oklch(0.95 0.01 145);
+    --muted: oklch(0.25 0.02 145);
+    --muted-foreground: oklch(0.65 0.03 145);
+    --accent: oklch(0.45 0.1 145);
+    --accent-foreground: oklch(0.99 0 0);
+    --destructive: oklch(0.5 0.2 25);
+    --destructive-foreground: oklch(0.99 0 0);
+    --border: oklch(0.3 0.03 145);
+    --input: oklch(0.25 0.02 145);
+    --ring: oklch(0.52 0.12 145);
+    --sidebar: oklch(0.25 0.08 145);
+    --sidebar-foreground: oklch(0.95 0.01 145);
+    --bs-table-bg: var(--card);
+    --bs-table-color: var(--foreground);
+    --bs-table-border-color: var(--border);
+    --bs-table-striped-bg: color-mix(in srgb, var(--card) 92%, white);
+    --bs-table-striped-color: var(--foreground);
+    --bs-table-hover-bg: color-mix(in srgb, var(--primary) 10%, var(--card));
+    --bs-table-hover-color: var(--foreground);
 }
+
+    /* Dropdown en modo oscuro */
+    .dark .dropdown-menu {
+        background-color: var(--card) !important;
+        border-color: var(--border) !important;
+        color: var(--foreground) !important;
+    }
+
+    .dark .dropdown-item {
+        color: var(--foreground) !important;
+        background-color: transparent !important;
+    }
+
+        .dark .dropdown-item:hover,
+        .dark .dropdown-item:focus {
+            background-color: var(--secondary) !important;
+            color: var(--foreground) !important;
+        }
+
+    /* El separador de línea dentro del dropdown */
+    .dark .dropdown-divider {
+        border-color: var(--border) !important;
+    }
+
+    /* Texto muted dentro del dropdown (nombre/email) */
+    .dark .dropdown-menu .text-muted-foreground {
+        color: var(--muted-foreground) !important;
+    }
+
+
+    /* Tablas compatibles con modo oscuro */
+    .dark table,
+    .dark .table {
+        background-color: var(--card) !important;
+        color: var(--foreground) !important;
+    }
+
+        .dark .table th,
+        .dark .table td,
+        .dark table th,
+        .dark table td {
+            border-color: var(--border) !important;
+            color: var(--foreground) !important;
+            background-color: transparent !important; /* hereda de la tabla */
+        }
+
+        .dark .table thead th,
+        .dark table thead th {
+            color: var(--muted-foreground) !important;
+            backgrsound-color: color-mix(in srgb, var(--card) 85%, var(--border)) !important;
+        }
+
+    /* El div/card contenedor de la tabla */
+    .dark .table-responsive,
+    .dark .card:has(table) {
+        background-color: var(--card) !important;
+    }
+
+
 
 /* Global Reset & Base */
 body {

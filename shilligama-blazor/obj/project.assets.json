@@ -45,23 +45,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\efd12\\.nuget\\packages\\": {},
+    "C:\\Users\\binny\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\efd12\\OneDrive\\Escritorio\\FrontTA\\shiligama-front\\shilligama-blazor\\shilligama-blazor.csproj",
+      "projectUniqueName": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\shilligama-blazor.csproj",
       "projectName": "shilligama_blazor",
-      "projectPath": "C:\\Users\\efd12\\OneDrive\\Escritorio\\FrontTA\\shiligama-front\\shilligama-blazor\\shilligama-blazor.csproj",
-      "packagesPath": "C:\\Users\\efd12\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\efd12\\OneDrive\\Escritorio\\FrontTA\\shiligama-front\\shilligama-blazor\\obj\\",
+      "projectPath": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\shilligama-blazor.csproj",
+      "packagesPath": "C:\\Users\\binny\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\efd12\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\binny\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

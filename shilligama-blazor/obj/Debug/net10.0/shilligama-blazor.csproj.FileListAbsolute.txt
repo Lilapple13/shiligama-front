@@ -130,7 +130,6 @@ C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-fr
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\shilligama_blazor.pdb
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.genruntimeconfig.cache
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\ref\shilligama_blazor.dll
-C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-w0cb6wrnma-w0cb6wrnma.gz
 C:\Users\efd12\OneDrive\Escritorio\FrontTA\shiligama-front\shilligama-blazor\bin\Debug\net10.0\appsettings.Development.json
 C:\Users\efd12\OneDrive\Escritorio\FrontTA\shiligama-front\shilligama-blazor\bin\Debug\net10.0\appsettings.json
 C:\Users\efd12\OneDrive\Escritorio\FrontTA\shiligama-front\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.staticwebassets.runtime.json
@@ -176,3 +175,4 @@ C:\Users\efd12\OneDrive\Escritorio\FrontTA\shiligama-front\shilligama-blazor\obj
 C:\Users\efd12\OneDrive\Escritorio\FrontTA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.genruntimeconfig.cache
 C:\Users\efd12\OneDrive\Escritorio\FrontTA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\ref\shilligama_blazor.dll
 C:\Users\efd12\OneDrive\Escritorio\FrontTA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-vw22mviae8-vw22mviae8.gz
+C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-c28xlmbujk-c28xlmbujk.gz
