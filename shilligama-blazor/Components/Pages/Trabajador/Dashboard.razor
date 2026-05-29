@@ -9,6 +9,9 @@
     private Order? _detailOrder = null;
     private bool _showDetailModal = false;
 
+    private int _currentPage = 1;
+    private int _pageSize = 6;
+
     protected override void OnInitialized() => RefreshList();
 
     private void RefreshList()
@@ -35,7 +38,11 @@
     });
 
     private int CountByStatus(string s)  => _allOrders.Count(o => o.Status == s);
-    private void SetFilter(string f)     => _selectedFilter = f;
+    private void SetFilter(string f)
+    {
+        _selectedFilter = f;
+        _currentPage = 1;
+    }
 
     private void UpdateStatus(string id, string newStatus)
     {
@@ -47,6 +54,7 @@
 
     private void VerDetalle(Order o) { _detailOrder = o; _showDetailModal = true; }
     private void CloseModal()        => _showDetailModal = false;
+    private void ClearSearch()       { _searchTerm = ""; _currentPage = 1; }
 
     private void SiguienteAccion(Order o)
     {
@@ -66,7 +74,7 @@
     {
         "pendiente"  => "Pendiente",
         "preparando" => "En preparación",
-        "en_camino"  => "En camino",
+        "en_camino"  => "Listo para entrega",
         "entregado"  => "Entregado",
         "cancelado"  => "Cancelado",
         _            => s
@@ -74,125 +82,161 @@
 
     private string GetStatusBadgeStyle(string s) => s switch
     {
-        "pendiente"  => "background:#fff3e0;color:#e67e22;",
-        "preparando" => "background:#e3f2fd;color:#1976d2;",
-        "en_camino"  => "background:#e8f5e9;color:#2e7d32;",
-        "entregado"  => "background:#ede7f6;color:#5e35b1;",
-        "cancelado"  => "background:#ffebee;color:#c62828;",
-        _            => "background:#f5f5f5;color:#555;"
+        "pendiente"  => "background:#fff3e0;color:#b25e00;font-weight:600;",
+        "preparando" => "background:#e3f2fd;color:#0d6efd;font-weight:600;",
+        "en_camino"  => "background:#e8f5e9;color:#0f5132;font-weight:600;",
+        "entregado"  => "background:#e8f5e9;color:#198754;font-weight:600;",
+        "cancelado"  => "background:#ffebee;color:#c62828;font-weight:600;",
+        _            => "background:#f5f5f5;color:#555;font-weight:600;"
     };
 
-    private string GetBorderColor(string s) => s switch
+    private string GetLeftBorderClass(string s) => s switch
     {
-        "pendiente"  => "#e67e22",
-        "preparando" => "#1976d2",
-        "en_camino"  => "#2e7d32",
-        "entregado"  => "#5e35b1",
-        "cancelado"  => "#c62828",
-        _            => "var(--border)"
+        "pendiente"  => "border-left-pendiente",
+        "preparando" => "border-left-preparando",
+        "en_camino"  => "border-left-listo",
+        "entregado"  => "border-left-entregado",
+        "cancelado"  => "border-left-cancelado",
+        _            => ""
     };
+
+    private string GetElapsedTime(DateTime date)
+    {
+        var diff = DateTime.Now - date;
+        if (diff.TotalMinutes < 1) return "Hace unos segundos";
+        if (diff.TotalMinutes < 60) return $"Hace {Math.Floor(diff.TotalMinutes)} min";
+        if (diff.TotalHours < 24) return $"Hace {Math.Floor(diff.TotalHours)} h";
+        return $"Hace {Math.Floor(diff.TotalDays)} días";
+    }
 
     private string GetNextActionLabel(string s) => s switch
     {
         "pendiente"  => "Iniciar Preparación",
-        "preparando" => "Enviar / Despachar",
-        "en_camino"  => "Confirmar Entrega",
+        "preparando" => "Marcar listo",
+        "en_camino"  => "Marcar entregado",
         _            => ""
     };
+
+    private int TotalPages(int totalCount) => (int)Math.Ceiling((double)totalCount / _pageSize);
+
+    private void SetPage(int p) => _currentPage = p;
+
+    private void NextPage(int totalCount)
+    {
+        if (_currentPage < TotalPages(totalCount)) _currentPage++;
+    }
+
+    private void PrevPage()
+    {
+        if (_currentPage > 1) _currentPage--;
+    }
+
+    private IEnumerable<Order> PaginatedOrders(IEnumerable<Order> filtered)
+    {
+        int total = filtered.Count();
+        int maxPages = TotalPages(total);
+        if (_currentPage > maxPages && maxPages > 0)
+        {
+            _currentPage = maxPages;
+        }
+        else if (maxPages == 0)
+        {
+            _currentPage = 1;
+        }
+        return filtered.Skip((_currentPage - 1) * _pageSize).Take(_pageSize);
+    }
 }
 
 <PageTitle>Gestión de Pedidos – Shiligama</PageTitle>
 
 <div class="d-flex flex-column gap-4">
-    <!-- Header -->
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <div>
-            <h1 class="fs-4 fw-bold text-foreground mb-0">
-                <i class="fas fa-clipboard-list me-2 text-primary"></i>Gestión de Pedidos
-            </h1>
-            <p class="text-muted-foreground small mt-1 mb-0">Procesa y gestiona los pedidos de los clientes</p>
-        </div>
-        <button class="btn btn-secondary btn-sm d-flex align-items-center gap-2" @onclick="RefreshList" style="border-radius:var(--radius);">
-            <i class="fas fa-sync-alt"></i> Actualizar
-        </button>
-    </div>
-
     <!-- Métricas -->
     <div class="row g-3">
         <div class="col-6 col-xl-3">
-            <div class="metric-card-kpi">
+            <div class="worker-kpi-card kpi-pendiente">
+                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#e67e22 15%,transparent);color:#e67e22;">
+                    <i class="fas fa-clock"></i>
+                </div>
                 <div>
                     <div class="metric-kpi-value text-foreground">@CountByStatus("pendiente")</div>
                     <div class="metric-kpi-label">Pendientes</div>
                 </div>
-                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#e67e22 15%,transparent);color:#e67e22;">
-                    <i class="fas fa-clock"></i>
-                </div>
             </div>
         </div>
         <div class="col-6 col-xl-3">
-            <div class="metric-card-kpi">
+            <div class="worker-kpi-card kpi-preparando">
+                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#1976d2 15%,transparent);color:#1976d2;">
+                    <i class="fas fa-box-open"></i>
+                </div>
                 <div>
                     <div class="metric-kpi-value text-foreground">@CountByStatus("preparando")</div>
                     <div class="metric-kpi-label">En preparación</div>
                 </div>
-                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#1976d2 15%,transparent);color:#1976d2;">
-                    <i class="fas fa-box-open"></i>
-                </div>
             </div>
         </div>
         <div class="col-6 col-xl-3">
-            <div class="metric-card-kpi">
+            <div class="worker-kpi-card kpi-encamino">
+                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#2e7d32 15%,transparent);color:#2e7d32;">
+                    <i class="fas fa-truck"></i>
+                </div>
                 <div>
                     <div class="metric-kpi-value text-foreground">@CountByStatus("en_camino")</div>
                     <div class="metric-kpi-label">En camino</div>
                 </div>
-                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#2e7d32 15%,transparent);color:#2e7d32;">
-                    <i class="fas fa-truck"></i>
-                </div>
             </div>
         </div>
         <div class="col-6 col-xl-3">
-            <div class="metric-card-kpi">
+            <div class="worker-kpi-card kpi-entregado">
+                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#5e35b1 15%,transparent);color:#5e35b1;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
                 <div>
                     <div class="metric-kpi-value text-foreground">@CountByStatus("entregado")</div>
                     <div class="metric-kpi-label">Entregados hoy</div>
-                </div>
-                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#5e35b1 15%,transparent);color:#5e35b1;">
-                    <i class="fas fa-check-circle"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Búsqueda + Filtros -->
-    <div class="d-flex flex-column gap-2">
-        <div class="position-relative" style="max-width:420px;">
-            <i class="fas fa-search position-absolute top-50 translate-middle-y text-muted-foreground" style="left:14px;font-size:0.85rem;"></i>
-            <input type="search" @bind="_searchTerm" @bind:event="oninput"
-                   class="form-control text-foreground"
-                   placeholder="Buscar por # orden o cliente..."
-                   style="padding-left:38px;" />
-        </div>
+    <!-- Encabezado Listado de pedidos -->
+    <div class="mt-2 mb-1">
+        <h2 class="fw-bold text-foreground mb-0" style="font-family: 'Outfit', sans-serif; font-size: 1.9rem; letter-spacing: -0.01em;">Listado de pedidos</h2>
+        <p class="text-muted-foreground small mb-0">Visualiza y gestiona las solicitudes en tiempo real</p>
+    </div>
 
-        <div class="filter-pills">
+    <!-- Búsqueda + Filtros -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 bg-card p-3 border border-color-default shadow-sm" style="border-radius: var(--radius);">
+        <div class="filter-pills flex-grow-1">
             <button class="filter-pill @(_selectedFilter=="todos"?"active":"")"      @onclick='@(()=>SetFilter("todos"))'>
                 Todos (@_allOrders.Count)
             </button>
             <button class="filter-pill @(_selectedFilter=="pendiente"?"active":"")"  @onclick='@(()=>SetFilter("pendiente"))'>
-                <i class="fas fa-clock me-1"></i>Pendiente (@CountByStatus("pendiente"))
+                <i class="fas fa-clock me-1"></i>Pendientes (@CountByStatus("pendiente"))
             </button>
             <button class="filter-pill @(_selectedFilter=="preparando"?"active":"")" @onclick='@(()=>SetFilter("preparando"))'>
-                <i class="fas fa-box-open me-1"></i>Preparando (@CountByStatus("preparando"))
+                <i class="fas fa-box-open me-1"></i>En preparación (@CountByStatus("preparando"))
             </button>
             <button class="filter-pill @(_selectedFilter=="en_camino"?"active":"")"  @onclick='@(()=>SetFilter("en_camino"))'>
-                <i class="fas fa-truck me-1"></i>En camino (@CountByStatus("en_camino"))
+                <i class="fas fa-truck me-1"></i>Listos para entrega (@CountByStatus("en_camino"))
             </button>
             <button class="filter-pill @(_selectedFilter=="entregado"?"active":"")"  @onclick='@(()=>SetFilter("entregado"))'>
-                <i class="fas fa-check-circle me-1"></i>Entregado (@CountByStatus("entregado"))
+                <i class="fas fa-check-circle me-1"></i>Entregados (@CountByStatus("entregado"))
             </button>
             <button class="filter-pill @(_selectedFilter=="cancelado"?"active":"")"  @onclick='@(()=>SetFilter("cancelado"))'>
-                <i class="fas fa-times me-1"></i>Cancelado (@CountByStatus("cancelado"))
+                <i class="fas fa-times me-1"></i>Cancelados (@CountByStatus("cancelado"))
+            </button>
+        </div>
+
+        <div class="d-flex align-items-center gap-2" style="max-width: 420px; width: 100%;">
+            <div class="position-relative flex-grow-1">
+                <i class="fas fa-search position-absolute top-50 translate-middle-y text-muted-foreground" style="left:14px;font-size:0.85rem;"></i>
+                <input type="search" @bind="_searchTerm" @bind:event="oninput"
+                       class="form-control text-foreground"
+                       placeholder="Buscar por # orden o cliente..."
+                       style="padding-left:38px; padding-top: 0.45rem; padding-bottom: 0.45rem;" />
+            </div>
+            <button class="btn btn-secondary btn-sm d-flex align-items-center gap-2 flex-shrink-0" @onclick="ClearSearch" style="border-radius:var(--radius); padding: 0.45rem 0.9rem; font-weight: 500;">
+                <i class="fas fa-times-circle"></i> Limpiar
             </button>
         </div>
     </div>
@@ -209,118 +253,950 @@
     else
     {
         <div class="orders-grid">
-            @foreach (var order in FilteredOrders)
+            @foreach (var order in PaginatedOrders(FilteredOrders))
             {
-                <div class="order-card" style="border-left:4px solid @GetBorderColor(order.Status);">
-                    <!-- Header de la tarjeta -->
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                            <span class="fw-bold text-foreground small">@order.Id</span>
-                            <span class="badge ms-2" style="@GetStatusBadgeStyle(order.Status);font-size:0.7rem;border-radius:9999px;">
+                <div class="custom-order-card @GetLeftBorderClass(order.Status)">
+                    <!-- Fila 1 (Cabecera) -->
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold text-foreground text-sm" style="font-size: 0.88rem;">@order.Id</span>
+                            <span class="badge" style="@GetStatusBadgeStyle(order.Status) font-size: 0.72rem; border-radius: 9999px; padding: 0.3rem 0.6rem;">
                                 @GetStatusLabel(order.Status)
                             </span>
                         </div>
-                        <span class="badge bg-muted text-muted-foreground" style="font-size:0.7rem;border-radius:9999px;">
-                            <i class="fas @(order.Channel=="Online"?"fa-globe":"fa-store") me-1"></i>@order.Channel
-                        </span>
-                    </div>
-
-                    <!-- Hora -->
-                    <div class="text-muted-foreground small mb-2">
-                        <i class="fas fa-clock me-1"></i>@order.Date.ToString("HH:mm") — @order.Date.ToString("dd MMM")
-                    </div>
-
-                    <!-- Cliente -->
-                    <div class="mb-2">
-                        <div class="fw-semibold text-foreground small">@order.Customer</div>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-color-default mb-3">
-                        <span class="text-muted-foreground small">
-                            <i class="fas fa-box me-1"></i>@order.Items @(order.Items == 1 ? "producto" : "productos")
-                        </span>
-                        <span class="fw-bold text-primary">S/. @order.Total.ToString("0.00")</span>
-                    </div>
-
-                    <!-- Acciones -->
-                    <div class="d-flex gap-2 align-items-center">
-                        <button class="btn btn-secondary btn-sm flex-shrink-0" @onclick="@(() => VerDetalle(order))" style="border-radius:var(--radius);font-size:0.78rem;">
-                            <i class="fas fa-eye me-1"></i>Detalle
-                        </button>
-                        @if (!string.IsNullOrEmpty(GetNextActionLabel(order.Status)))
+                        
+                        @if (order.DeliveryMethod?.ToLower() == "delivery")
                         {
-                            <button class="btn btn-primary btn-sm flex-grow-1" @onclick="@(() => SiguienteAccion(order))" style="border-radius:var(--radius);font-size:0.78rem;">
-                                @GetNextActionLabel(order.Status)
+                            <span class="badge" style="background: #e3f2fd; color: #0d6efd; font-size: 0.75rem; font-weight: 600; border-radius: 9999px; padding: 0.3rem 0.6rem;">
+                                <i class="fas fa-truck me-2"></i> Delivery
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge" style="background: #e8f5e9; color: #198754; font-size: 0.75rem; font-weight: 600; border-radius: 9999px; padding: 0.3rem 0.6rem;">
+                                <i class="fas fa-store me-2"></i> Recojo
+                            </span>
+                        }
+                    </div>
+
+                    <!-- Fila 2 (Tiempo transcurrido) -->
+                    <div class="text-muted-foreground small d-flex align-items-center gap-2" style="font-size: 0.76rem;">
+                        <i class="far fa-clock text-muted-foreground" style="font-size: 0.8rem;"></i>
+                        <span>@GetElapsedTime(order.Date)</span>
+                    </div>
+
+                    <!-- Fila 3 (Bloque de Datos del Cliente - Caja gris contenedora) -->
+                    <div class="p-3 my-1" style="background: #f8f9fa; border: 1px solid #f1f3f5; border-radius: 0.75rem;">
+                        <div class="fw-bold text-foreground text-sm" style="font-size: 0.85rem;">@order.Customer</div>
+                        <div class="text-muted-foreground text-xs mt-1.5 d-flex align-items-center gap-2" style="font-size: 0.76rem;">
+                            <i class="fas fa-phone-alt" style="color: #6c757d; font-size: 0.72rem;"></i>
+                            <span>987 654 321</span>
+                        </div>
+                        @if (order.DeliveryMethod?.ToLower() == "delivery" && !string.IsNullOrEmpty(order.Address))
+                        {
+                            <div class="text-muted-foreground text-xs mt-2 d-flex align-items-start gap-2" style="font-size: 0.76rem; line-height: 1.3;">
+                                <i class="fas fa-map-marker-alt mt-0.5" style="color: #6c757d; font-size: 0.75rem;"></i>
+                                <span>@order.Address</span>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Fila 4 (Resumen de Compra) -->
+                    <div class="d-flex justify-content-between align-items-center py-1">
+                        <span class="text-muted-foreground" style="font-size: 0.78rem;">@order.Items @(order.Items == 1 ? "producto" : "productos")</span>
+                        <span class="fw-bold text-primary" style="font-size: 1.22rem; font-family: 'Outfit', sans-serif;">S/. @order.Total.ToString("0.00")</span>
+                    </div>
+
+                    <!-- Fila 5 (Método y Estado de Pago) -->
+                    <div class="d-flex gap-1.5 py-1">
+                        @switch (order.PaymentMethod?.ToLower())
+                        {
+                            case "yape":
+                                <span class="badge text-white" style="background: #6f42c1; font-size: 0.7rem; padding: 0.25rem 0.5rem; font-weight: 600;">Yape</span>
+                                <span class="badge bg-success-subtle text-success" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; border: 1px solid rgba(25, 135, 84, 0.2); font-weight: 600;">Pagado</span>
+                                break;
+                            case "plin":
+                                <span class="badge text-white" style="background: #0dcaf0; font-size: 0.7rem; padding: 0.25rem 0.5rem; font-weight: 600;">Plin</span>
+                                <span class="badge bg-success-subtle text-success" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; border: 1px solid rgba(25, 135, 84, 0.2); font-weight: 600;">Pagado</span>
+                                break;
+                            case "tarjeta":
+                                <span class="badge text-white" style="background: #0d6efd; font-size: 0.7rem; padding: 0.25rem 0.5rem; font-weight: 600;">Tarjeta</span>
+                                <span class="badge bg-success-subtle text-success" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; border: 1px solid rgba(25, 135, 84, 0.2); font-weight: 600;">Pagado</span>
+                                break;
+                            default:
+                                <span class="badge text-white" style="background: #198754; font-size: 0.7rem; padding: 0.25rem 0.5rem; font-weight: 600;">Efectivo</span>
+                                <span class="badge bg-warning-subtle text-warning" style="font-size: 0.7rem; padding: 0.25rem 0.5rem; border: 1px solid rgba(255, 193, 7, 0.2); color: #856404 !important; font-weight: 600;">Pago pendiente</span>
+                                break;
+                        }
+                    </div>
+
+                    <!-- Fila 6 (Botonera de Acción) -->
+                    <div class="d-flex gap-2 align-items-center mt-2 w-100">
+                        @if (order.Status == "entregado" || order.Status == "cancelado")
+                        {
+                            <!-- El botón "👁 Ver detalle" se expande para ocupar todo el ancho de la tarjeta -->
+                            <button class="btn btn-secondary btn-sm w-100 py-2 d-flex align-items-center justify-content-center gap-2" @onclick="@(() => VerDetalle(order))" style="border-radius: var(--radius); font-size: 0.8rem; font-weight: 600; background: #f1f3f5; border: 1px solid #dee2e6; color: #212529;">
+                                <i class="fas fa-eye" style="font-size: 0.78rem;"></i> Ver detalle
                             </button>
                         }
-                        @if (order.Status != "entregado" && order.Status != "cancelado")
+                        else
                         {
-                            <button class="btn btn-sm flex-shrink-0 d-flex align-items-center justify-content-center"
-                                    @onclick="@(() => CancelarOrder(order))"
-                                    style="width:32px;height:32px;border-radius:50%;background:#ffebee;border:none;color:#c62828;"
-                                    title="Cancelar">
-                                <i class="fas fa-times" style="font-size:0.75rem;"></i>
+                            <button class="btn btn-secondary btn-sm py-2 px-3 d-flex align-items-center justify-content-center gap-2" @onclick="@(() => VerDetalle(order))" style="border-radius: var(--radius); font-size: 0.8rem; font-weight: 600; background: #f1f3f5; border: 1px solid #dee2e6; color: #212529;">
+                                <i class="fas fa-eye" style="font-size: 0.78rem;"></i> Ver detalle
                             </button>
+                            
+                            @if (order.Status == "pendiente")
+                            {
+                                <button class="btn btn-sm text-white py-2 px-3 flex-grow-1 d-flex align-items-center justify-content-between gap-2" @onclick="@(() => SiguienteAccion(order))" style="background: #064e3b; border: 1px solid #064e3b; border-radius: var(--radius); font-size: 0.8rem; font-weight: 600;">
+                                    <span class="d-flex align-items-center gap-2"><i class="fas fa-utensils" style="font-size: 0.78rem;"></i> Iniciar preparación</span>
+                                    <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i>
+                                </button>
+                                <button class="btn btn-light btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0" @onclick="@(() => CancelarOrder(order))" style="width: 36px; height: 36px; border: 1px solid #fee2e2; color: #dc3545; background: #fff;" title="Cancelar Pedido">
+                                    <i class="fas fa-times" style="font-size: 0.78rem;"></i>
+                                </button>
+                            }
+                            else if (order.Status == "preparando")
+                            {
+                                <button class="btn btn-sm text-white py-2 px-3 flex-grow-1 d-flex align-items-center justify-content-between gap-2" @onclick="@(() => SiguienteAccion(order))" style="background: #064e3b; border: 1px solid #064e3b; border-radius: var(--radius); font-size: 0.8rem; font-weight: 600;">
+                                    <span class="d-flex align-items-center gap-2"><i class="fas fa-box-open" style="font-size: 0.78rem;"></i> Marcar listo</span>
+                                    <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i>
+                                </button>
+                                <button class="btn btn-light btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0" @onclick="@(() => CancelarOrder(order))" style="width: 36px; height: 36px; border: 1px solid #fee2e2; color: #dc3545; background: #fff;" title="Cancelar Pedido">
+                                    <i class="fas fa-times" style="font-size: 0.78rem;"></i>
+                                </button>
+                            }
+                            else if (order.Status == "en_camino") // Listo para entrega
+                            {
+                                <button class="btn btn-sm text-white py-2 px-3 flex-grow-1 d-flex align-items-center justify-content-center gap-2" @onclick="@(() => SiguienteAccion(order))" style="background: #064e3b; border: 1px solid #064e3b; border-radius: var(--radius); font-size: 0.8rem; font-weight: 600;">
+                                    <i class="fas fa-check-circle" style="font-size: 0.82rem;"></i> Marcar entregado
+                                </button>
+                            }
                         }
                     </div>
                 </div>
             }
         </div>
+
+        <!-- Paginación Premium -->
+        @if (TotalPages(FilteredOrders.Count()) > 1)
+        {
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4 pt-3 border-top border-color-default animate-fade-in">
+                <span class="text-muted-foreground" style="font-size: 0.82rem;">
+                    Mostrando pedidos <strong>@((_currentPage - 1) * _pageSize + 1)</strong> a <strong>@(Math.Min(_currentPage * _pageSize, FilteredOrders.Count()))</strong> de un total de <strong>@FilteredOrders.Count()</strong>
+                </span>
+                
+                <nav class="d-flex align-items-center gap-1.5">
+                    <button class="pagination-nav-btn" @onclick="PrevPage" disabled="@(_currentPage == 1)">
+                        <i class="fas fa-chevron-left" style="font-size: 0.72rem;"></i> Anterior
+                    </button>
+                    
+                    @for (int i = 1; i <= TotalPages(FilteredOrders.Count()); i++)
+                    {
+                        var pageNumber = i;
+                        <button class="pagination-num-btn @(pageNumber == _currentPage ? "active" : "")" @onclick="@(() => SetPage(pageNumber))">
+                            @pageNumber
+                        </button>
+                    }
+                    
+                    <button class="pagination-nav-btn" @onclick="@(() => NextPage(FilteredOrders.Count()))" disabled="@(_currentPage == TotalPages(FilteredOrders.Count()))">
+                        Siguiente <i class="fas fa-chevron-right" style="font-size: 0.72rem;"></i>
+                    </button>
+                </nav>
+            </div>
+        }
     }
 </div>
 
 <!-- Modal Detalle de Pedido -->
 @if (_showDetailModal && _detailOrder != null)
 {
-    <div class="modal-overlay" @onclick="CloseModal">
-        <div class="modal-container" style="max-width:480px;" @onclick:stopPropagation>
-            <div class="p-4 border-bottom border-color-default d-flex align-items-center justify-content-between">
-                <div>
-                    <h5 class="fw-bold text-foreground m-0">Detalle del Pedido</h5>
-                    <p class="text-muted-foreground small m-0">@_detailOrder.Id — @_detailOrder.Date.ToString("dd/MM/yyyy HH:mm")</p>
+    <div class="detail-modal-overlay" @onclick="CloseModal">
+        <div class="detail-modal-container" @onclick:stopPropagation>
+
+            <!-- ── Header del Modal ── -->
+            <div class="detail-modal-header">
+                <div class="d-flex flex-column gap-1">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fw-bold text-foreground" style="font-size:1.1rem; font-family:'Outfit',sans-serif;">@_detailOrder.Id</span>
+                        <span class="badge" style="@GetStatusBadgeStyle(_detailOrder.Status) font-size:0.73rem;border-radius:9999px;padding:4px 11px;">@GetStatusLabel(_detailOrder.Status)</span>
+                    </div>
+                    <span class="text-muted-foreground" style="font-size:0.78rem;">
+                        <i class="far fa-calendar-alt me-1"></i>@_detailOrder.Date.ToString("dd/MM/yyyy") &nbsp;·&nbsp;
+                        <i class="far fa-clock me-1"></i>@_detailOrder.Date.ToString("HH:mm")
+                    </span>
                 </div>
-                <button class="btn btn-ghost p-1" @onclick="CloseModal" style="border-radius:50%;">
-                    <i class="fas fa-times text-muted-foreground"></i>
+                <button class="detail-modal-close" @onclick="CloseModal">
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="modal-body-scroll">
-                <div class="d-flex flex-column gap-3 py-2">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="text-muted-foreground small fw-medium">Estado</span>
-                        <span class="badge" style="@GetStatusBadgeStyle(_detailOrder.Status);font-size:0.78rem;border-radius:9999px;padding:5px 12px;">
-                            @GetStatusLabel(_detailOrder.Status)
-                        </span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted-foreground small fw-medium">Cliente</span>
-                        <span class="text-foreground small fw-semibold">@_detailOrder.Customer</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted-foreground small fw-medium">Canal</span>
-                        <span class="text-foreground small">
-                            <i class="fas @(_detailOrder.Channel=="Online"?"fa-globe":"fa-store") me-1"></i>@_detailOrder.Channel
-                        </span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted-foreground small fw-medium">Artículos</span>
-                        <span class="text-foreground small">@_detailOrder.Items</span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-color-default">
-                        <span class="fw-bold text-foreground">Total</span>
-                        <span class="fw-bold text-primary fs-5">S/. @_detailOrder.Total.ToString("0.00")</span>
+
+            <!-- ── Cuerpo con scroll ── -->
+            <div class="detail-modal-body">
+
+                <!-- Bloque: Info del Cliente -->
+                <div class="detail-section">
+                    <div class="detail-section-title"><i class="fas fa-user me-2"></i>Datos del Cliente</div>
+                    <div class="detail-info-grid">
+                        <div class="detail-info-row">
+                            <span class="detail-label">Nombre</span>
+                            <span class="detail-value fw-semibold">@_detailOrder.Customer</span>
+                        </div>
+                        <div class="detail-info-row">
+                            <span class="detail-label">Canal</span>
+                            <span class="detail-value">
+                                <i class="fas @(_detailOrder.Channel=="Online"?"fa-globe":"fa-store") me-1 text-primary"></i>@_detailOrder.Channel
+                            </span>
+                        </div>
+                        <div class="detail-info-row">
+                            <span class="detail-label">Teléfono</span>
+                            <span class="detail-value"><i class="fas fa-phone-alt me-1" style="color:#6c757d;"></i>987 654 321</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="p-4 border-top border-color-default d-flex gap-2 justify-content-end">
-                <button class="btn btn-secondary" @onclick="CloseModal" style="border-radius:var(--radius);">Cerrar</button>
+
+                <!-- Bloque: Tipo de Envío -->
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        @if (_detailOrder.DeliveryMethod?.ToLower() == "delivery")
+                        {
+                            <i class="fas fa-truck me-2" style="color:#0d6efd;"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-store me-2" style="color:#198754;"></i>
+                        }
+                        Tipo de Envío
+                    </div>
+                    <div class="detail-info-grid">
+                        <div class="detail-info-row">
+                            <span class="detail-label">Método</span>
+                            @if (_detailOrder.DeliveryMethod?.ToLower() == "delivery")
+                            {
+                                <span class="badge" style="background:#e3f2fd;color:#0d6efd;font-size:0.73rem;font-weight:600;border-radius:9999px;padding:4px 11px;">
+                                    <i class="fas fa-truck me-1"></i>Delivery
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge" style="background:#e8f5e9;color:#198754;font-size:0.73rem;font-weight:600;border-radius:9999px;padding:4px 11px;">
+                                    <i class="fas fa-store me-1"></i>Recojo en tienda
+                                </span>
+                            }
+                        </div>
+                        @if (_detailOrder.DeliveryMethod?.ToLower() == "delivery" && !string.IsNullOrEmpty(_detailOrder.Address))
+                        {
+                            <div class="detail-info-row">
+                                <span class="detail-label">Dirección</span>
+                                <span class="detail-value"><i class="fas fa-map-marker-alt me-1" style="color:#dc3545;"></i>@_detailOrder.Address</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Bloque: Lista de Productos -->
+                <div class="detail-section">
+                    <div class="detail-section-title"><i class="fas fa-shopping-basket me-2"></i>Productos del Pedido</div>
+                    @if (_detailOrder.Products != null && _detailOrder.Products.Any())
+                    {
+                        <div class="detail-products-list">
+                            @foreach (var product in _detailOrder.Products)
+                            {
+                                <div class="detail-product-row">
+                                    <div class="detail-product-qty">x@product.Quantity</div>
+                                    <div class="detail-product-name">@product.Name</div>
+                                    <div class="detail-product-price">S/. @((product.Price * product.Quantity).ToString("0.00"))</div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted-foreground small m-0">Sin detalle de productos disponible.</p>
+                    }
+                </div>
+
+                <!-- Bloque: Resumen de Totales -->
+                <div class="detail-section">
+                    <div class="detail-section-title"><i class="fas fa-receipt me-2"></i>Resumen de Pago</div>
+                    <div class="detail-totals-block">
+                        <div class="detail-totals-row">
+                            <span class="detail-label">Subtotal</span>
+                            <span class="detail-value">S/. @_detailOrder.Subtotal.ToString("0.00")</span>
+                        </div>
+                        <div class="detail-totals-row">
+                            <span class="detail-label">Costo de envío</span>
+                            @if (_detailOrder.DeliveryFee == 0)
+                            {
+                                <span class="detail-value" style="color:#198754;font-weight:600;">Gratis</span>
+                            }
+                            else
+                            {
+                                <span class="detail-value">S/. @_detailOrder.DeliveryFee.ToString("0.00")</span>
+                            }
+                        </div>
+                        <div class="detail-totals-divider"></div>
+                        <div class="detail-totals-row total-final">
+                            <span>Total</span>
+                            <span class="text-primary fw-bold" style="font-size:1.15rem;">S/. @_detailOrder.Total.ToString("0.00")</span>
+                        </div>
+                        <!-- Método de pago -->
+                        <div class="detail-payment-method mt-2">
+                            <span class="detail-label">Método de pago</span>
+                            <div class="d-flex gap-2 mt-1">
+                                @switch (_detailOrder.PaymentMethod?.ToLower())
+                                {
+                                    case "yape":
+                                        <span class="badge text-white" style="background:#6f42c1;font-size:0.75rem;padding:5px 12px;font-weight:600;border-radius:8px;"><i class="fas fa-mobile-alt me-1"></i>Yape</span>
+                                        <span class="badge" style="background:#e8f5e9;color:#198754;font-size:0.75rem;padding:5px 12px;font-weight:600;border-radius:8px;"><i class="fas fa-check-circle me-1"></i>Pagado</span>
+                                        break;
+                                    case "plin":
+                                        <span class="badge text-white" style="background:#0dcaf0;font-size:0.75rem;padding:5px 12px;font-weight:600;border-radius:8px;"><i class="fas fa-mobile-alt me-1"></i>Plin</span>
+                                        <span class="badge" style="background:#e8f5e9;color:#198754;font-size:0.75rem;padding:5px 12px;font-weight:600;border-radius:8px;"><i class="fas fa-check-circle me-1"></i>Pagado</span>
+                                        break;
+                                    case "tarjeta":
+                                        <span class="badge text-white" style="background:#0d6efd;font-size:0.75rem;padding:5px 12px;font-weight:600;border-radius:8px;"><i class="fas fa-credit-card me-1"></i>Tarjeta</span>
+                                        <span class="badge" style="background:#e8f5e9;color:#198754;font-size:0.75rem;padding:5px 12px;font-weight:600;border-radius:8px;"><i class="fas fa-check-circle me-1"></i>Pagado</span>
+                                        break;
+                                    default:
+                                        <span class="badge text-white" style="background:#198754;font-size:0.75rem;padding:5px 12px;font-weight:600;border-radius:8px;"><i class="fas fa-money-bill-wave me-1"></i>Efectivo</span>
+                                        <span class="badge" style="background:#fff3e0;color:#b25e00;font-size:0.75rem;padding:5px 12px;font-weight:600;border-radius:8px;"><i class="fas fa-clock me-1"></i>Pago al recibir</span>
+                                        break;
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloque: Timeline del Pedido -->
+                <div class="detail-section">
+                    <div class="detail-section-title"><i class="fas fa-history me-2"></i>Historial del Pedido</div>
+                    <div class="detail-timeline">
+                        @if (_detailOrder.TimelinePedidoRecibido.HasValue)
+                        {
+                            <div class="timeline-step done">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span class="timeline-label">Pedido recibido</span>
+                                    <span class="timeline-time">@_detailOrder.TimelinePedidoRecibido.Value.ToString("dd/MM HH:mm")</span>
+                                </div>
+                            </div>
+                        }
+                        @if (_detailOrder.TimelineEnPreparacion.HasValue)
+                        {
+                            <div class="timeline-step done">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span class="timeline-label">En preparación</span>
+                                    <span class="timeline-time">@_detailOrder.TimelineEnPreparacion.Value.ToString("dd/MM HH:mm")</span>
+                                </div>
+                            </div>
+                        }
+                        @if (_detailOrder.TimelineListo.HasValue)
+                        {
+                            <div class="timeline-step done">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span class="timeline-label">Listo para entrega</span>
+                                    <span class="timeline-time">@_detailOrder.TimelineListo.Value.ToString("dd/MM HH:mm")</span>
+                                </div>
+                            </div>
+                        }
+                        @if (_detailOrder.TimelineEnCamino.HasValue)
+                        {
+                            <div class="timeline-step done">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span class="timeline-label">En camino</span>
+                                    <span class="timeline-time">@_detailOrder.TimelineEnCamino.Value.ToString("dd/MM HH:mm")</span>
+                                </div>
+                            </div>
+                        }
+                        @if (_detailOrder.TimelineEntregado.HasValue)
+                        {
+                            <div class="timeline-step done success">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span class="timeline-label">Entregado</span>
+                                    <span class="timeline-time">@_detailOrder.TimelineEntregado.Value.ToString("dd/MM HH:mm")</span>
+                                </div>
+                            </div>
+                        }
+                        @if (_detailOrder.TimelineCancelado.HasValue)
+                        {
+                            <div class="timeline-step cancelled">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span class="timeline-label">Cancelado</span>
+                                    <span class="timeline-time">@_detailOrder.TimelineCancelado.Value.ToString("dd/MM HH:mm")</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div><!-- /modal-body -->
+
+            <!-- ── Footer del Modal ── -->
+            <div class="detail-modal-footer">
+                <button class="btn btn-outline-secondary fw-medium" @onclick="CloseModal" style="border-radius:var(--radius); min-width: 90px;">
+                    <i class="fas fa-times me-1"></i>Cerrar
+                </button>
                 @if (!string.IsNullOrEmpty(GetNextActionLabel(_detailOrder.Status)))
                 {
-                    <button class="btn btn-primary fw-semibold" @onclick="@(() => { SiguienteAccion(_detailOrder); CloseModal(); })" style="border-radius:var(--radius);">
-                        @GetNextActionLabel(_detailOrder.Status)
+                    <button class="btn text-white fw-semibold" @onclick="@(() => { SiguienteAccion(_detailOrder); CloseModal(); })" style="background:#064e3b; border:1px solid #064e3b; border-radius:var(--radius); min-width: 160px;">
+                        <i class="fas fa-arrow-right me-2"></i>@GetNextActionLabel(_detailOrder.Status)
                     </button>
                 }
             </div>
+
         </div>
     </div>
 }
+
+<style>
+    .worker-kpi-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 0.75rem;
+        height: 175px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .worker-kpi-card:hover {
+        transform: translateY(-6px);
+    }
+    
+    .kpi-pendiente {
+        border: 2px solid #e67e22;
+        box-shadow: 0 6px 16px rgba(230, 126, 34, 0.12);
+    }
+    
+    .kpi-pendiente:hover {
+        box-shadow: 0 12px 24px rgba(230, 126, 34, 0.25);
+        border-color: #f39c12;
+    }
+    
+    .kpi-preparando {
+        border: 2px solid #1976d2;
+        box-shadow: 0 6px 16px rgba(25, 118, 210, 0.12);
+    }
+    
+    .kpi-preparando:hover {
+        box-shadow: 0 12px 24px rgba(25, 118, 210, 0.25);
+        border-color: #2196f3;
+    }
+    
+    .kpi-encamino {
+        border: 2px solid #2e7d32;
+        box-shadow: 0 6px 16px rgba(46, 125, 50, 0.12);
+    }
+    
+    .kpi-encamino:hover {
+        box-shadow: 0 12px 24px rgba(46, 125, 50, 0.25);
+        border-color: #4caf50;
+    }
+    
+    .kpi-entregado {
+        border: 2px solid #5e35b1;
+        box-shadow: 0 6px 16px rgba(94, 53, 177, 0.12);
+    }
+    
+    .kpi-entregado:hover {
+        box-shadow: 0 12px 24px rgba(94, 53, 177, 0.25);
+        border-color: #7c4dff;
+    }
+
+    .worker-kpi-card .metric-kpi-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    /* ── Custom Order Cards Premium Design ── */
+    .custom-order-card {
+        background: #ffffff !important;
+        border-radius: 1.25rem !important; /* rounded-2xl equivalent */
+        border: 1px solid #e9ecef !important;
+        padding: 1.25rem !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease !important;
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        position: relative;
+    }
+
+    .custom-order-card:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    /* Borde lateral izquierdo y Sombreados de color */
+    .border-left-pendiente {
+        border-left: 5px solid #e67e22 !important;
+        box-shadow: 0 4px 12px rgba(230, 126, 34, 0.04) !important;
+    }
+    .border-left-pendiente:hover {
+        box-shadow: 0 12px 28px rgba(230, 126, 34, 0.16) !important;
+    }
+
+    .border-left-preparando {
+        border-left: 5px solid #1976d2 !important;
+        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.04) !important;
+    }
+    .border-left-preparando:hover {
+        box-shadow: 0 12px 28px rgba(25, 118, 210, 0.16) !important;
+    }
+
+    .border-left-listo {
+        border-left: 5px solid #064e3b !important; /* Shiligama green vertical line */
+        box-shadow: 0 4px 12px rgba(6, 78, 59, 0.04) !important;
+    }
+    .border-left-listo:hover {
+        box-shadow: 0 12px 28px rgba(6, 78, 59, 0.16) !important;
+    }
+
+    .border-left-entregado {
+        border-left: 5px solid #28a745 !important; /* verde relativamente claro */
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.04) !important;
+    }
+    .border-left-entregado:hover {
+        box-shadow: 0 12px 28px rgba(40, 167, 69, 0.16) !important;
+    }
+
+    .border-left-cancelado {
+        border-left: 5px solid #dc3545 !important; /* rojo */
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.04) !important;
+    }
+    .border-left-cancelado:hover {
+        box-shadow: 0 12px 28px rgba(220, 53, 69, 0.16) !important;
+    }
+
+    /* ── Pagination Buttons ── */
+    .pagination-nav-btn {
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        color: #212529;
+        border-radius: var(--radius);
+        padding: 0.45rem 0.9rem;
+        font-size: 0.82rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    
+    .pagination-nav-btn:hover:not(:disabled) {
+        background: #f8f9fa;
+        border-color: #ced4da;
+    }
+    
+    .pagination-nav-btn:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+    
+    .pagination-num-btn {
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        color: #212529;
+        border-radius: var(--radius);
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .pagination-num-btn:hover {
+        background: #f8f9fa;
+        border-color: #ced4da;
+    }
+    
+    .pagination-num-btn.active {
+        background: var(--primary) !important;
+        color: var(--primary-foreground) !important;
+        border-color: var(--primary) !important;
+    }
+
+    /* Dark mode adaptations for custom order cards and pagination */
+    .dark .custom-order-card {
+        background: var(--card) !important;
+        border-color: var(--border) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    .dark .custom-order-card:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    .dark .custom-order-card [style*="background: #f8f9fa"] {
+        background: var(--secondary) !important;
+        border-color: var(--border) !important;
+    }
+
+    .dark .pagination-nav-btn,
+    .dark .pagination-num-btn {
+        background: var(--card) !important;
+        border-color: var(--border) !important;
+        color: var(--foreground) !important;
+    }
+
+    .dark .pagination-nav-btn:hover:not(:disabled),
+    .dark .pagination-num-btn:hover {
+        background: var(--secondary) !important;
+    }
+
+    /* ═══════════════════════════════════════════
+       Detail Modal – Premium Design
+    ═══════════════════════════════════════════ */
+    .detail-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 1060;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        animation: overlayFadeIn 0.2s ease;
+    }
+
+    @@keyframes overlayFadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+
+    .detail-modal-container {
+        background: #ffffff;
+        border-radius: 1.5rem;
+        width: 100%;
+        max-width: 520px;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.22), 0 8px 20px rgba(0,0,0,0.12);
+        animation: modalSlideUp 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        overflow: hidden;
+    }
+
+    @@keyframes modalSlideUp {
+        from { opacity: 0; transform: translateY(28px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0)   scale(1);    }
+    }
+
+    /* Header */
+    .detail-modal-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 1.35rem 1.5rem 1.1rem;
+        border-bottom: 1px solid #f0f0f0;
+        flex-shrink: 0;
+    }
+
+    .detail-modal-close {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid #e9ecef;
+        background: #f8f9fa;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .detail-modal-close:hover {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        color: #dc3545;
+    }
+
+    /* Body */
+    .detail-modal-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0.5rem 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        scrollbar-width: thin;
+        scrollbar-color: #dee2e6 transparent;
+    }
+
+    .detail-modal-body::-webkit-scrollbar { width: 5px; }
+    .detail-modal-body::-webkit-scrollbar-thumb { background: #dee2e6; border-radius: 4px; }
+
+    /* Sections */
+    .detail-section {
+        padding: 1rem 0;
+        border-bottom: 1px solid #f4f4f4;
+    }
+
+    .detail-section:last-child { border-bottom: none; }
+
+    .detail-section-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: #6c757d;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Info Grid rows */
+    .detail-info-grid { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .detail-info-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .detail-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        flex-shrink: 0;
+    }
+
+    .detail-value {
+        font-size: 0.85rem;
+        color: #212529;
+        text-align: right;
+    }
+
+    /* Products List */
+    .detail-products-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        background: #f8f9fa;
+        border-radius: 0.85rem;
+        padding: 0.75rem 1rem;
+        border: 1px solid #f0f0f0;
+    }
+
+    .detail-product-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.35rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .detail-product-row:last-child { border-bottom: none; }
+
+    .detail-product-qty {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #ffffff;
+        background: #064e3b;
+        border-radius: 6px;
+        padding: 2px 7px;
+        flex-shrink: 0;
+    }
+
+    .detail-product-name {
+        font-size: 0.82rem;
+        color: #212529;
+        flex: 1;
+    }
+
+    .detail-product-price {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #064e3b;
+        flex-shrink: 0;
+    }
+
+    /* Totals Block */
+    .detail-totals-block {
+        background: #f8f9fa;
+        border-radius: 0.85rem;
+        padding: 0.85rem 1rem;
+        border: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+    }
+
+    .detail-totals-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.83rem;
+    }
+
+    .detail-totals-divider {
+        height: 1px;
+        background: #dee2e6;
+        margin: 0.3rem 0;
+    }
+
+    .detail-totals-row.total-final {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .detail-payment-method { display: flex; flex-direction: column; }
+
+    /* Timeline */
+    .detail-timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        position: relative;
+    }
+
+    .timeline-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .timeline-step:last-child { padding-bottom: 0; }
+
+    .timeline-step::before {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 18px;
+        bottom: 0;
+        width: 2px;
+        background: #e9ecef;
+    }
+
+    .timeline-step:last-child::before { display: none; }
+
+    .timeline-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid #dee2e6;
+        background: #ffffff;
+        flex-shrink: 0;
+        margin-top: 2px;
+        transition: all 0.2s ease;
+    }
+
+    .timeline-step.done .timeline-dot {
+        background: #064e3b;
+        border-color: #064e3b;
+        box-shadow: 0 0 0 3px rgba(6, 78, 59, 0.15);
+    }
+
+    .timeline-step.done::before { background: #064e3b; opacity: 0.4; }
+
+    .timeline-step.success .timeline-dot {
+        background: #28a745;
+        border-color: #28a745;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.18);
+    }
+
+    .timeline-step.cancelled .timeline-dot {
+        background: #dc3545;
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+    }
+
+    .timeline-step.cancelled::before { background: #dc3545; opacity: 0.3; }
+
+    .timeline-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+    }
+
+    .timeline-label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .timeline-time {
+        font-size: 0.73rem;
+        color: #6c757d;
+    }
+
+    /* Footer */
+    .detail-modal-footer {
+        padding: 1rem 1.5rem 1.2rem;
+        border-top: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        flex-shrink: 0;
+        background: #fafafa;
+        border-radius: 0 0 1.5rem 1.5rem;
+    }
+
+    /* Dark mode for modal */
+    .dark .detail-modal-container {
+        background: var(--card);
+        box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+    }
+
+    .dark .detail-modal-header,
+    .dark .detail-section { border-color: var(--border); }
+
+    .dark .detail-modal-close {
+        background: var(--secondary);
+        border-color: var(--border);
+        color: var(--muted-foreground);
+    }
+
+    .dark .detail-modal-body::-webkit-scrollbar-thumb { background: var(--border); }
+
+    .dark .detail-section-title,
+    .dark .detail-label { color: var(--muted-foreground); }
+
+    .dark .detail-value,
+    .dark .timeline-label { color: var(--foreground); }
+
+    .dark .detail-products-list,
+    .dark .detail-totals-block {
+        background: var(--secondary);
+        border-color: var(--border);
+    }
+
+    .dark .detail-product-row { border-color: var(--border); }
+
+    .dark .detail-totals-divider { background: var(--border); }
+
+    .dark .timeline-dot { background: var(--card); }
+
+    .dark .detail-modal-footer {
+        background: var(--card);
+        border-color: var(--border);
+    }
+</style>

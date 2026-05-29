@@ -20,9 +20,9 @@ public class AuthService
         }
         
         // Trabajador
-        if (email == "trabajador@shiligama.com" && password == "trabajador123")
+        if ((email == "trabajador@shiligama.com" || email == "carlos.mendoza@shiligama.com") && password == "trabajador123")
         {
-            CurrentUser = new User { Email = email, Name = "Jorge Trabajador", Role = "trabajador" };
+            CurrentUser = new User { Email = "carlos.mendoza@shiligama.com", Name = "Carlos Mendoza", Role = "trabajador" };
             NotifyStateChanged();
             return true;
         }
