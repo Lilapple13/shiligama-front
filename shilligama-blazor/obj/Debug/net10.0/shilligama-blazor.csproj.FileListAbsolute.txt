@@ -117,8 +117,6 @@ C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-fr
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\afqpcx2okj-{0}-abdmv1u4y3-abdmv1u4y3.gz
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\20v04azdi9-{0}-ej96puwv3k-ej96puwv3k.gz
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\7nw2g7hxxi-{0}-cj5793hgrt-cj5793hgrt.gz
-C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\19cv9oe5r3-{0}-kz6ahhcd3c-kz6ahhcd3c.gz
-C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\t5hdcxfsxq-{0}-kz6ahhcd3c-kz6ahhcd3c.gz
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\staticwebassets.build.json
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\staticwebassets.build.json.cache
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\staticwebassets.development.json
@@ -222,3 +220,6 @@ C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\ref\shilligama_blazor.dll
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\5n7s4x5ka7-{0}-d3wq3lebgb-d3wq3lebgb.gz
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\5n7s4x5ka7-{0}-jehmh76fo7-jehmh76fo7.gz
+C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\19cv9oe5r3-{0}-x7u8kcbftl-x7u8kcbftl.gz
+C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\t5hdcxfsxq-{0}-x7u8kcbftl-x7u8kcbftl.gz

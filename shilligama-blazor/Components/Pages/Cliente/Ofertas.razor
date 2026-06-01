@@ -6,6 +6,7 @@
 @code {
     private List<Product> _promoProducts = new();
     private bool _isLoading = true;
+    private HashSet<int> _addedIds = new();   
 
     protected override async Task OnInitializedAsync()
     {
@@ -18,7 +19,15 @@
         if (firstRender) { await Cart.InitializeAsync(); StateHasChanged(); }
     }
 
-    private async Task AddToCart(Product p) => await Cart.AddToCartAsync(p);
+    private async Task AddToCart(Product p) 
+    {
+        await Cart.AddToCartAsync(p);
+        _addedIds.Add(p.Id);
+        StateHasChanged();
+        await Task.Delay(1800);
+        _addedIds.Remove(p.Id);
+        StateHasChanged();
+    }
 
     private string GetDiscountPct(Product p) =>
         p.OriginalPrice.HasValue ? $"-{100 - (int)(p.Price / p.OriginalPrice.Value * 100)}%" : "";
@@ -122,13 +131,38 @@
                                             </span>
                                         }
                                     </div>
-                                    <button @onclick="@(() => AddToCart(product))"
-                                            disabled="@(product.Stock == 0)"
-                                            class="btn btn-primary btn-sm px-2 py-1 d-flex align-items-center justify-content-center"
-                                            style="border-radius: var(--radius); width: 34px; height: 34px;"
-                                            title="Agregar al carrito">
-                                        <Icons Name="Plus" Class="w-4 h-4" />
-                                    </button>
+                                </div>
+                                <div class="mt-auto pt-2">
+                                    @if (product.Stock > 0)
+                                    {
+                                        <button @onclick="@(() => AddToCart(product))"
+                                                class="btn text-white w-100 py-2 d-flex align-items-center justify-content-center gap-2"
+                                                style="background-color:@(_addedIds.Contains(product.Id) ? "#16a34a" : "#0D4525");
+                                            border:none;border-radius:8px;font-weight:500;
+                                            font-size:0.9rem;transition:background-color 0.3s;"
+                                                title="Agregar al carrito">
+                                            @if (_addedIds.Contains(product.Id))
+                                            {
+                                                <i class="fa-solid fa-check" style="font-size:0.85rem;"></i>
+                                                <span>¡Agregado!</span>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-solid fa-plus" style="font-size:0.85rem;"></i>
+                                                <span>Agregar</span>
+                                            }
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button disabled
+                                                class="btn text-white w-100 py-2 d-flex align-items-center justify-content-center gap-2"
+                                                style="background-color:#A3BFB0;border:none;border-radius:8px;
+                                            font-weight:500;font-size:0.9rem;cursor:not-allowed;opacity:0.85;">
+                                            <i class="fa-solid fa-plus" style="font-size:0.85rem;"></i>
+                                            <span>Agotado</span>
+                                        </button>
+                                    }
                                 </div>
                             </div>
                         </div>
