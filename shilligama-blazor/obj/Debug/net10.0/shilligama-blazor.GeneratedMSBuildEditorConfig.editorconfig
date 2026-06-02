@@ -11,189 +11,189 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = shilligama_blazor
 build_property.RootNamespace = shilligama_blazor
-build_property.ProjectDir = C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\
+build_property.ProjectDir = D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor
+build_property.MSBuildProjectDirectory = D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/App.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/App.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Auth/BrandedPanel.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Auth/BrandedPanel.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBdXRoXEJyYW5kZWRQYW5lbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Auth/LoginForm.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Auth/LoginForm.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBdXRoXExvZ2luRm9ybS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Auth/RegisterForm.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Auth/RegisterForm.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBdXRoXFJlZ2lzdGVyRm9ybS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Layout/AdminLayout.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Layout/AdminLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcQWRtaW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Layout/EmptyLayout.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Layout/EmptyLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcRW1wdHlMYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Layout/TrabajadorLayout.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Layout/TrabajadorLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcVHJhYmFqYWRvckxheW91dC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Configuracion.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Configuracion.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxDb25maWd1cmFjaW9uLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Dashboard.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Dashboard.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxEYXNoYm9hcmQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Devoluciones.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Devoluciones.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxEZXZvbHVjaW9uZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Inventario.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Inventario.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxJbnZlbnRhcmlvLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Notificaciones.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Notificaciones.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxOb3RpZmljYWNpb25lcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Pedidos.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Pedidos.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxQZWRpZG9zLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Perfil.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Perfil.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxQZXJmaWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Personal.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Personal.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxQZXJzb25hbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Productos.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Productos.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxQcm9kdWN0b3MucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Proveedores.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Proveedores.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxQcm92ZWVkb3Jlcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Reportes.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Reportes.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxSZXBvcnRlcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Admin/Ventas.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Admin/Ventas.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxWZW50YXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Carrito.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Cliente/Carrito.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXENhcnJpdG8ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Catalogo.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Cliente/Catalogo.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXENhdGFsb2dvLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Checkout.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Cliente/Checkout.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXENoZWNrb3V0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Configuracion.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Cliente/Configuracion.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXENvbmZpZ3VyYWNpb24ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Home.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Cliente/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXEhvbWUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/MisPedidos.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Cliente/MisPedidos.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXE1pc1BlZGlkb3MucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/Ofertas.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Cliente/Ofertas.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXE9mZXJ0YXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/ProductoDetalle.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Cliente/ProductoDetalle.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXFByb2R1Y3RvRGV0YWxsZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Cliente/PromoSnacks.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Cliente/PromoSnacks.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDbGllbnRlXFByb21vU25hY2tzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Error.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/NotFound.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/NotFound.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xOb3RGb3VuZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Trabajador/Dashboard.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Trabajador/Dashboard.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xUcmFiYWphZG9yXERhc2hib2FyZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Trabajador/Devoluciones.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Trabajador/Devoluciones.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xUcmFiYWphZG9yXERldm9sdWNpb25lcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Trabajador/Perfil.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Trabajador/Perfil.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xUcmFiYWphZG9yXFBlcmZpbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Trabajador/Productos.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Trabajador/Productos.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xUcmFiYWphZG9yXFByb2R1Y3Rvcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Pages/Trabajador/RegistrarVenta.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Pages/Trabajador/RegistrarVenta.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xUcmFiYWphZG9yXFJlZ2lzdHJhclZlbnRhLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Routes.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Routes.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3V0ZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/_Imports.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Shared/Icons.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Shared/Icons.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEljb25zLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Shared/Modal.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Shared/Modal.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1vZGFsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Shared/Offcanvas.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Shared/Offcanvas.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE9mZmNhbnZhcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Shared/ThemeSelector.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Shared/ThemeSelector.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFRoZW1lU2VsZWN0b3IucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Shared/_Imports.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Shared/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXF9JbXBvcnRzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Layout/MainLayout.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Layout/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTWFpbkxheW91dC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-ngutim5vjd
 
-[C:/Users/binny/OneDrive/Escritorio/Binny/6to_ciclo/PROGRA3/TA/Front/shiligama-front/shilligama-blazor/Components/Layout/ReconnectModal.razor]
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Layout/ReconnectModal.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcUmVjb25uZWN0TW9kYWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-7msojfd13u

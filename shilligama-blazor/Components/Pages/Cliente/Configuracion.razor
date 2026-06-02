@@ -2,13 +2,24 @@
 @layout MainLayout
 @inject AuthService Auth
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
+@implements IDisposable
 
 @code {
     private string _name = "";
     private string _dni = "12345678";
     private string _phone = "987654321";
-    private string _address = "Av. Los Olivos 123, Lima";
+
+    private List<string> _addresses = new()
+    {
+        "Avenida Universitaria 123",
+        "Av Los Olivos 321",
+        "Av Los Olivos 432"
+    };
     private bool _success = false;
+    private bool _showMapModal = false;
+    private string _pendingAddress = "";
+    private DotNetObjectReference<Configuracion>? _dotnetRef;
 
     protected override void OnInitialized()
     {
@@ -27,6 +38,48 @@
         await Task.Delay(2000);
         _success = false;
         StateHasChanged();
+    }
+
+    private void DeleteAddress(string addr)
+    {
+        _addresses.Remove(addr);
+    }
+
+    private async Task OpenMapModal()
+    {
+        _showMapModal = true;
+        _pendingAddress = "";
+        StateHasChanged();
+        _dotnetRef = DotNetObjectReference.Create(this);
+        await JS.InvokeVoidAsync("mapHelpers.initMap", _dotnetRef);
+    }
+
+    private async Task CloseMapModal()
+    {
+        _showMapModal = false;
+        _pendingAddress = "";
+        await JS.InvokeVoidAsync("mapHelpers.destroyMap");
+    }
+
+    private async Task ConfirmAddress()
+    {
+        if (!string.IsNullOrWhiteSpace(_pendingAddress))
+        {
+            _addresses.Add(_pendingAddress);
+        }
+        await CloseMapModal();
+    }
+
+    [JSInvokable]
+    public void OnMapAddressSelected(string address)
+    {
+        _pendingAddress = address;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        _dotnetRef?.Dispose();
     }
 }
 
@@ -115,9 +168,49 @@
             </div>
             
             <div class="mt-1">
-                <label class="form-label small fw-medium text-foreground mb-1.5">Dirección completa</label>
-                <textarea @bind="_address" required class="form-control text-foreground py-2.5" rows="3" style="border-radius: 8px; border: 1px solid #d1d5db; resize: none; font-size: 0.95rem;"></textarea>
-                <div class="form-text text-muted-foreground mt-1.5" style="font-size: 0.75rem;">Incluye referencias para facilitar la entrega (cerca de, frente a, etc.)</div>
+                <label class="form-label small fw-medium text-foreground mb-2">Mis direcciones</label>
+                @if (_addresses.Count == 0)
+                {
+                    <div class="d-flex flex-column align-items-center justify-content-center py-4 px-3"
+                         style="border-radius: 10px; border: 1px dashed #d1d5db; background-color: #f9fafb;">
+                        <i class="fa-solid fa-map-location-dot" style="font-size: 2rem; color: #c4c9d1; margin-bottom: 8px;"></i>
+                        <span style="font-size: 0.95rem; color: #6b7280; font-weight: 500;">No hay direcciones registradas</span>
+                        <span style="font-size: 0.8rem; color: #9ca3af;">Agrega una dirección para recibir tus pedidos</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex flex-column gap-2">
+                        @foreach (var addr in _addresses)
+                        {
+                            <div class="d-flex align-items-center gap-3 px-3 py-2"
+                                 style="border-radius: 10px; border: 1px solid #e5e7eb; background-color: #f9fafb;">
+                                <i class="fa-solid fa-location-dot" style="color: #0D4525; font-size: 0.9rem; flex-shrink: 0;"></i>
+                                <span style="font-size: 0.95rem; color: #374151; flex-grow: 1;">@addr</span>
+                                <button type="button"
+                                        @onclick="@(() => DeleteAddress(addr))"
+                                        title="Eliminar dirección"
+                                        style="background: none; border: none; padding: 4px 6px; border-radius: 6px;
+                                               color: #9ca3af; cursor: pointer; line-height: 1;"
+                                        onmouseover="this.style.color='#ef4444';this.style.backgroundColor='#fef2f2';"
+                                        onmouseout="this.style.color='#9ca3af';this.style.backgroundColor='transparent';">
+                                    <i class="fa-solid fa-trash" style="font-size: 0.8rem;"></i>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                    <div class="form-text text-muted-foreground mt-2" style="font-size: 0.75rem;">Estas son las direcciones disponibles para recibir tus pedidos.</div>
+                }
+
+                <!-- Agregar Dirección button -->
+                <button type="button" @onclick="OpenMapModal"
+                        class="btn d-flex align-items-center gap-2 mt-3 px-3 py-2"
+                        style="border: 2px dashed #0D4525; border-radius: 10px; background: transparent;
+                               color: #0D4525; font-weight: 600; font-size: 0.9rem; transition: all 0.2s;"
+                        onmouseover="this.style.backgroundColor='#f0fdf4';"
+                        onmouseout="this.style.backgroundColor='transparent';">
+                    <i class="fa-solid fa-plus"></i> Agregar Dirección
+                </button>
             </div>
         </div>
 
@@ -130,3 +223,61 @@
         </div>
     </EditForm>
 </div>
+
+@* ===== Map Modal ===== *@
+@if (_showMapModal)
+{
+    <div style="position: fixed; inset: 0; z-index: 1050; background: rgba(0,0,0,0.5);
+                display: flex; align-items: center; justify-content: center;"
+         @onclick="CloseMapModal">
+        <div style="background: white; border-radius: 16px; width: 90%; max-width: 650px;
+                    box-shadow: 0 25px 60px rgba(0,0,0,0.3); overflow: hidden;"
+             @onclick:stopPropagation="true">
+            <!-- Modal header -->
+            <div class="d-flex align-items-center justify-content-between px-4 py-3"
+                 style="border-bottom: 1px solid #e5e7eb;">
+                <h5 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; color: #111827;">
+                    <i class="fa-solid fa-map-location-dot me-2" style="color: #0D4525;"></i>Seleccionar dirección
+                </h5>
+                <button type="button" @onclick="CloseMapModal"
+                        style="background: none; border: none; font-size: 1.3rem; color: #6b7280; cursor: pointer; line-height: 1;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Map -->
+            <div id="address-map" style="width: 100%; height: 350px;"></div>
+
+            <!-- Selected address preview + confirm -->
+            <div class="px-4 py-3" style="border-top: 1px solid #e5e7eb;">
+                @if (!string.IsNullOrWhiteSpace(_pendingAddress))
+                {
+                    <div class="d-flex align-items-start gap-2 mb-3 p-2"
+                         style="background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0;">
+                        <i class="fa-solid fa-location-dot mt-1" style="color: #0D4525; flex-shrink: 0;"></i>
+                        <span style="font-size: 0.85rem; color: #374151; word-break: break-word;">@_pendingAddress</span>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted-foreground mb-3" style="font-size: 0.85rem;">
+                        <i class="fa-solid fa-hand-pointer me-1"></i> Haz clic en el mapa para seleccionar una dirección
+                    </p>
+                }
+                <div class="d-flex gap-2 justify-content-end">
+                    <button type="button" @onclick="CloseMapModal"
+                            class="btn btn-outline-secondary px-3 py-2"
+                            style="border-radius: 8px; font-size: 0.9rem;">
+                        Cancelar
+                    </button>
+                    <button type="button" @onclick="ConfirmAddress"
+                            class="btn text-white px-3 py-2 fw-semibold d-flex align-items-center gap-2"
+                            style="background-color: #0D4525; border-radius: 8px; font-size: 0.9rem; border: none;"
+                            disabled="@(string.IsNullOrWhiteSpace(_pendingAddress))">
+                        <i class="fa-solid fa-check"></i> Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
