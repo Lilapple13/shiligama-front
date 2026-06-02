@@ -49,10 +49,10 @@
     <!-- Header -->
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
         <div>
-            <h1 class="fs-4 fw-bold text-foreground mb-0">
+            <h1 class="page-title mb-0">
                 <i class="fas fa-chart-pie me-2 text-primary"></i>Reportes y Estadísticas
             </h1>
-            <p class="text-muted-foreground small mt-1 mb-0">Analítica de rendimiento comercial y canales de distribución</p>
+            <p class="page-subtitle">Analítica de rendimiento comercial y canales de distribución</p>
         </div>
         <button type="button" class="btn btn-primary d-flex align-items-center gap-2 fw-semibold"
                 onclick="window.print();" style="border-radius: var(--radius);">
@@ -117,8 +117,7 @@
                     </div>
                     <span class="text-muted-foreground small">de @FilteredSales.Count total</span>
                 </div>
-                <div class="metric-kpi-icon"
-                     style="background:color-mix(in srgb,#2e7d32 15%,transparent);color:#2e7d32;">
+                <div class="metric-kpi-icon kpi-icon-success">
                     <i class="fas fa-check-double"></i>
                 </div>
             </div>
@@ -160,13 +159,13 @@
                     <h2 class="fs-5 fw-bold text-foreground mb-1">
                         <i class="fas fa-tags me-2 text-primary"></i>Participación por Categoría
                     </h2>
-                    <p class="text-muted-foreground small mb-0">Rendimiento estimado del inventario este mes</p>
+                    <p class="page-subtitle mb-0">Rendimiento estimado del inventario este mes</p>
                 </div>
 
                 <div class="d-flex flex-column gap-3 mt-2">
                     @foreach (var (cat, pct, color) in new (string, int, string)[]{
                         ("Abarrotes",          42, "#1A6B3C"),
-                        ("Lácteos",            28, "#2e7d32"),
+                        ("Lácteos",            28, "#1A6B3C"),
                         ("Bebidas",            18, "#2563EB"),
                         ("Snacks & Golosinas", 12, "#f59e0b"),
                     })

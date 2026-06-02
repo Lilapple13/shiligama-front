@@ -10,6 +10,11 @@ namespace shilligama_blazor.Services;
 
 public class CartService
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     private readonly IJSRuntime _jsRuntime;
     private List<CartItem> _cartItems = new();
     private bool _isInitialized = false;
@@ -44,7 +49,7 @@ public class CartService
             var json = await _jsRuntime.InvokeAsync<string>("localStorageHelper.getItem", "shiligama-cart");
             if (!string.IsNullOrEmpty(json))
             {
-                _cartItems = JsonSerializer.Deserialize<List<CartItem>>(json) ?? new();
+                _cartItems = JsonSerializer.Deserialize<List<CartItem>>(json, JsonOptions) ?? new();
             }
             else
             {
@@ -142,7 +147,7 @@ public class CartService
     {
         try
         {
-            var json = JsonSerializer.Serialize(_cartItems);
+            var json = JsonSerializer.Serialize(_cartItems, JsonOptions);
             await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", "shiligama-cart", json);
         }
         catch

@@ -166,6 +166,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3V0ZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Shared/LoginRequiredModal.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTaGFyZWRcTG9naW5SZXF1aXJlZE1vZGFsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/Shared/RoleGate.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTaGFyZWRcUm9sZUdhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/Users/DIOGO/Desktop/26-1/Clases/Programacion_3/TA/frontEND/shilligama-blazor/Components/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 

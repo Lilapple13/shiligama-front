@@ -70,7 +70,7 @@
     private string SearchQuery => ProductSvc.SearchQuery;
 
     private readonly (string Icon, string Title, string Desc, string Color, string Route)[] _slides = {
-        ("fa-tags",       "Ofertas de la Semana", "Hasta 30% de descuento en productos seleccionados", "#0D4525", "/ofertas"),
+        ("fa-tags",       "Ofertas de la Semana", "Hasta 30% de descuento en productos seleccionados", "#1A6B3C", "/ofertas"),
         ("fa-truck",      "Delivery Gratis",       "En compras mayores a S/. 50",                      "#1a3a5c", ""),
         ("fa-candy-cane", "2x1 en Snacks",         "Paga 1 y lleva 2 en snacks seleccionados",        "#4a1942", "/snacks-2x1"),
     };
@@ -172,8 +172,8 @@
 
 <style>
 .active-category-btn {
-    background-color: #0D4525 !important;
-    color: white !important;
+    background-color: var(--primary) !important;
+    color: var(--primary-foreground) !important;
     border-radius: var(--radius);
     transition: all 0.2s ease;
     border: none !important;
@@ -181,17 +181,17 @@
 .active-category-btn i { color: white !important; }
 .inactive-category-btn {
     background-color: transparent !important;
-    color: #1f2937 !important;
+    color: var(--foreground) !important;
     border-radius: var(--radius);
     transition: all 0.2s ease;
     border: none !important;
 }
 .inactive-category-btn:hover {
     background-color: var(--secondary) !important;
-    color: #0D4525 !important;
+    color: var(--primary) !important;
 }
-.inactive-category-btn i { color: #4b5563 !important; }
-.inactive-category-btn:hover i { color: #0D4525 !important; }
+.inactive-category-btn i { color: var(--muted-foreground) !important; }
+.inactive-category-btn:hover i { color: var(--primary) !important; }
 .dark .inactive-category-btn { color: var(--foreground) !important; }
 .dark .inactive-category-btn i { color: var(--muted-foreground) !important; }
 .dark .inactive-category-btn:hover { background-color: var(--secondary) !important; color: var(--foreground) !important; }
@@ -207,7 +207,7 @@
 }
 .dual-range-highlight {
     position: absolute; height: 6px;
-    background-color: #0D4525; border-radius: 3px; z-index: 2;
+    background-color: var(--primary); border-radius: 3px; z-index: 2;
 }
 .dual-range-slider {
     position: absolute; width: 100%; background: transparent;
@@ -217,7 +217,7 @@
 .dual-range-slider::-webkit-slider-thumb {
     -webkit-appearance: none; appearance: none;
     width: 18px; height: 18px; border-radius: 50%;
-    background: white; border: 2.5px solid #0D4525;
+    background: white; border: 2.5px solid #1A6B3C;
     cursor: pointer; pointer-events: auto;
     box-shadow: 0 1px 3px rgba(0,0,0,0.15); margin-top: -6px;
     transition: transform 0.1s ease, background-color 0.1s ease;
@@ -225,7 +225,7 @@
 .dual-range-slider::-webkit-slider-thumb:hover { transform: scale(1.15); background-color: #E8F5E9; }
 .dual-range-slider::-moz-range-thumb {
     width: 18px; height: 18px; border-radius: 50%;
-    background: white; border: 2.5px solid #0D4525;
+    background: white; border: 2.5px solid #1A6B3C;
     cursor: pointer; pointer-events: auto;
     box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     transition: transform 0.1s ease, background-color 0.1s ease;
@@ -234,19 +234,19 @@
 
 .pagination-nav-btn:hover:not(.disabled) {
     background-color: var(--secondary) !important;
-    border-color: #0D4525 !important; color: #0D4525 !important; transform: scale(1.05);
+    border-color: #1A6B3C !important; color: #1A6B3C !important; transform: scale(1.05);
 }
 .pagination-nav-btn.disabled { opacity: 0.4; cursor: not-allowed; }
 .pagination-num-btn { background-color: var(--card) !important; color: var(--foreground) !important; }
 .pagination-num-btn:hover:not(.active-page) {
     background-color: var(--secondary) !important;
-    border-color: #0D4525 !important; color: #0D4525 !important; transform: scale(1.05);
+    border-color: #1A6B3C !important; color: #1A6B3C !important; transform: scale(1.05);
 }
 .active-page {
-    background-color: #0D4525 !important; color: white !important;
-    border-color: #0D4525 !important; box-shadow: 0 4px 10px rgba(13,69,37,0.2);
+    background-color: #1A6B3C !important; color: white !important;
+    border-color: #1A6B3C !important; box-shadow: 0 4px 10px rgba(26,107,60,0.2);
 }
-.dark .active-page { box-shadow: 0 4px 10px rgba(13,69,37,0.4); }
+.dark .active-page { box-shadow: 0 4px 10px rgba(26,107,60,0.4); }
 </style>
 
 <div class="bg-background">
@@ -546,7 +546,7 @@
                                             {
                                                 <button @onclick="@(() => AddToCart(product))"
                                                         class="btn text-white w-100 py-2 d-flex align-items-center justify-content-center gap-2"
-                                                        style="background-color:@(_addedIds.Contains(product.Id) ? "#16a34a" : "#0D4525");
+                                                        style="background-color:@(_addedIds.Contains(product.Id) ? "#16a34a" : "#1A6B3C");
                                                                border:none;border-radius:8px;font-weight:500;
                                                                font-size:0.9rem;transition:background-color 0.3s;"
                                                         title="Agregar al carrito">

@@ -66,8 +66,8 @@
 
     @if (_success)
     {
-        <div class="alert alert-success alert-dismissible show p-3 d-flex align-items-center gap-3 border-0 shadow-sm" style="border-radius: 1rem; background-color: #e8f5e9; color: #1b5e20;" role="alert">
-            <i class="fas fa-check-circle fs-5" style="color: #2e7d32;"></i>
+        <div class="alert alert-success alert-dismissible show p-3 d-flex align-items-center gap-3 border-0 shadow-sm alert-banner-success" role="alert">
+            <i class="fas fa-check-circle fs-5 text-primary"></i>
             <div class="small fw-semibold">Tus datos de perfil han sido actualizados con éxito.</div>
             <button type="button" class="btn-close" @onclick="@(() => _success = false)" style="font-size: 0.75rem; margin-top: 2px;"></button>
         </div>
@@ -77,7 +77,7 @@
     <div class="card bg-white border border-color-default shadow-sm p-4 rounded-4">
         <div class="d-flex align-items-center gap-4">
             <!-- Avatar -->
-            <div class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold" style="width: 80px; height: 80px; background-color: #064420; font-size: 2.2rem; font-family: 'Outfit', sans-serif;">
+            <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold" style="width: 80px; height: 80px; font-size: 2.2rem; font-family: 'Outfit', sans-serif;">
                 @GetInitials(Auth.CurrentUser?.Name ?? $"{_firstName} {_lastName}")
             </div>
             <!-- Details -->
@@ -86,7 +86,7 @@
                     @(Auth.CurrentUser?.Name ?? $"{_firstName} {_lastName}")
                 </h2>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <span class="badge" style="background-color: #eaf4ec; color: #2e7d32; font-size: 0.72rem; padding: 0.25rem 0.6rem; border-radius: 6px; font-weight: 600;">
+                    <span class="badge badge-role">
                         Trabajador
                     </span>
                     <span class="text-muted-foreground" style="font-size: 0.8rem;">
@@ -106,7 +106,7 @@
                 <h3 class="fw-bold text-foreground mb-1" style="font-family: 'Outfit', sans-serif; font-size: 1.25rem;">
                     Información Personal
                 </h3>
-                <p class="text-muted-foreground small mb-0">
+                <p class="page-subtitle mb-0">
                     @(_isEditing ? "Edita tu email y teléfono de contacto" : "Tu información de contacto y datos personales")
                 </p>
             </div>
@@ -228,8 +228,8 @@
     }
 
     .btn-profile-save {
-        background-color: #064420;
-        border: 1px solid #064420;
+        background-color: var(--primary);
+        border: 1px solid var(--primary);
         font-size: 0.85rem;
         border-radius: 0.5rem;
         font-weight: 600;
@@ -239,7 +239,7 @@
     }
 
     .btn-profile-save:hover {
-        background-color: #053318;
+        background-color: color-mix(in srgb, var(--primary) 85%, black);
         border-color: #053318;
     }
 

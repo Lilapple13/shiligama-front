@@ -10,7 +10,15 @@
     private List<KpiItem> _kpis = new();
     private List<Sale> _recentSales = new();
 
-    private record KpiItem(string Title, string Value, string Subtitle, string FaIcon, string Color, string Trend, bool TrendUp);
+    private record KpiItem(string Title, string Value, string Subtitle, string FaIcon, string Tone, string Trend, bool TrendUp);
+
+    private static string GetKpiIconClass(string tone) => tone switch
+    {
+        "warning" => "kpi-icon-warning",
+        "danger" => "kpi-icon-danger",
+        "info" => "kpi-icon-info",
+        _ => "kpi-icon-primary"
+    };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -25,19 +33,19 @@
             new("Ventas hoy",
                 $"S/. {todaySales:0.00}",
                 "8 transacciones hoy",
-                "fa-wallet", "#1A6B3C", "+12.5%", true),
+                "fa-wallet", "primary", "+12.5%", true),
             new("Pedidos pendientes",
                 $"{SalesSvc.GetRecentOrders().Count(o => o.Status == "pendiente")}",
                 "+3 nuevos hoy",
-                "fa-clock", "#e67e22", "+3", true),
+                "fa-clock", "warning", "+3", true),
             new("Productos con bajo stock",
                 $"{products.Count(p => p.Stock < 10)}",
                 "-5 requieren atención",
-                "fa-box-open", "#c62828", "-5", false),
+                "fa-box-open", "danger", "-5", false),
             new("Ingresos del mes",
                 $"S/. {sales.Sum(s => s.Total):0.00}",
                 "vs. mes anterior",
-                "fa-chart-line", "#2563EB", "+8.2%", true),
+                "fa-chart-line", "info", "+8.2%", true),
         };
 
         _recentSales = sales.OrderByDescending(s => s.Fecha).Take(6).ToList();
@@ -69,10 +77,10 @@
 <div class="d-flex flex-column gap-4">
     <!-- Header -->
     <div>
-        <h1 class="fs-4 fw-bold text-foreground mb-0">
+        <h1 class="page-title mb-0">
             <i class="fas fa-store me-2 text-primary"></i>Dashboard
         </h1>
-        <p class="text-muted-foreground small mt-1 mb-0">Resumen general de operaciones y métricas clave</p>
+        <p class="page-subtitle">Resumen general de operaciones y métricas clave</p>
     </div>
 
     <!-- KPI Cards -->
@@ -88,13 +96,13 @@
                             <span class="text-muted-foreground" style="font-size:0.75rem;">@kpi.Subtitle</span>
                             @if (!string.IsNullOrEmpty(kpi.Trend))
                             {
-                                <span class="badge small py-1" style="@(kpi.TrendUp?"background:color-mix(in srgb,#1A6B3C 15%,transparent);color:#1A6B3C;":"background:color-mix(in srgb,#c62828 15%,transparent);color:#c62828;") border-radius:var(--radius);">
+                                <span class="badge small py-1 @(kpi.TrendUp ? "trend-up" : "trend-down")">
                                     <i class="fas @(kpi.TrendUp?"fa-arrow-up":"fa-arrow-down") me-1" style="font-size:0.6rem;"></i>@kpi.Trend
                                 </span>
                             }
                         </div>
                     </div>
-                    <div class="metric-kpi-icon" style="background:color-mix(in srgb,@kpi.Color 15%,transparent);color:@kpi.Color;">
+                    <div class="metric-kpi-icon @GetKpiIconClass(kpi.Tone)">
                         <i class="fas @kpi.FaIcon"></i>
                     </div>
                 </div>
@@ -109,14 +117,12 @@
             <div class="card p-4 h-100">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <div>
-                        <h2 class="fs-5 fw-semibold text-foreground mb-0">
+                        <h2 class="section-title mb-0">
                             <i class="fas fa-chart-line me-2 text-primary"></i>Ventas de la Semana
                         </h2>
                         <p class="text-muted-foreground small m-0">Resumen de ventas diarias en soles (S/.)</p>
                     </div>
-                    <span class="badge small py-1 px-2" style="background:color-mix(in srgb,#1A6B3C 12%,transparent);color:#1A6B3C;border-radius:var(--radius);">
-                        En tiempo real
-                    </span>
+                    <span class="badge small py-1 px-2 trend-up">En tiempo real</span>
                 </div>
                 <div style="height:240px; position:relative;">
                     <canvas id="salesChart"></canvas>

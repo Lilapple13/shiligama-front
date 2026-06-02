@@ -1,69 +1,128 @@
-using System;
+using System.Text.Json;
+using Microsoft.JSInterop;
 using shilligama_blazor.Models;
 
 namespace shilligama_blazor.Services;
 
 public class AuthService
 {
+    private const string StorageKey = "shiligama-auth";
+
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    private readonly IJSRuntime _jsRuntime;
+    private bool _isInitialized;
+
     public User? CurrentUser { get; private set; }
 
     public event Action? OnChange;
 
-    public bool Login(string email, string password)
+    public AuthService(IJSRuntime jsRuntime)
     {
-        // Administrador
+        _jsRuntime = jsRuntime;
+    }
+
+    public async Task InitializeAsync()
+    {
+        if (_isInitialized) return;
+
+        try
+        {
+            var json = await _jsRuntime.InvokeAsync<string?>("localStorageHelper.getItem", StorageKey);
+            if (!string.IsNullOrEmpty(json))
+            {
+                CurrentUser = JsonSerializer.Deserialize<User>(json, JsonOptions);
+                NotifyStateChanged();
+            }
+        }
+        catch
+        {
+            // Prerender / circuit not ready
+        }
+
+        _isInitialized = true;
+    }
+
+    public bool Login(string email, string password, bool rememberMe = false)
+    {
+        User? user = null;
+
         if (email == "test1234@admin.com" && password == "eldelegadolavandoselasmanos")
         {
-            CurrentUser = new User { Email = email, Name = "Admin Shiligama", Role = "administrador" };
-            NotifyStateChanged();
-            return true;
+            user = new User { Email = email, Name = "Admin Shiligama", Role = "administrador" };
         }
-        
-        // Trabajador
-        if ((email == "trabajador@shiligama.com" || email == "carlos.mendoza@shiligama.com") && password == "trabajador123")
+        else if ((email == "trabajador@shiligama.com" || email == "carlos.mendoza@shiligama.com") && password == "trabajador123")
         {
-            CurrentUser = new User { Email = "carlos.mendoza@shiligama.com", Name = "Carlos Mendoza", Role = "trabajador" };
-            NotifyStateChanged();
-            return true;
+            user = new User { Email = "carlos.mendoza@shiligama.com", Name = "Carlos Mendoza", Role = "trabajador" };
         }
-        
-        // Cliente
-        if (email == "cliente@shiligama.com" && password == "cliente123")
+        else if (email == "cliente@shiligama.com" && password == "cliente123")
         {
-            CurrentUser = new User { Email = email, Name = "Juan Cliente", Role = "cliente" };
-            NotifyStateChanged();
-            return true;
+            user = new User { Email = email, Name = "Juan Cliente", Role = "cliente" };
+        }
+        else if (email.Contains('@') && password.Length >= 6)
+        {
+            user = new User { Email = email, Name = email.Split('@')[0], Role = "cliente" };
         }
 
-        // Cliente genérico si es un correo válido y tiene contraseña válida
-        if (email.Contains("@") && password.Length >= 6)
-        {
-            CurrentUser = new User { Email = email, Name = email.Split('@')[0], Role = "cliente" };
-            NotifyStateChanged();
-            return true;
-        }
+        if (user is null) return false;
 
-        return false;
+        CurrentUser = user;
+        _ = rememberMe ? PersistSessionAsync() : ClearPersistedSessionAsync();
+        NotifyStateChanged();
+        return true;
     }
 
     public void Register(string name, string email, string password)
     {
-        // Simular registro y login automático del cliente
         CurrentUser = new User { Email = email, Name = name, Role = "cliente" };
+        _ = PersistSessionAsync();
         NotifyStateChanged();
     }
 
     public void Logout()
     {
         CurrentUser = null;
+        _ = ClearPersistedSessionAsync();
         NotifyStateChanged();
     }
 
     public bool IsLoggedIn() => CurrentUser != null;
-    
+
+    public bool IsCliente() => CurrentUser?.Role == "cliente";
+
     public bool IsAdmin() => CurrentUser?.Role == "administrador";
-    
+
     public bool IsWorker() => CurrentUser?.Role == "trabajador";
+
+    private async Task PersistSessionAsync()
+    {
+        if (CurrentUser is null) return;
+
+        try
+        {
+            var json = JsonSerializer.Serialize(CurrentUser, JsonOptions);
+            await _jsRuntime.InvokeVoidAsync("localStorageHelper.setItem", StorageKey, json);
+        }
+        catch
+        {
+            // Ignore during prerender
+        }
+    }
+
+    private async Task ClearPersistedSessionAsync()
+    {
+        try
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorageHelper.removeItem", StorageKey);
+        }
+        catch
+        {
+            // Ignore during prerender
+        }
+    }
 
     private void NotifyStateChanged() => OnChange?.Invoke();
 }

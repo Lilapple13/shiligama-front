@@ -129,7 +129,7 @@
 
                                 <!-- Price -->
                                 <div class="mb-3">
-                                    <span class="fw-bold" style="font-size: 1.2rem; color: #0D4525;">S/. @product.Price.ToString("0.00")</span>
+                                    <span class="fw-bold" style="font-size: 1.2rem; color: #1A6B3C;">S/. @product.Price.ToString("0.00")</span>
                                     @if (product.OriginalPrice.HasValue)
                                     {
                                         <span class="text-decoration-line-through text-muted-foreground ms-1 small" style="font-size:.8rem;">
@@ -144,7 +144,7 @@
                                     {
                                         <button @onclick="@(() => AddToCart(product))"
                                                 class="btn text-white w-100 py-2 d-flex align-items-center justify-content-center gap-2"
-                                                style="background-color: #0D4525; border: none; border-radius: 8px; font-weight: 500; font-size: 0.9rem; transition: background-color 0.2s;"
+                                                style="background-color: #1A6B3C; border: none; border-radius: 8px; font-weight: 500; font-size: 0.9rem; transition: background-color 0.2s;"
                                                 title="Agregar al carrito">
                                             <i class="fa-solid fa-plus" style="font-size: 0.85rem;"></i> Agregar
                                         </button>

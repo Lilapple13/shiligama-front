@@ -1,28 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
+  /* Verde login (BrandedPanel) — fuente única de verdad */
+  --brand-green: #1A6B3C;
+  --brand-green-rgb: 26, 107, 60;
+
   --background: oklch(0.98 0.005 145);
   --foreground: oklch(0.2 0.02 145);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.2 0.02 145);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0.02 145);
-  --primary: oklch(0.42 0.12 145);
-  --primary-foreground: oklch(0.99 0 0);
+  --primary: var(--brand-green);
+  --primary-foreground: #ffffff;
   --secondary: oklch(0.95 0.015 145);
   --secondary-foreground: oklch(0.3 0.05 145);
   --muted: oklch(0.96 0.01 145);
   --muted-foreground: oklch(0.5 0.03 145);
-  --accent: oklch(0.52 0.1 145);
-  --accent-foreground: oklch(0.99 0 0);
+  --accent: color-mix(in srgb, var(--brand-green) 75%, white);
+  --accent-foreground: #ffffff;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.99 0 0);
   --border: oklch(0.9 0.02 145);
   --input: oklch(0.92 0.015 145);
-  --ring: oklch(0.42 0.12 145);
+  --ring: var(--brand-green);
   --radius: 0.625rem;
-  --sidebar: oklch(0.32 0.1 145);
-  --sidebar-foreground: oklch(0.99 0 0);
+  --sidebar: var(--brand-green);
+  --sidebar-foreground: #F4FFF8;
+
+  --bs-primary: var(--brand-green);
+  --bs-primary-rgb: var(--brand-green-rgb);
+  --bs-link-color: var(--brand-green);
+  --bs-link-hover-color: color-mix(in srgb, var(--brand-green) 80%, black);
   
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
@@ -36,8 +45,8 @@
     --card-foreground: oklch(0.95 0.01 145);
     --popover: oklch(0.18 0.02 145);
     --popover-foreground: oklch(0.95 0.01 145);
-    --primary: oklch(0.52 0.12 145);
-    --primary-foreground: oklch(0.99 0 0);
+    --primary: color-mix(in srgb, var(--brand-green) 88%, white);
+    --primary-foreground: #ffffff;
     --secondary: oklch(0.25 0.03 145);
     --secondary-foreground: oklch(0.95 0.01 145);
     --muted: oklch(0.25 0.02 145);
@@ -48,9 +57,11 @@
     --destructive-foreground: oklch(0.99 0 0);
     --border: oklch(0.3 0.03 145);
     --input: oklch(0.25 0.02 145);
-    --ring: oklch(0.52 0.12 145);
-    --sidebar: oklch(0.25 0.08 145);
-    --sidebar-foreground: oklch(0.95 0.01 145);
+    --ring: color-mix(in srgb, var(--brand-green) 88%, white);
+    --sidebar: var(--brand-green);
+    --sidebar-foreground: #F4FFF8;
+    --bs-primary: color-mix(in srgb, var(--brand-green) 88%, white);
+    --bs-link-color: color-mix(in srgb, var(--brand-green) 88%, white);
     --bs-table-bg: var(--card);
     --bs-table-color: var(--foreground);
     --bs-table-border-color: var(--border);
@@ -306,9 +317,10 @@ body {
 }
 
 /* Sidebar Custom Styling */
+.bg-sidebar,
 .sidebar {
-  background-color: var(--sidebar);
-  color: var(--sidebar-foreground);
+  background-color: var(--sidebar) !important;
+  color: var(--sidebar-foreground) !important;
   transition: all 0.3s ease;
 }
 
@@ -608,7 +620,7 @@ body {
 
 /* ── Dark mode: badges de estado ── */
 .dark .badge-entregado {
-    background-color: #064e3b;
+    background-color: var(--brand-green);
     color: #6ee7b7;
     border-color: #065f46;
 }
@@ -690,7 +702,7 @@ body {
 }
 
 .dark [style*="background:#dcfce7"] {
-    background: #064e3b !important;
+    background: color-mix(in srgb, var(--brand-green) 25%, transparent) !important;
 }
 
 .dark [style*="background:#fee2e2"] {
@@ -763,7 +775,7 @@ body {
 }
 
 .dark .badge-en-stock {
-    background-color: #064e3b;
+    background-color: var(--brand-green);
     color: #6ee7b7;
 }
 

@@ -3,6 +3,7 @@
 
 @code {
     [Parameter] public EventCallback OnBackToLogin { get; set; }
+    [Parameter] public string? ReturnUrl { get; set; }
 
     private string _name = "";
     private string _email = "";
@@ -21,7 +22,15 @@
         _isLoading = true;
         await Task.Delay(500);
         Auth.Register(_name, _email, _password);
-        Navigation.NavigateTo("/catalogo");
+        var safeReturn = GetSafeReturnUrl();
+        Navigation.NavigateTo(safeReturn ?? "/catalogo");
+    }
+
+    private string? GetSafeReturnUrl()
+    {
+        if (string.IsNullOrWhiteSpace(ReturnUrl)) return null;
+        if (!ReturnUrl.StartsWith('/') || ReturnUrl.StartsWith("//")) return null;
+        return ReturnUrl;
     }
 }
 

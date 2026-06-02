@@ -55,7 +55,7 @@ window.boletaHelpers = {
 
         .header {
             text-align: center;
-            border-bottom: 2px solid #064420;
+            border-bottom: 2px solid #1A6B3C;
             padding-bottom: 12px;
             margin-bottom: 12px;
         }
@@ -64,7 +64,7 @@ window.boletaHelpers = {
             width: 48px;
             height: 48px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #064420, #0a6b35);
+            background: linear-gradient(135deg, #1A6B3C, #228B4A);
             color: #fff;
             display: inline-flex;
             align-items: center;
@@ -77,7 +77,7 @@ window.boletaHelpers = {
         .company-name {
             font-size: 16px;
             font-weight: 700;
-            color: #064420;
+            color: #1A6B3C;
             letter-spacing: 1px;
         }
 
@@ -99,7 +99,7 @@ window.boletaHelpers = {
         .doc-title h2 {
             font-size: 13px;
             font-weight: 700;
-            color: #064420;
+            color: #1A6B3C;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -156,8 +156,8 @@ window.boletaHelpers = {
         .total-row.grand-total {
             font-size: 15px;
             font-weight: 700;
-            color: #064420;
-            border-top: 2px solid #064420;
+            color: #1A6B3C;
+            border-top: 2px solid #1A6B3C;
             padding-top: 8px;
             margin-top: 6px;
         }
@@ -178,7 +178,7 @@ window.boletaHelpers = {
         .footer .thanks {
             font-size: 12px;
             font-weight: 600;
-            color: #064420;
+            color: #1A6B3C;
             margin-bottom: 4px;
         }
 

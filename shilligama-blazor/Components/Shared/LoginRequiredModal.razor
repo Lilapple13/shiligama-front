@@ -1,0 +1,62 @@
+@code {
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+    [Parameter] public string? ReturnUrl { get; set; }
+
+    private string SafeReturnUrl
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(ReturnUrl)) return "/carrito";
+            if (!ReturnUrl.StartsWith('/') || ReturnUrl.StartsWith("//")) return "/carrito";
+            return ReturnUrl;
+        }
+    }
+
+    private string LoginUrl => BuildAuthUrl(register: false);
+    private string RegisterUrl => BuildAuthUrl(register: true);
+
+    private string BuildAuthUrl(bool register)
+    {
+        var encoded = Uri.EscapeDataString(SafeReturnUrl);
+        return register
+            ? $"/?register=true&returnUrl={encoded}"
+            : $"/?returnUrl={encoded}";
+    }
+
+    private async Task CloseAsync()
+    {
+        IsOpen = false;
+        await IsOpenChanged.InvokeAsync(false);
+    }
+}
+
+<Modal Title="Cuenta requerida" IsOpen="IsOpen" IsOpenChanged="IsOpenChanged">
+    <ChildContent>
+        <div class="text-center py-2">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                 style="width:56px;height:56px;background:color-mix(in srgb, var(--primary) 12%, transparent);">
+                <i class="fa-solid fa-lock text-primary" style="font-size:1.35rem;"></i>
+            </div>
+            <p class="text-foreground mb-2" style="font-size:0.95rem;">
+                Para proceder con el checkout debes <strong>iniciar sesión</strong> o <strong>crear una cuenta</strong>.
+            </p>
+            <p class="text-muted-foreground small mb-0">
+                Puedes seguir explorando el catálogo sin cuenta; solo necesitas registrarte al confirmar tu pedido.
+            </p>
+        </div>
+    </ChildContent>
+    <FooterContent>
+        <div class="d-flex flex-wrap gap-2 w-100 justify-content-end">
+            <button type="button" class="btn btn-outline-secondary" @onclick="CloseAsync">
+                Cancelar
+            </button>
+            <a href="@RegisterUrl" class="btn btn-outline-primary">
+                Crear cuenta
+            </a>
+            <a href="@LoginUrl" class="btn btn-primary">
+                Iniciar sesión
+            </a>
+        </div>
+    </FooterContent>
+</Modal>

@@ -1,6 +1,7 @@
 @page "/checkout"
 @layout MainLayout
 @inject CartService Cart
+@inject AuthService Auth
 @inject SalesService SalesSvc
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
@@ -40,6 +41,9 @@
     private string _orderId   = "";
 
     private bool _showMapModal = false;
+    private bool _addressMenuOpen = false;
+    private bool _showLoginRequired;
+    private bool _authReady;
     private string _pendingAddress = "";
     private DotNetObjectReference<Checkout>? _dotnetRef;
 
@@ -48,15 +52,30 @@
         if (firstRender)
         {
             await Cart.InitializeAsync();
+            await Auth.InitializeAsync();
+
             if (!string.IsNullOrEmpty(DeliveryParam))
                 _deliveryMethod = DeliveryParam;
+
+            if (!Auth.IsCliente())
+                _showLoginRequired = true;
+            else if (_deliveryMethod == "delivery" && string.IsNullOrEmpty(_address) && _addresses.Count > 0)
+                _address = _addresses[0];
+
+            _authReady = true;
             StateHasChanged();
         }
     }
 
+    private string CheckoutReturnUrl =>
+        $"/checkout?delivery={_deliveryMethod}";
+
     private decimal Subtotal    => Cart.GetSubtotal();
     private decimal DeliveryFee => _deliveryMethod == "delivery" ? 5m : 0m;
     private decimal Total       => Subtotal + DeliveryFee;
+
+    private bool CanPlaceOrder =>
+        _deliveryMethod != "delivery" || !string.IsNullOrWhiteSpace(_address);
 
     private string FormatCard(string raw)
     {
@@ -85,13 +104,25 @@
         if (_yapeCode.Length >= 4) _yapeConfirmed = true;
     }
 
-    private void SelectAddress(string addr)
+    private void ToggleAddressMenu() => _addressMenuOpen = !_addressMenuOpen;
+
+    private void CloseAddressMenu() => _addressMenuOpen = false;
+
+    private void ChooseAddress(string addr)
     {
         _address = addr;
+        _addressMenuOpen = false;
+    }
+
+    private async Task ChooseAddAddress()
+    {
+        _addressMenuOpen = false;
+        await OpenCheckoutMap();
     }
 
     private async Task OpenCheckoutMap()
     {
+        _addressMenuOpen = false;
         _showMapModal = true;
         _pendingAddress = "";
         StateHasChanged();
@@ -167,6 +198,109 @@
 .checkout-input-solo:focus {
     border-color: var(--primary) !important;
 }
+.checkout-address-picker {
+    position: relative;
+}
+.checkout-address-trigger {
+    width: 100%;
+    min-height: 38px;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--background);
+    color: var(--foreground);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.checkout-address-trigger:hover {
+    border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
+}
+.checkout-address-trigger.is-open,
+.checkout-address-trigger:focus-visible {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--primary) 18%, transparent);
+    outline: none;
+}
+.checkout-address-trigger__icon {
+    width: 14px;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    color: var(--primary);
+}
+.checkout-address-trigger__icon--muted {
+    color: var(--muted-foreground);
+}
+.checkout-address-trigger__chevron {
+    font-size: 0.65rem;
+    color: var(--muted-foreground);
+    transition: transform 0.15s ease;
+}
+.checkout-address-trigger.is-open .checkout-address-trigger__chevron {
+    transform: rotate(180deg);
+}
+.checkout-address-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1040;
+    background: transparent;
+}
+.checkout-address-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    margin: 0;
+    padding: 0.25rem;
+    list-style: none;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    max-height: 210px;
+    overflow-y: auto;
+}
+.checkout-address-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.45rem 0.55rem;
+    border: none;
+    border-radius: calc(var(--radius) - 2px);
+    background: transparent;
+    color: var(--foreground);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    text-align: left;
+}
+.checkout-address-item:hover {
+    background: var(--secondary);
+}
+.checkout-address-item.is-selected {
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
+    font-weight: 500;
+}
+.checkout-address-item__icon {
+    width: 14px;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    text-align: center;
+    color: var(--primary);
+}
+.checkout-address-item--add {
+    color: var(--primary);
+    font-weight: 500;
+}
+.checkout-address-item--add .checkout-address-item__icon {
+    color: var(--primary);
+}
+.checkout-address-divider {
+    margin: 0.2rem 0.35rem;
+    border-color: var(--border);
+    opacity: 1;
+}
 /* QR Yape: fondo blanco siempre (es un código QR real) */
 .yape-qr-box {
     border: 2px solid #c4b5fd !important;
@@ -189,12 +323,14 @@
 .cash-icon-ok   { background: #bbf7d0; }
 .cash-icon-warn { background: #fde68a; }
 .cash-icon-empty{ background: var(--secondary); }
-.dark .cash-icon-ok   { background: #064e3b; }
+.dark .cash-icon-ok   { background: var(--brand-green); }
 .dark .cash-icon-warn { background: #451a03; }
 /* Texto "falta por pagar" */
 .cash-text-warn { color: #b45309; }
 .dark .cash-text-warn { color: #fbbf24; }
 </style>
+
+<LoginRequiredModal @bind-IsOpen="_showLoginRequired" ReturnUrl="@CheckoutReturnUrl" />
 
 @if (_success)
 {
@@ -217,6 +353,26 @@ else if (!Cart.GetCartItems().Any())
         <p class="text-muted-foreground">Tu carrito está vacío.</p>
         <a href="/catalogo" class="btn btn-primary" style="border-radius:var(--radius);">Ir al catálogo</a>
     </div>
+}
+else if (_authReady && !Auth.IsCliente())
+{
+    <div class="container py-5 text-center" style="max-width:480px;">
+        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+             style="width:64px;height:64px;background:color-mix(in srgb, var(--primary) 12%, transparent);">
+            <i class="fa-solid fa-lock text-primary" style="font-size:1.5rem;"></i>
+        </div>
+        <h2 class="fs-5 fw-bold text-foreground mb-2">Inicia sesión para continuar</h2>
+        <p class="text-muted-foreground small mb-4">
+            Necesitas una cuenta de cliente para completar el checkout.
+        </p>
+        <a href="/carrito" class="btn btn-outline-secondary" style="border-radius:var(--radius);">
+            Volver al carrito
+        </a>
+    </div>
+}
+else if (!_authReady)
+{
+    <div class="container py-5 text-center text-muted-foreground small">Cargando...</div>
 }
 else
 {
@@ -285,40 +441,76 @@ else
                             @if (_deliveryMethod == "delivery")
                             {
                                 <p class="text-muted-foreground mb-0" style="font-size:.72rem;">
-                                    Selecciona tu dirección abajo
+                                    Elige la dirección en el desplegable
                                 </p>
                             }
                         </div>
                     </div>
                     @if (_deliveryMethod == "delivery")
                     {
-                        <div class="d-flex flex-column gap-1 mt-2">
-                            @foreach (var addr in _addresses)
+                        <div class="mt-3 checkout-address-picker">
+                            <label class="form-label small fw-semibold text-foreground mb-2" id="checkout-address-label">
+                                <i class="fa-solid fa-location-dot me-1 text-primary" style="font-size:0.75rem;"></i>
+                                Dirección de entrega
+                            </label>
+
+                            @if (_addressMenuOpen)
                             {
-                                <div class="d-flex align-items-center gap-2 px-3 py-2"
-                                     style="border-radius: 8px; cursor: pointer; transition: all 0.15s;
-                                            border: 1.5px solid @(_address == addr ? "#0D4525" : "#e5e7eb");
-                                            background: @(_address == addr ? "#f0fdf4" : "#fafafa");"
-                                     @onclick="@(() => SelectAddress(addr))">
-                                    <i class="fa-solid fa-location-dot" style="color: @(_address == addr ? "#0D4525" : "#9ca3af"); font-size: 0.85rem; flex-shrink: 0;"></i>
-                                    <span style="font-size: 0.85rem; color: @(_address == addr ? "#0D4525" : "#374151"); flex-grow: 1;
-                                                 font-weight: @(_address == addr ? "600" : "400");">@addr</span>
-                                    @if (_address == addr)
-                                    {
-                                        <i class="fa-solid fa-circle-check" style="color: #0D4525; font-size: 0.85rem;"></i>
-                                    }
-                                </div>
+                                <div class="checkout-address-backdrop" @onclick="CloseAddressMenu"></div>
                             }
-                            <!-- Otra dirección -->
-                            <div class="d-flex align-items-center gap-2 px-3 py-2"
-                                 style="border-radius: 8px; cursor: pointer; transition: all 0.15s;
-                                        border: 1.5px dashed #0D4525; background: transparent;"
-                                 @onclick="OpenCheckoutMap"
-                                 onmouseover="this.style.backgroundColor='#f0fdf4';"
-                                 onmouseout="this.style.backgroundColor='transparent';">
-                                <i class="fa-solid fa-plus" style="color: #0D4525; font-size: 0.8rem; flex-shrink: 0;"></i>
-                                <span style="font-size: 0.85rem; color: #0D4525; font-weight: 600;">Otra dirección</span>
-                            </div>
+
+                            <button type="button"
+                                    id="checkout-address"
+                                    class="checkout-address-trigger d-flex align-items-center gap-2 @(_addressMenuOpen ? "is-open" : "")"
+                                    aria-labelledby="checkout-address-label"
+                                    aria-haspopup="listbox"
+                                    aria-expanded="@_addressMenuOpen"
+                                    @onclick="ToggleAddressMenu">
+                                @if (string.IsNullOrWhiteSpace(_address))
+                                {
+                                    <i class="fa-solid fa-location-dot checkout-address-trigger__icon checkout-address-trigger__icon--muted"></i>
+                                    <span class="text-muted-foreground flex-grow-1 text-truncate">Selecciona una dirección</span>
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-location-dot checkout-address-trigger__icon"></i>
+                                    <span class="flex-grow-1 text-truncate">@_address</span>
+                                }
+                                <i class="fa-solid fa-chevron-down checkout-address-trigger__chevron ms-auto"></i>
+                            </button>
+
+                            @if (_addressMenuOpen)
+                            {
+                                <ul class="checkout-address-menu" role="listbox" aria-label="Direcciones guardadas">
+                                    @foreach (var addr in _addresses)
+                                    {
+                                        <li>
+                                            <button type="button"
+                                                    role="option"
+                                                    aria-selected="@(_address == addr)"
+                                                    class="checkout-address-item @(_address == addr ? "is-selected" : "")"
+                                                    @onclick="@(() => ChooseAddress(addr))">
+                                                <i class="fa-solid fa-location-dot checkout-address-item__icon" aria-hidden="true"></i>
+                                                <span class="text-truncate">@addr</span>
+                                            </button>
+                                        </li>
+                                    }
+                                    <li><hr class="checkout-address-divider" /></li>
+                                    <li>
+                                        <button type="button"
+                                                class="checkout-address-item checkout-address-item--add"
+                                                @onclick="ChooseAddAddress">
+                                            <i class="fa-solid fa-plus checkout-address-item__icon" aria-hidden="true"></i>
+                                            <span>Agregar otra dirección</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            }
+
+                            @if (string.IsNullOrWhiteSpace(_address))
+                            {
+                                <p class="text-danger mb-0 mt-2" style="font-size:0.75rem;">Selecciona o agrega una dirección para continuar.</p>
+                            }
                         </div>
                     }
                 </div>
@@ -629,7 +821,7 @@ else
 
                     <button class="btn btn-primary w-100 fw-semibold mt-4 d-flex align-items-center justify-content-center gap-2"
                             style="height:52px;border-radius:var(--radius);"
-                            disabled="@_isLoading"
+                            disabled="@(_isLoading || !CanPlaceOrder)"
                             @onclick="PlaceOrder">
                         @if (_isLoading)
                         {
@@ -660,7 +852,7 @@ else
             <div class="d-flex align-items-center justify-content-between px-4 py-3"
                  style="border-bottom: 1px solid #e5e7eb;">
                 <h5 class="fw-bold mb-0" style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; color: #111827;">
-                    <i class="fa-solid fa-map-location-dot me-2" style="color: #0D4525;"></i>Seleccionar dirección
+                    <i class="fa-solid fa-map-location-dot me-2" style="color: #1A6B3C;"></i>Seleccionar dirección
                 </h5>
                 <button type="button" @onclick="CloseCheckoutMap"
                         style="background: none; border: none; font-size: 1.3rem; color: #6b7280; cursor: pointer; line-height: 1;">
@@ -673,7 +865,7 @@ else
                 {
                     <div class="d-flex align-items-start gap-2 mb-3 p-2"
                          style="background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0;">
-                        <i class="fa-solid fa-location-dot mt-1" style="color: #0D4525; flex-shrink: 0;"></i>
+                        <i class="fa-solid fa-location-dot mt-1" style="color: #1A6B3C; flex-shrink: 0;"></i>
                         <span style="font-size: 0.85rem; color: #374151; word-break: break-word;">@_pendingAddress</span>
                     </div>
                 }
@@ -691,7 +883,7 @@ else
                     </button>
                     <button type="button" @onclick="ConfirmMapAddress"
                             class="btn text-white px-3 py-2 fw-semibold d-flex align-items-center gap-2"
-                            style="background-color: #0D4525; border-radius: 8px; font-size: 0.9rem; border: none;"
+                            style="background-color: #1A6B3C; border-radius: 8px; font-size: 0.9rem; border: none;"
                             disabled="@(string.IsNullOrWhiteSpace(_pendingAddress))">
                         <i class="fa-solid fa-check"></i> Confirmar
                     </button>

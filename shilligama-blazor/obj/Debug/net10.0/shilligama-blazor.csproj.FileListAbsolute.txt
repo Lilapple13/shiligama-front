@@ -248,10 +248,7 @@ D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\scopedcss\Components\Layout\ReconnectModal.razor.rz.scp.css
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\scopedcss\bundle\shilligama_blazor.styles.css
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\scopedcss\projectbundle\shilligama_blazor.bundle.scp.css
-D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-c28xlmbujk-c28xlmbujk.gz
-D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\5n7s4x5ka7-{0}-jehmh76fo7-jehmh76fo7.gz
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\a6g5htdkqg-{0}-ktm80c26os-ktm80c26os.gz
-D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\2t7tdq530p-{0}-n3bfny1jwn-n3bfny1jwn.gz
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\04teec2vld-{0}-ppsp9a40r0-ppsp9a40r0.gz
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\afqpcx2okj-{0}-abdmv1u4y3-abdmv1u4y3.gz
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\20v04azdi9-{0}-ej96puwv3k-ej96puwv3k.gz
@@ -269,4 +266,8 @@ D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.genruntimeconfig.cache
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\ref\shilligama_blazor.dll
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\o12if6v7bs-{0}-xr1vmr0fny-xr1vmr0fny.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\5n7s4x5ka7-{0}-yzs50yym15-yzs50yym15.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\2t7tdq530p-{0}-t2jtq8d96s-t2jtq8d96s.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\swwbyqylwv-{0}-wfqt4o3laz-wfqt4o3laz.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-iak8fmgatn-iak8fmgatn.gz
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

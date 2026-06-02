@@ -1,0 +1,441 @@
+/* Shiligama — tipografía y colores compartidos (referencia: /catalogo) */
+
+:root {
+  --status-pending: #e67e22;
+  --status-preparing: #1976d2;
+  --status-ready: var(--primary);
+  --status-delivered: var(--brand-green);
+  --status-cancelled: var(--destructive);
+  --tone-success: var(--brand-green);
+  --tone-warning: #f59e0b;
+  --tone-danger: #c62828;
+  --tone-info: #2563eb;
+  --tone-purple: #7c3aed;
+}
+
+/* ── Shell de página (catálogo, admin, trabajador) ── */
+.app-page {
+  font-family: 'Geist', 'Outfit', sans-serif;
+  color: var(--foreground);
+}
+
+.app-page .page-title,
+.app-page h1.page-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.app-page .page-title-lg {
+  font-size: 1.9rem;
+}
+
+.app-page .page-subtitle,
+.app-page p.page-subtitle {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0;
+}
+
+.app-page .section-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.app-page .font-display {
+  font-family: 'Outfit', sans-serif;
+}
+
+.app-page .price-display {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.app-page .table thead.table-head-muted,
+.app-page .table thead.table-head-muted th {
+  background-color: var(--muted) !important;
+  color: var(--muted-foreground);
+}
+
+.app-page .surface-muted {
+  background-color: var(--muted) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius);
+}
+
+.app-page .btn-surface {
+  background: var(--secondary) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--foreground) !important;
+  border-radius: var(--radius);
+}
+
+.app-page .btn-surface:hover {
+  background: var(--muted) !important;
+}
+
+/* ── KPI icon tones ── */
+.app-page .kpi-icon-primary {
+  background: color-mix(in srgb, var(--primary) 15%, transparent);
+  color: var(--primary);
+}
+
+.app-page .kpi-icon-success {
+  background: color-mix(in srgb, var(--tone-success) 15%, transparent);
+  color: var(--tone-success);
+}
+
+.app-page .kpi-icon-warning {
+  background: color-mix(in srgb, var(--tone-warning) 15%, transparent);
+  color: var(--tone-warning);
+}
+
+.app-page .kpi-icon-danger {
+  background: color-mix(in srgb, var(--tone-danger) 15%, transparent);
+  color: var(--tone-danger);
+}
+
+.app-page .kpi-icon-info {
+  background: color-mix(in srgb, var(--tone-info) 15%, transparent);
+  color: var(--tone-info);
+}
+
+.app-page .kpi-icon-purple {
+  background: color-mix(in srgb, var(--tone-purple) 15%, transparent);
+  color: var(--tone-purple);
+}
+
+.app-page .kpi-icon-pending {
+  background: color-mix(in srgb, var(--status-pending) 15%, transparent);
+  color: var(--status-pending);
+}
+
+.app-page .kpi-icon-preparing {
+  background: color-mix(in srgb, var(--status-preparing) 15%, transparent);
+  color: var(--status-preparing);
+}
+
+.app-page .trend-up {
+  background: color-mix(in srgb, var(--primary) 15%, transparent);
+  color: var(--primary);
+  border-radius: var(--radius);
+}
+
+.app-page .trend-down {
+  background: color-mix(in srgb, var(--destructive) 15%, transparent);
+  color: var(--destructive);
+  border-radius: var(--radius);
+}
+
+/* ── Badges de estado de pedido ── */
+.app-page .status-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 0.3rem 0.6rem;
+}
+
+.app-page .status-pendiente {
+  background: color-mix(in srgb, var(--status-pending) 18%, transparent);
+  color: color-mix(in srgb, var(--status-pending) 85%, black);
+}
+
+.app-page .status-preparando {
+  background: color-mix(in srgb, var(--status-preparing) 15%, transparent);
+  color: var(--status-preparing);
+}
+
+.app-page .status-en_camino,
+.app-page .status-entregado {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
+}
+
+.app-page .status-cancelado {
+  background: color-mix(in srgb, var(--destructive) 12%, transparent);
+  color: var(--destructive);
+}
+
+.app-page .channel-online {
+  background: color-mix(in srgb, var(--status-preparing) 15%, transparent);
+  color: var(--status-preparing);
+}
+
+.app-page .channel-store {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
+}
+
+.app-page .channel-online,
+.app-page .channel-store {
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 0.3rem 0.6rem;
+}
+
+.app-page .btn-surface.btn-sm {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+}
+
+/* ── Worker KPI cards ── */
+.app-page .worker-kpi-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.75rem;
+  height: 175px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.app-page .worker-kpi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.app-page .kpi-pendiente { border-color: var(--status-pending); }
+.app-page .kpi-preparando { border-color: var(--status-preparing); }
+.app-page .kpi-encamino { border-color: var(--primary); }
+.app-page .kpi-entregado { border-color: var(--tone-purple); }
+
+.app-page .worker-kpi-card .metric-kpi-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+}
+
+/* ── Tarjetas de pedido (trabajador) ── */
+.app-page .custom-order-card {
+  background: var(--card) !important;
+  border-radius: calc(var(--radius) + 0.35rem) !important;
+  border: 1px solid var(--border) !important;
+  padding: 1.25rem !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.app-page .custom-order-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.app-page .border-left-pendiente { border-left: 5px solid var(--status-pending) !important; }
+.app-page .border-left-preparando { border-left: 5px solid var(--status-preparing) !important; }
+.app-page .border-left-listo { border-left: 5px solid var(--primary) !important; }
+.app-page .border-left-entregado { border-left: 5px solid var(--tone-success) !important; }
+.app-page .border-left-cancelado { border-left: 5px solid var(--destructive) !important; }
+
+.app-page .order-info-box {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* ── Modal detalle pedido ── */
+.app-page .detail-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 1060;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.app-page .detail-modal-container {
+  background: var(--card);
+  border-radius: calc(var(--radius) + 0.5rem);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.app-page .detail-modal-header {
+  padding: 1.35rem 1.5rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.app-page .detail-modal-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
+.app-page .detail-modal-close:hover {
+  background: color-mix(in srgb, var(--destructive) 12%, transparent);
+  border-color: color-mix(in srgb, var(--destructive) 30%, transparent);
+  color: var(--destructive);
+}
+
+.app-page .detail-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 1.5rem 1rem;
+}
+
+.app-page .detail-section {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.app-page .detail-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted-foreground);
+  margin-bottom: 0.75rem;
+}
+
+.app-page .detail-label {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+.app-page .detail-value {
+  font-size: 0.85rem;
+  color: var(--foreground);
+}
+
+.app-page .detail-products-list,
+.app-page .detail-totals-block {
+  background: var(--muted);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+}
+
+.app-page .detail-product-qty {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+
+.app-page .detail-product-price {
+  font-weight: 600;
+  color: var(--primary);
+  font-family: 'Outfit', sans-serif;
+}
+
+.app-page .detail-modal-footer {
+  padding: 1rem 1.5rem 1.2rem;
+  border-top: 1px solid var(--border);
+  background: var(--muted);
+}
+
+.app-page .timeline-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--card);
+}
+
+.app-page .timeline-step.done .timeline-dot {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.app-page .timeline-step.success .timeline-dot {
+  background: var(--tone-success);
+  border-color: var(--tone-success);
+}
+
+.app-page .timeline-step.cancelled .timeline-dot {
+  background: var(--destructive);
+  border-color: var(--destructive);
+}
+
+.app-page .timeline-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.app-page .timeline-time {
+  font-size: 0.73rem;
+  color: var(--muted-foreground);
+}
+
+/* ── Filtros KPI productos (trabajador) ── */
+.app-page .kpi-prod-available { border: 2px solid var(--tone-success); }
+.app-page .kpi-prod-low { border: 2px solid var(--tone-warning); }
+.app-page .kpi-prod-out { border: 2px solid var(--tone-danger); }
+
+.app-page .product-picker-selected {
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border)) !important;
+  background-color: color-mix(in srgb, var(--primary) 8%, var(--card)) !important;
+}
+
+.app-page .alert-banner-success {
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+  color: color-mix(in srgb, var(--primary) 70%, black);
+  border-radius: var(--radius);
+}
+
+.app-page .badge-role {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
+  font-size: 0.72rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+
+/* Catálogo: categorías activas alineadas con --primary */
+.active-category-btn {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.inactive-category-btn:hover {
+  color: var(--primary) !important;
+}
+
+.inactive-category-btn:hover i {
+  color: var(--primary) !important;
+}
+
+.dual-range-highlight {
+  background-color: var(--primary);
+}
+
+.dual-range-slider::-webkit-slider-thumb {
+  border-color: var(--primary);
+}
+
+.dual-range-slider::-moz-range-thumb {
+  border-color: var(--primary);
+}

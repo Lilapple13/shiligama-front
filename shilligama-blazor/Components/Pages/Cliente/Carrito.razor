@@ -1,24 +1,51 @@
 @page "/carrito"
 @layout MainLayout
 @inject CartService Cart
+@inject AuthService Auth
 @inject NavigationManager Navigation
 
 @code {
     private enum DeliveryMethod { Delivery, Pickup }
     private DeliveryMethod _deliveryMethod = DeliveryMethod.Delivery;
+    private bool _showLoginRequired;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender) { await Cart.InitializeAsync(); Cart.OnChange += StateHasChanged; StateHasChanged(); }
+        if (firstRender)
+        {
+            await Cart.InitializeAsync();
+            await Auth.InitializeAsync();
+            Cart.OnChange += StateHasChanged;
+            Auth.OnChange += StateHasChanged;
+            StateHasChanged();
+        }
     }
 
-    public void Dispose() => Cart.OnChange -= StateHasChanged;
+    public void Dispose()
+    {
+        Cart.OnChange -= StateHasChanged;
+        Auth.OnChange -= StateHasChanged;
+    }
 
     private async Task Remove(int id) => await Cart.RemoveFromCartAsync(id);
     private async Task UpdateQty(int id, int qty) => await Cart.UpdateQuantityAsync(id, qty);
     private async Task ClearAll() => await Cart.ClearCartAsync();
 
     private void SetDeliveryMethod(DeliveryMethod method) => _deliveryMethod = method;
+
+    private string CheckoutReturnUrl =>
+        $"/checkout?delivery={(_deliveryMethod == DeliveryMethod.Delivery ? "delivery" : "pickup")}";
+
+    private void TryProceedToCheckout()
+    {
+        if (!Auth.IsCliente())
+        {
+            _showLoginRequired = true;
+            return;
+        }
+
+        Navigation.NavigateTo(CheckoutReturnUrl);
+    }
 
     private decimal Subtotal => Cart.GetSubtotal();
     private decimal Envio => _deliveryMethod == DeliveryMethod.Pickup ? 0 : (Subtotal > 50 ? 0 : 5);
@@ -209,12 +236,13 @@
                             <span>S/. @Total.ToString("0.00")</span>
                         </div>
                     </div>
-                    <a href="/checkout?delivery=@(_deliveryMethod == DeliveryMethod.Delivery ? "delivery" : "pickup")"
-                       class="btn btn-primary w-100 fw-medium d-flex align-items-center justify-content-center gap-2"
-                       style="border-radius:var(--radius);">
+                    <button type="button"
+                            class="btn btn-primary w-100 fw-medium d-flex align-items-center justify-content-center gap-2"
+                            style="border-radius:var(--radius);"
+                            @onclick="TryProceedToCheckout">
                         <Icons Name="ShoppingCart" Class="w-4 h-4" />
                         Proceder al Checkout
-                    </a>
+                    </button>
                     <a href="/catalogo"
                        class="btn btn-secondary w-100 small text-decoration-none text-center"
                        style="border-radius:var(--radius);">
@@ -225,5 +253,7 @@
         </div>
     }
 </div>
+
+<LoginRequiredModal @bind-IsOpen="_showLoginRequired" ReturnUrl="@CheckoutReturnUrl" />
 
 @implements IDisposable

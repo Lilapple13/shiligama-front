@@ -31,10 +31,10 @@
 <div class="d-flex flex-column gap-4">
     <!-- Header -->
     <div>
-        <h1 class="fs-4 fw-bold text-foreground mb-0">
+        <h1 class="page-title mb-0">
             <i class="fas fa-warehouse me-2 text-primary"></i>Control de Almacén e Inventario
         </h1>
-        <p class="text-muted-foreground small mt-1 mb-0">Monitorea y ajusta las existencias físicas de productos en tiempo real</p>
+        <p class="page-subtitle">Monitorea y ajusta las existencias físicas de productos en tiempo real</p>
     </div>
 
     <!-- KPI Mini-cards -->
@@ -45,7 +45,7 @@
                     <div class="metric-kpi-value text-foreground">@_products.Count</div>
                     <div class="metric-kpi-label">Total Productos</div>
                 </div>
-                <div class="metric-kpi-icon" style="background:color-mix(in srgb,var(--primary) 15%,transparent);color:var(--primary);">
+                <div class="metric-kpi-icon kpi-icon-primary">
                     <i class="fas fa-box"></i>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                     <div class="metric-kpi-value" style="color:#f59e0b;">@_products.Count(p => p.Stock > 0 && p.Stock < 10)</div>
                     <div class="metric-kpi-label">Stock Bajo</div>
                 </div>
-                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#f59e0b 15%,transparent);color:#f59e0b;">
+                <div class="metric-kpi-icon kpi-icon-warning">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
             </div>
@@ -67,7 +67,7 @@
                     <div class="metric-kpi-value" style="color:#c62828;">@_products.Count(p => p.Stock == 0)</div>
                     <div class="metric-kpi-label">Agotados</div>
                 </div>
-                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#c62828 15%,transparent);color:#c62828;">
+                <div class="metric-kpi-icon kpi-icon-danger">
                     <i class="fas fa-times-circle"></i>
                 </div>
             </div>
@@ -78,7 +78,7 @@
                     <div class="metric-kpi-value text-foreground" style="font-size:1rem;">Hoy, @DateTime.Now.ToString("HH:mm")</div>
                     <div class="metric-kpi-label">Sincronizado</div>
                 </div>
-                <div class="metric-kpi-icon" style="background:color-mix(in srgb,#2563EB 15%,transparent);color:#2563EB;">
+                <div class="metric-kpi-icon kpi-icon-info">
                     <i class="fas fa-clock"></i>
                 </div>
             </div>
@@ -89,7 +89,7 @@
     @if (_products.Any(p => p.Stock < 10))
     {
         <div class="stock-alert-banner">
-            <div class="metric-kpi-icon flex-shrink-0" style="background:color-mix(in srgb,#f59e0b 20%,transparent);color:#f59e0b;">
+            <div class="metric-kpi-icon kpi-icon-warning flex-shrink-0">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
             <div>

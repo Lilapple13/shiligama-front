@@ -31,6 +31,7 @@
         if (firstRender)
         {
             await Cart.InitializeAsync();
+            await Auth.InitializeAsync();
             Cart.OnChange += StateHasChanged;
             Auth.OnChange += StateHasChanged;
             StateHasChanged();
@@ -164,34 +165,54 @@
                             style="width: 240px; border-radius: var(--radius); position: absolute; right: 0; top: 100%; display: @(_isUserDropdownOpen ? "block" : "none"); margin-top: 8px; z-index: 1000;"
                             @onclick="CloseUserDropdown" @onclick:stopPropagation>
                             <li class="px-3 py-2 border-bottom border-color-default mb-1">
-                                <p class="text-sm font-semibold text-foreground m-0">@(Auth.CurrentUser?.Name ?? "Cliente Invitado")</p>
-                                <p class="text-xs text-muted-foreground m-0 text-truncate">@(Auth.CurrentUser?.Email ?? "cliente@shiligama.com")</p>
+                                <p class="text-sm font-semibold text-foreground m-0">@(Auth.CurrentUser?.Name ?? "Invitado")</p>
+                                <p class="text-xs text-muted-foreground m-0 text-truncate">
+                                    @(Auth.IsCliente() ? Auth.CurrentUser!.Email : "Sin iniciar sesión")
+                                </p>
                             </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center text-foreground py-2" href="/mis-pedidos" style="border-radius: var(--radius);">
-                                    <Icons Name="Package" Class="w-4 h-4 me-2 text-muted-foreground" />
-                                    Mis Pedidos
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center text-foreground py-2" href="/ofertas" style="border-radius: var(--radius);">
-                                    <Icons Name="Calendar" Class="w-4 h-4 me-2 text-muted-foreground" />
-                                    Ofertas
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center text-foreground py-2" href="/configuracion" style="border-radius: var(--radius);">
-                                    <Icons Name="Settings" Class="w-4 h-4 me-2 text-muted-foreground" />
-                                    Configuración
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider border-color-default"></li>
-                            <li>
-                                <button type="button" @onclick="HandleLogout" class="dropdown-item d-flex align-items-center text-danger py-2" style="border-radius: var(--radius);">
-                                    <Icons Name="LogOut" Class="w-4 h-4 me-2" />
-                                    Cerrar Sesión
-                                </button>
-                            </li>
+                            @if (Auth.IsCliente())
+                            {
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center text-foreground py-2" href="/mis-pedidos" style="border-radius: var(--radius);">
+                                        <Icons Name="Package" Class="w-4 h-4 me-2 text-muted-foreground" />
+                                        Mis Pedidos
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center text-foreground py-2" href="/ofertas" style="border-radius: var(--radius);">
+                                        <Icons Name="Calendar" Class="w-4 h-4 me-2 text-muted-foreground" />
+                                        Ofertas
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center text-foreground py-2" href="/configuracion" style="border-radius: var(--radius);">
+                                        <Icons Name="Settings" Class="w-4 h-4 me-2 text-muted-foreground" />
+                                        Configuración
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider border-color-default"></li>
+                                <li>
+                                    <button type="button" @onclick="HandleLogout" class="dropdown-item d-flex align-items-center text-danger py-2" style="border-radius: var(--radius);">
+                                        <Icons Name="LogOut" Class="w-4 h-4 me-2" />
+                                        Cerrar Sesión
+                                    </button>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center text-foreground py-2" href="/" style="border-radius: var(--radius);">
+                                        <i class="fa-solid fa-right-to-bracket w-4 me-2 text-muted-foreground" style="width:16px;text-align:center;"></i>
+                                        Iniciar sesión
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center text-foreground py-2" href="/?register=true" style="border-radius: var(--radius);">
+                                        <i class="fa-solid fa-user-plus w-4 me-2 text-muted-foreground" style="width:16px;text-align:center;"></i>
+                                        Crear cuenta
+                                    </a>
+                                </li>
+                            }
                         </ul>
                     </div>
 
@@ -265,7 +286,7 @@
     }
 
     <!-- Main Content Body -->
-    <main class="flex-grow-1">
+    <main class="flex-grow-1 app-page">
         @Body
     </main>
 
