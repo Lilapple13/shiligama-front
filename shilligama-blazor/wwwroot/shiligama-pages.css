@@ -439,3 +439,85 @@
 .dual-range-slider::-moz-range-thumb {
   border-color: var(--primary);
 }
+
+/* ── Estilos de Paginación Compartidos (Trabajador) ── */
+.app-page .pagination-nav-btn {
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  color: #212529;
+  border-radius: var(--radius);
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.app-page .pagination-nav-btn:hover:not(:disabled) {
+  background: #f8f9fa;
+  border-color: #ced4da;
+}
+
+.app-page .pagination-nav-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.app-page .pagination-num-btn {
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  color: #212529;
+  border-radius: var(--radius);
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.app-page .pagination-num-btn:hover {
+  background: #f8f9fa;
+  border-color: #ced4da;
+}
+
+.app-page .pagination-num-btn.active {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Modificadores de modo oscuro */
+.dark .app-page .pagination-nav-btn,
+.dark .app-page .pagination-num-btn {
+  background: var(--card) !important;
+  border-color: var(--border) !important;
+  color: var(--foreground) !important;
+}
+
+.dark .app-page .pagination-nav-btn:hover:not(:disabled),
+.dark .app-page .pagination-num-btn:hover {
+  background: var(--secondary) !important;
+}
+
+/* Soporte para bg-slate-50 adaptativo */
+.dark .bg-slate-50 {
+  background-color: var(--background) !important;
+}
+
+/* Botones secundarios (cancelar) */
+.dark .btn-white.border {
+  background-color: var(--secondary) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+
+.dark .btn-white.border:hover {
+  background-color: var(--border) !important;
+}

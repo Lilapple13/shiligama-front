@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("shilligama_blazor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c0062b106c17a97716d52fc09a635fc76fd7208d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d135d42b509ec0bc07db7cfddf28c4148e87cf02")]
 [assembly: System.Reflection.AssemblyProductAttribute("shilligama_blazor")]
 [assembly: System.Reflection.AssemblyTitleAttribute("shilligama_blazor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

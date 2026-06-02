@@ -82,6 +82,13 @@ public class AuthService
         NotifyStateChanged();
     }
 
+    public void LoginAsGuest()
+    {
+        CurrentUser = new User { Email = "invitado@shiligama.com", Name = "Invitado", Role = "cliente" };
+        _ = PersistSessionAsync();
+        NotifyStateChanged();
+    }
+
     public void Logout()
     {
         CurrentUser = null;

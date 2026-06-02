@@ -2,6 +2,7 @@
 @layout TrabajadorLayout
 @inject ReturnsService ReturnsSvc
 @inject ProductService ProductSvc
+@inject SalesService SalesSvc
 @inject AuthService Auth
 
 @code {
@@ -21,6 +22,26 @@
     private string _formReason = "";
     private DateTime _formDate = DateTime.Now;
     private string _formObservations = "";
+
+    // Order-based search for returns
+    private string _orderSearch = "";
+    private Order? _selectedOrder = null;
+    private Dictionary<string, (bool Selected, int Qty)> _returnSelections = new();
+
+    private IEnumerable<Order> DeliveredOrders => SalesSvc.GetRecentOrders()
+        .Where(o => o.Status == "entregado" &&
+            (string.IsNullOrEmpty(_orderSearch) ||
+             o.Id.Contains(_orderSearch, StringComparison.OrdinalIgnoreCase) ||
+             o.Customer.Contains(_orderSearch, StringComparison.OrdinalIgnoreCase)))
+        .Take(8);
+
+    private void SelectOrder(Order o)
+    {
+        _selectedOrder = o;
+        _returnSelections = o.Products?.ToDictionary(
+            p => p.Name,
+            p => (Selected: false, Qty: 1)) ?? new();
+    }
 
     // Delete confirmation
     private bool _showDeleteConfirm = false;
@@ -71,6 +92,9 @@
         _formReason = "";
         _formDate = DateTime.Now;
         _formObservations = "";
+        _orderSearch = "";
+        _selectedOrder = null;
+        _returnSelections = new();
         _showModal = true;
         _openDropdownId = "";
     }
@@ -95,15 +119,41 @@
 
     private void Save()
     {
-        if (string.IsNullOrWhiteSpace(_formProductName) || _formQuantity <= 0 || string.IsNullOrWhiteSpace(_formReason))
+        if (string.IsNullOrWhiteSpace(_formReason))
             return;
 
-        var prod = _products.FirstOrDefault(p => p.Name.Equals(_formProductName, StringComparison.OrdinalIgnoreCase));
-        string productCode = prod != null ? $"PROD-{prod.Id:D3}" : "PROD-GEN";
-        decimal amount = prod != null ? prod.Price * _formQuantity : 10.00m * _formQuantity;
-
-        if (_isEditing)
+        if (!_isEditing)
         {
+            // Register returns for each selected product
+            if (_selectedOrder == null) return;
+            bool anySelected = _returnSelections.Any(kv => kv.Value.Selected && kv.Value.Qty > 0);
+            if (!anySelected) return;
+
+            foreach (var kv in _returnSelections.Where(kv => kv.Value.Selected && kv.Value.Qty > 0))
+            {
+                var prod = _products.FirstOrDefault(p => p.Name.Equals(kv.Key, StringComparison.OrdinalIgnoreCase));
+                string productCode = prod != null ? $"PROD-{prod.Id:D3}" : "PROD-GEN";
+                decimal amount = prod != null ? prod.Price * kv.Value.Qty : 10.00m * kv.Value.Qty;
+                var newReturn = new Return
+                {
+                    Product = kv.Key,
+                    ProductCode = productCode,
+                    Quantity = kv.Value.Qty,
+                    Reason = _formReason,
+                    RegisteredBy = Auth.CurrentUser?.Name ?? "Carlos Mendoza",
+                    Amount = amount,
+                    Observations = _formObservations
+                };
+                ReturnsSvc.AddReturn(newReturn);
+            }
+        }
+        else
+        {
+            // Editing: simple single-product update
+            if (string.IsNullOrWhiteSpace(_formProductName) || _formQuantity <= 0) return;
+            var prod = _products.FirstOrDefault(p => p.Name.Equals(_formProductName, StringComparison.OrdinalIgnoreCase));
+            string productCode = prod != null ? $"PROD-{prod.Id:D3}" : "PROD-GEN";
+            decimal amount = prod != null ? prod.Price * _formQuantity : 10.00m * _formQuantity;
             var existing = ReturnsSvc.GetReturnById(_editingId);
             if (existing != null)
             {
@@ -115,20 +165,6 @@
                 existing.Observations = _formObservations;
                 ReturnsSvc.UpdateReturn(existing);
             }
-        }
-        else
-        {
-            var newReturn = new Return
-            {
-                Product = _formProductName,
-                ProductCode = productCode,
-                Quantity = _formQuantity,
-                Reason = _formReason,
-                RegisteredBy = Auth.CurrentUser?.Name ?? "Carlos Mendoza",
-                Amount = amount,
-                Observations = _formObservations
-            };
-            ReturnsSvc.AddReturn(newReturn);
         }
 
         _returns = ReturnsSvc.GetReturns();
@@ -188,7 +224,7 @@
     <!-- Header -->
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
-            <h1 class="page-title mb-0">Mis Devoluciones</h1>
+            <h1 class="page-title mb-0">Devoluciones</h1>
             <p class="page-subtitle" style="font-size: 0.85rem;">Gestiona las devoluciones que has registrado</p>
         </div>
         <button @onclick="OpenCreate" class="btn btn-primary d-flex align-items-center gap-2 fw-semibold px-4" style="border-radius: var(--radius); height: 42px;">
@@ -239,7 +275,7 @@
         </div>
 
         <!-- Filters -->
-        <div class="card bg-white border border-color-default shadow-sm" style="border-radius: 1rem;">
+        <div class="card bg-card border border-color-default shadow-sm" style="border-radius: 1rem;">
             <div class="p-3 d-flex align-items-center gap-2 flex-wrap">
                 <div class="position-relative flex-grow-1" style="min-width: 200px;">
                     <i class="fas fa-search position-absolute text-muted-foreground" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.85rem;"></i>
@@ -258,7 +294,7 @@
         </div>
 
         <!-- Table: Registro de Devoluciones -->
-        <div class="card bg-white border border-color-default shadow-sm overflow-hidden" style="border-radius: 1rem;">
+        <div class="card bg-card border border-color-default shadow-sm overflow-hidden" style="border-radius: 1rem;">
             <div class="p-4 border-bottom border-color-default">
                 <h5 class="m-0 fw-bold text-foreground" style="font-size: 1.05rem;">Registro de Devoluciones</h5>
             </div>
@@ -303,7 +339,7 @@
                                     </button>
                                     @if (_openDropdownId == dev.Id)
                                     {
-                                        <div class="position-absolute bg-white shadow-lg border border-color-default d-flex flex-column animate-fade-in" style="right: 20px; top: 100%; z-index: 100; border-radius: 0.5rem; min-width: 140px; overflow: hidden;">
+                                        <div class="position-absolute bg-card shadow-lg border border-color-default d-flex flex-column animate-fade-in" style="right: 20px; top: 100%; z-index: 100; border-radius: 0.5rem; min-width: 140px; overflow: hidden;">
                                             <button class="btn btn-link text-start text-foreground text-decoration-none px-3 py-2 d-flex align-items-center gap-2 dropdown-action-btn" @onclick="@(() => OpenEdit(dev))" style="font-size: 0.85rem;">
                                                 <i class="fas fa-pen" style="font-size: 0.75rem; color: #6b7280;"></i> Editar
                                             </button>
@@ -337,8 +373,8 @@
 <!-- ═══════════════════════════════════════════════════ -->
 @if (_showModal)
 {
-    <div class="d-flex align-items-center justify-content-center" style="position: fixed; inset: 0; z-index: 1050; background-color: rgba(0,0,0,0.4);" @onclick="CloseModal">
-        <div class="bg-white shadow-lg d-flex flex-column animate-fade-in" style="width: 100%; max-width: 500px; border-radius: 1rem; overflow: hidden;" @onclick:stopPropagation>
+    <div class="d-flex align-items-center justify-content-center" style="position: fixed; inset: 0; z-index: 1050; background-color: rgba(0,0,0,0.55);" @onclick="CloseModal">
+        <div class="bg-card shadow-lg d-flex flex-column animate-fade-in" style="width: 100%; max-width: 500px; border-radius: 1rem; overflow: hidden;" @onclick:stopPropagation>
 
             <!-- Modal Header -->
             <div class="p-4 pb-2 d-flex justify-content-between align-items-start">
@@ -352,34 +388,118 @@
             </div>
 
             <!-- Modal Body -->
-            <div class="p-4 pt-3 d-flex flex-column gap-3">
-                <!-- Producto -->
-                <div>
-                    <label class="form-label small fw-semibold text-foreground mb-1">Producto <span class="text-danger">*</span></label>
-                    <select @bind="_formProductName" class="form-select text-foreground" style="border-radius: 0.5rem; height: 42px;">
-                        <option value="">Buscar producto...</option>
-                        @foreach (var prod in _products)
-                        {
-                            <option value="@prod.Name">@prod.Name (Stock: @prod.Stock)</option>
-                        }
-                    </select>
-                </div>
+            <div class="p-4 pt-3 d-flex flex-column gap-3" style="max-height: 70vh; overflow-y: auto;">
 
-                <!-- Cantidad + Motivo -->
-                <div class="row g-3">
-                    <div class="col-6">
-                        <label class="form-label small fw-semibold text-foreground mb-1">Cantidad <span class="text-danger">*</span></label>
-                        <input type="number" @bind="_formQuantity" class="form-control text-foreground" min="0" style="border-radius: 0.5rem; height: 42px;" />
+                @if (!_isEditing)
+                {
+                    <!-- Order Search -->
+                    <div>
+                        <label class="form-label small fw-semibold text-foreground mb-1">
+                            Pedido entregado <span class="text-danger">*</span>
+                        </label>
+                        <div class="position-relative">
+                            <i class="fas fa-search position-absolute text-muted-foreground" style="left:12px; top:50%; transform:translateY(-50%); font-size:0.85rem;"></i>
+                            <input type="search" @bind="_orderSearch" @bind:event="oninput"
+                                   class="form-control text-foreground"
+                                   placeholder="Buscar por # pedido o cliente..."
+                                   style="padding-left:36px; border-radius:0.5rem; height:42px;" />
+                        </div>
+
+                        <!-- Order list -->
+                        @if (!string.IsNullOrEmpty(_orderSearch) || _selectedOrder != null)
+                        {
+                            <div class="d-flex flex-column gap-1 mt-2" style="max-height: 160px; overflow-y: auto;">
+                                @foreach (var order in DeliveredOrders)
+                                {
+                                    bool isSelected = _selectedOrder?.Id == order.Id;
+                                    <div class="p-2 rounded border cursor-pointer d-flex justify-content-between align-items-center"
+                                         style="border-color: @(isSelected ? "var(--primary)" : "var(--border)") !important; background: @(isSelected ? "rgba(26,107,60,0.06)" : "var(--card)"); font-size: 0.82rem; transition: all 0.15s;"
+                                         @onclick="@(() => SelectOrder(order))">
+                                        <div>
+                                            <span class="fw-bold text-foreground">@order.Id</span>
+                                            <span class="text-muted-foreground ms-2">@order.Customer</span>
+                                        </div>
+                                        <span class="text-muted-foreground">@order.Date.ToString("dd/MM/yy")</span>
+                                    </div>
+                                }
+                                @if (!DeliveredOrders.Any())
+                                {
+                                    <p class="text-muted-foreground small p-2 m-0">No se encontraron pedidos entregados con ese criterio.</p>
+                                }
+                            </div>
+                        }
                     </div>
-                    <div class="col-6">
-                        <label class="form-label small fw-semibold text-foreground mb-1">Motivo <span class="text-danger">*</span></label>
-                        <select @bind="_formReason" class="form-select text-foreground" style="border-radius: 0.5rem; height: 42px;">
-                            <option value="">Seleccionar</option>
-                            <option value="Vencido">Vencido</option>
-                            <option value="Dañado">Dañado / Roto</option>
-                            <option value="Error de pedido">Error de pedido</option>
+
+                    <!-- Selected order products -->
+                    @if (_selectedOrder != null && _selectedOrder.Products != null)
+                    {
+                        <div>
+                            <label class="form-label small fw-semibold text-foreground mb-2">
+                                <i class="fas fa-shopping-basket me-1 text-primary"></i>
+                                Productos del pedido <span class="text-muted-foreground fw-normal">(@_selectedOrder.Id)</span>
+                            </label>
+                            <div class="d-flex flex-column gap-2">
+                                @foreach (var product in _selectedOrder.Products)
+                                {
+                                    var prodName = product.Name;
+                                    var sel = _returnSelections.ContainsKey(prodName) ? _returnSelections[prodName] : (Selected: false, Qty: 1);
+                                    <div class="d-flex align-items-center gap-3 p-2 rounded border @(sel.Selected ? "border-success" : "border-color-default")"
+                                         style="background: @(sel.Selected ? "rgba(25,135,84,0.05)" : "var(--card)"); border-radius: 0.5rem; transition: all 0.2s;">
+                                        <input type="checkbox" class="form-check-input flex-shrink-0" style="width:18px; height:18px;"
+                                               checked="@sel.Selected"
+                                               @onchange="@((e) => { _returnSelections[prodName] = ((bool)(e.Value ?? false), sel.Qty); StateHasChanged(); })" />
+                                        <div class="flex-grow-1">
+                                            <span class="fw-semibold text-foreground" style="font-size:0.85rem;">@product.Name</span>
+                                            <span class="text-muted-foreground ms-2" style="font-size:0.75rem;">Comprado: @product.Quantity uds.</span>
+                                        </div>
+                                        @if (sel.Selected)
+                                        {
+                                            <div class="d-flex align-items-center gap-1">
+                                                <label class="text-muted-foreground" style="font-size:0.75rem;">Cant.:</label>
+                                                <input type="number"
+                                                       class="form-control form-control-sm text-center"
+                                                       style="width:64px; border-radius:0.4rem;"
+                                                       value="@sel.Qty"
+                                                       min="1" max="@product.Quantity"
+                                                       @oninput="@((e) => { if(int.TryParse(e.Value?.ToString(), out int v)) _returnSelections[prodName] = (sel.Selected, Math.Clamp(v, 1, product.Quantity)); StateHasChanged(); })" />
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <!-- Edit mode: simple single product -->
+                    <div>
+                        <label class="form-label small fw-semibold text-foreground mb-1">Producto <span class="text-danger">*</span></label>
+                        <select @bind="_formProductName" class="form-select text-foreground" style="border-radius: 0.5rem; height: 42px;">
+                            <option value="">Seleccionar producto...</option>
+                            @foreach (var prod in _products)
+                            {
+                                <option value="@prod.Name">@prod.Name</option>
+                            }
                         </select>
                     </div>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-foreground mb-1">Cantidad <span class="text-danger">*</span></label>
+                            <input type="number" @bind="_formQuantity" class="form-control text-foreground" min="0" style="border-radius: 0.5rem; height: 42px;" />
+                        </div>
+                    </div>
+                }
+
+                <!-- Motivo -->
+                <div>
+                    <label class="form-label small fw-semibold text-foreground mb-1">Motivo <span class="text-danger">*</span></label>
+                    <select @bind="_formReason" class="form-select text-foreground" style="border-radius: 0.5rem; height: 42px;">
+                        <option value="">Seleccionar</option>
+                        <option value="Vencido">Vencido</option>
+                        <option value="Dañado">Dañado / Roto</option>
+                        <option value="Error de pedido">Error de pedido</option>
+                    </select>
                 </div>
 
                 <!-- Fecha -->
@@ -414,8 +534,8 @@
 <!-- ═══════════════════════════════════════════════════ -->
 @if (_showDeleteConfirm)
 {
-    <div class="d-flex align-items-center justify-content-center" style="position: fixed; inset: 0; z-index: 1060; background-color: rgba(0,0,0,0.45);" @onclick="CancelDelete">
-        <div class="bg-white shadow-lg d-flex flex-column animate-fade-in text-center" style="width: 100%; max-width: 420px; border-radius: 1rem; overflow: hidden;" @onclick:stopPropagation>
+    <div class="d-flex align-items-center justify-content-center" style="position: fixed; inset: 0; z-index: 1060; background-color: rgba(0,0,0,0.55);" @onclick="CancelDelete">
+        <div class="bg-card shadow-lg d-flex flex-column animate-fade-in text-center" style="width: 100%; max-width: 420px; border-radius: 1rem; overflow: hidden;" @onclick:stopPropagation>
             <div class="p-5 pb-3 d-flex flex-column align-items-center">
                 <div class="d-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 56px; height: 56px; background-color: #fdecea; color: #c62828;">
                     <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem;"></i>
@@ -531,6 +651,26 @@
         color: #7b1fa2 !important;
     }
 
+    .dark .badge-reason-vencido {
+        background-color: rgba(220, 53, 69, 0.2) !important;
+        color: #ef5350 !important;
+    }
+
+    .dark .badge-reason-danado {
+        background-color: rgba(255, 193, 7, 0.2) !important;
+        color: #fbbf24 !important;
+    }
+
+    .dark .badge-reason-error {
+        background-color: rgba(25, 135, 84, 0.2) !important;
+        color: var(--primary) !important;
+    }
+
+    .dark .badge-reason-otro {
+        background-color: rgba(124, 58, 237, 0.2) !important;
+        color: #a78bfa !important;
+    }
+
     /* Table row hover */
     .dev-table-row {
         transition: background-color 0.15s ease;
@@ -538,9 +678,15 @@
     .dev-table-row:hover {
         background-color: #f8fdf9;
     }
+    .dark .dev-table-row:hover {
+        background-color: rgba(255, 255, 255, 0.03) !important;
+    }
 
     /* Dropdown action button hover */
     .dropdown-action-btn:hover {
         background-color: #f8f9fa !important;
+    }
+    .dark .dropdown-action-btn:hover {
+        background-color: var(--secondary) !important;
     }
 </style>

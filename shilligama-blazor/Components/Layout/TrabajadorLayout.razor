@@ -4,16 +4,11 @@
 
 @code {
     private bool _isMobileSidebarOpen = false;
-    private bool _showTurnosModal = false;
 
     private void ToggleMobileSidebar()
     {
         _isMobileSidebarOpen = !_isMobileSidebarOpen;
     }
-
-    private void ShowTurnosModal() => _showTurnosModal = true;
-
-    private void CloseTurnosModal() => _showTurnosModal = false;
 
     private void HandleLogout()
     {
@@ -59,7 +54,7 @@
                     <Icons Name="ShoppingCart" Class="text-white" Style="width: 24px; height: 24px; color: #FFFFFF;" />
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold m-0 leading-none" style="font-family: 'Outfit', sans-serif;">Shiligama</h1>
+                    <h1 class="font-bold m-0 leading-none" style="font-family: 'Outfit', sans-serif; font-size: 1.15rem;">Shiligama</h1>
                     <p class="text-xs text-white-50 m-0" style="opacity: 0.7;">Panel de Trabajador</p>
                 </div>
             </a>
@@ -85,17 +80,7 @@
             </a>
         </nav>
 
-        <!-- Sidebar Footer -->
-        <div class="p-3 border-top border-white-10 d-flex flex-column gap-1">
-            <a href="/trabajador/perfil" class="d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/trabajador/perfil") ? "active" : "")" style="color: #EAF7EE;">
-                <Icons Name="User" Class="w-5 h-5" />
-                Mi Perfil
-            </a>
-            <button type="button" @onclick="HandleLogout" class="btn btn-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 border-0 text-start w-100 shadow-none" style="color: #EAF7EE;">
-                <Icons Name="LogOut" Class="w-5 h-5" />
-                Cerrar sesión
-            </button>
-        </div>
+
     </aside>
 
     <!-- Mobile Navigation Drawer -->
@@ -111,7 +96,7 @@
                             <Icons Name="ShoppingCart" Class="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h1 class="text-lg font-bold m-0 leading-none" style="font-family: 'Outfit', sans-serif;">Shiligama</h1>
+                            <h1 class="font-bold m-0 leading-none" style="font-family: 'Outfit', sans-serif; font-size: 1.15rem;">Shiligama</h1>
                             <p class="text-xs text-white-50 m-0" style="opacity: 0.7;">Panel de Trabajador</p>
                         </div>
                     </a>
@@ -139,16 +124,7 @@
                 </nav>
             </div>
 
-            <div class="p-3 border-top border-white-10 d-flex flex-column gap-1">
-                <a href="/trabajador/perfil" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/trabajador/perfil") ? "active" : "")">
-                    <Icons Name="User" Class="w-5 h-5" />
-                    Mi Perfil
-                </a>
-                <button type="button" @onclick="HandleLogout" class="btn btn-link d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 border-0 text-start w-100 shadow-none" style="font-size: inherit; color: inherit;">
-                    <Icons Name="LogOut" Class="w-5 h-5" />
-                    Cerrar sesión
-                </button>
-            </div>
+
         </div>
     }
 
@@ -172,19 +148,13 @@
                     <!-- Theme Selector -->
                     <ThemeSelector />
 
-                    <!-- Notifications -->
-                    <button type="button" class="btn btn-ghost p-2 position-relative text-foreground" style="border-radius: var(--radius);" title="Notificaciones">
-                        <Icons Name="Bell" Class="admin-notification-icon mt-1" />
-                        <span class="position-absolute top-1 start-100 translate-middle badge bg-danger border border-light rounded-circle d-flex align-items-center justify-content-center" style="width: 18px; height: 18px; font-size: 0.65rem; left: 80%;">
-                            3
-                        </span>
-                    </button>
+
 
                     <!-- User drop menu -->
                     <div class="dropdown">
                         <button class="btn btn-ghost p-1 rounded-circle border-0 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px;">
                             <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" style="width: 32px; height: 32px; opacity: 0.9;">
-                                <Icons Name="User" Class="w-4 h-4" />
+                                <i class="fas fa-user-circle" style="font-size: 1.15rem;"></i>
                             </div>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end border shadow-lg p-2" style="width: 220px; border-radius: var(--radius);">
@@ -194,16 +164,11 @@
                             </li>
                             <li>
                                 <a class="dropdown-item d-flex align-items-center text-foreground py-2" href="/trabajador/perfil" style="border-radius: var(--radius);">
-                                    <Icons Name="User" Class="w-4 h-4 me-2 text-muted-foreground" />
+                                    <i class="fas fa-user-circle me-2 text-muted-foreground" style="font-size: 0.9rem;"></i>
                                     Mi Perfil
                                 </a>
                             </li>
-                            <li>
-                                <button type="button" class="dropdown-item d-flex align-items-center text-foreground py-2" @onclick="ShowTurnosModal" style="border-radius: var(--radius); border: none; background: transparent; width: 100%; text-align: left;">
-                                    <Icons Name="Calendar" Class="w-4 h-4 me-2 text-muted-foreground" />
-                                    Mis Turnos
-                                </button>
-                            </li>
+
                             <li><hr class="dropdown-divider border-color-default"></li>
                             <li>
                                 <button type="button" @onclick="HandleLogout" class="dropdown-item d-flex align-items-center text-danger py-2" style="border-radius: var(--radius);">
@@ -225,51 +190,7 @@
     </div>
 </div>
 
-@if (_showTurnosModal)
-{
-    <div class="modal-overlay" @onclick="CloseTurnosModal">
-        <div class="modal-container fade-in" style="max-width: 480px;" @onclick:stopPropagation>
-            <div class="p-4 border-bottom border-color-default d-flex align-items-center justify-content-between" style="background: var(--card);">
-                <div>
-                    <h5 class="fw-bold text-foreground m-0 d-flex align-items-center gap-2">
-                        <Icons Name="Calendar" Class="w-4 h-4 text-primary" />
-                        Mis Turnos de Trabajo
-                    </h5>
-                    <p class="text-muted-foreground small m-0">Horario asignado para esta semana</p>
-                </div>
-                <button type="button" class="btn btn-ghost p-1" @onclick="CloseTurnosModal" style="border-radius: var(--radius); border: none; background: transparent;">
-                    <Icons Name="X" Class="w-4 h-4 text-muted-foreground" />
-                </button>
-            </div>
-            <div class="modal-body-scroll p-4">
-                <div class="alert alert-success d-flex align-items-center gap-3 mb-4" style="border-radius: var(--radius);">
-                    <Icons Name="Check" Class="w-4 h-4 text-success flex-shrink-0" />
-                    <div>
-                        <span class="fw-bold text-success text-sm d-block">Turno activo actual</span>
-                        <span class="text-xs text-muted-foreground">Turno mañana (regular)</span>
-                    </div>
-                </div>
-                <div class="d-flex flex-column gap-2">
-                    <div class="d-flex align-items-center justify-content-between p-3 rounded border border-color-default bg-card">
-                        <span class="fw-semibold text-foreground text-sm">Lunes - Viernes</span>
-                        <span class="badge bg-primary px-3 py-1.5" style="border-radius: var(--radius); font-size: 0.8rem;">08:00 - 17:00</span>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between p-3 rounded border border-color-default bg-card">
-                        <span class="fw-semibold text-foreground text-sm">Sábado</span>
-                        <span class="badge bg-secondary px-3 py-1.5" style="border-radius: var(--radius); font-size: 0.8rem;">08:00 - 13:00</span>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-between p-3 rounded border border-color-default" style="background: var(--muted);">
-                        <span class="fw-semibold text-muted-foreground text-sm">Domingo</span>
-                        <span class="badge text-danger px-3 py-1.5" style="border-radius: var(--radius); background: color-mix(in srgb, var(--destructive) 12%, transparent); font-size: 0.8rem;">Descanso</span>
-                    </div>
-                </div>
-            </div>
-            <div class="p-4 border-top border-color-default d-flex justify-content-end" style="background: var(--card);">
-                <button class="btn btn-secondary" @onclick="CloseTurnosModal" style="border-radius: var(--radius);">Entendido</button>
-            </div>
-        </div>
-    </div>
-}
+
 </RoleGate>
 
 <style>

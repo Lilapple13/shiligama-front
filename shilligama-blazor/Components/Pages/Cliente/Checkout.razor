@@ -59,8 +59,12 @@
 
             if (!Auth.IsCliente())
                 _showLoginRequired = true;
-            else if (_deliveryMethod == "delivery" && string.IsNullOrEmpty(_address) && _addresses.Count > 0)
-                _address = _addresses[0];
+            else
+            {
+                _name = Auth.CurrentUser?.Name ?? "";
+                if (_deliveryMethod == "delivery" && string.IsNullOrEmpty(_address) && _addresses.Count > 0)
+                    _address = _addresses[0];
+            }
 
             _authReady = true;
             StateHasChanged();

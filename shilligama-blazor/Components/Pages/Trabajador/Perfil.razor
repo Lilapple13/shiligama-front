@@ -74,11 +74,14 @@
     }
 
     <!-- 1. Visual Top Card -->
-    <div class="card bg-white border border-color-default shadow-sm p-4 rounded-4">
+    <div class="card bg-card border border-color-default shadow-sm p-4 rounded-4">
         <div class="d-flex align-items-center gap-4">
             <!-- Avatar -->
-            <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold" style="width: 80px; height: 80px; font-size: 2.2rem; font-family: 'Outfit', sans-serif;">
+            <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white fw-bold position-relative shadow-sm" style="width: 80px; height: 80px; font-size: 2.2rem; font-family: 'Outfit', sans-serif;">
                 @GetInitials(Auth.CurrentUser?.Name ?? $"{_firstName} {_lastName}")
+                <div class="position-absolute bottom-0 end-0 bg-card border rounded-circle d-flex align-items-center justify-content-center text-muted-foreground shadow-sm" style="width: 26px; height: 26px; font-size: 0.7rem; border-color: var(--border) !important;">
+                    <i class="fas fa-camera"></i>
+                </div>
             </div>
             <!-- Details -->
             <div>
@@ -98,7 +101,7 @@
     </div>
 
     <!-- 2. Personal Information Card -->
-    <div class="card bg-white border border-color-default shadow-sm p-4 rounded-4">
+    <div class="card bg-card border border-color-default shadow-sm p-4 rounded-4">
         
         <!-- Bottom Card Header -->
         <div class="d-flex align-items-start justify-content-between gap-3 mb-4 flex-wrap">
@@ -139,7 +142,7 @@
                 </label>
                 @if (_isEditing)
                 {
-                    <input type="email" @bind="_email" class="form-control text-foreground mt-1" style="border-radius: 0.5rem; height: 42px; border: 1px solid #dee2e6;" />
+                    <input type="email" @bind="_email" class="form-control text-foreground mt-1" style="border-radius: 0.5rem; height: 42px; border: 1px solid var(--border);" />
                 }
                 else
                 {
@@ -154,7 +157,7 @@
                 </label>
                 @if (_isEditing)
                 {
-                    <input type="tel" @bind="_phone" class="form-control text-foreground mt-1" style="border-radius: 0.5rem; height: 42px; border: 1px solid #dee2e6;" />
+                    <input type="tel" @bind="_phone" class="form-control text-foreground mt-1" style="border-radius: 0.5rem; height: 42px; border: 1px solid var(--border);" />
                 }
                 else
                 {
