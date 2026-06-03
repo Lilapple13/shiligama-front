@@ -41,41 +41,41 @@
 <div class="d-flex flex-column min-vh-100 bg-background text-foreground">
 
     <!-- Mobile Menu Toggle Button (Floating) -->
-    <button type="button" @onclick="ToggleMobileSidebar" class="btn btn-primary d-lg-none position-fixed top-3 start-3 z-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; left: 15px; top: 10px; border-radius: var(--radius); background-color: var(--sidebar); border-color: var(--sidebar);">
-        <Icons Name="Menu" Class="w-5 h-5 text-white" />
+    <button type="button" @onclick="ToggleMobileSidebar" class="btn d-lg-none position-fixed z-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; left: 15px; top: 10px; border-radius: var(--radius); background-color: #004d26; border-color: #004d26;">
+        <i class="fas fa-bars text-white" style="font-size: 1rem;"></i>
     </button>
 
     <!-- Sidebar - Desktop (Fixed) -->
-    <aside class="d-none d-lg-flex flex-column position-fixed top-0 bottom-0 start-0 z-2 bg-sidebar text-white shadow-sm" style="width: 270px; background-color: var(--sidebar) !important; color: var(--sidebar-foreground) !important;">
+    <aside class="d-none d-lg-flex flex-column position-fixed top-0 bottom-0 start-0 z-2 text-white shadow-sm" style="width: 280px; background-color: #004d26 !important; color: #F4FFF8 !important;">
         <!-- Sidebar Brand -->
-        <div class="p-4 border-bottom border-white-10">
+        <div class="p-4 border-bottom" style="border-color: rgba(255,255,255,0.12) !important;">
             <a href="/trabajador" class="d-flex align-items-center gap-3 text-decoration-none text-white">
-                <div class="d-flex align-items-center justify-content-center rounded bg-white-10 flex-shrink-0" style="width: 42px; height: 42px; background: rgba(255,255,255,0.15);">
-                    <Icons Name="ShoppingCart" Class="text-white" Style="width: 24px; height: 24px; color: #FFFFFF;" />
+                <div class="d-flex align-items-center justify-content-center rounded flex-shrink-0" style="width: 42px; height: 42px; background: rgba(255,255,255,0.15);">
+                    <i class="fa-solid fa-cart-shopping text-white" style="font-size: 1.2rem;"></i>
                 </div>
                 <div>
                     <h1 class="font-bold m-0 leading-none" style="font-family: 'Outfit', sans-serif; font-size: 1.15rem;">Shiligama</h1>
-                    <p class="text-xs text-white-50 m-0" style="opacity: 0.7;">Panel de Trabajador</p>
+                    <p class="text-xs m-0" style="opacity: 0.7; color: #c8edd8;">Panel de Trabajador</p>
                 </div>
             </a>
         </div>
 
         <!-- Sidebar Navigation -->
         <nav class="flex-grow-1 p-3 overflow-y-auto d-flex flex-column gap-1">
-            <a href="/trabajador" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsPedidosActive ? "active" : "")">
-                <Icons Name="FileText" Class="w-5 h-5" />
+            <a href="/trabajador" class="trab-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none @(IsPedidosActive ? "active" : "")">
+                <i class="fa-solid fa-clipboard-list" style="width: 20px; text-align: center; font-size: 1rem;"></i>
                 Pedidos
             </a>
-            <a href="/trabajador/productos" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/trabajador/productos") ? "active" : "")" style="color: #EAF7EE;">
-                <Icons Name="Package" Class="w-5 h-5" />
+            <a href="/trabajador/productos" class="trab-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none @(IsActive("/trabajador/productos") ? "active" : "")">
+                <i class="fa-solid fa-box" style="width: 20px; text-align: center; font-size: 1rem;"></i>
                 Productos
             </a>
-            <a href="/trabajador/registrar-venta" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/trabajador/registrar-venta") ? "active" : "")" style="color: #EAF7EE;">
-                <Icons Name="CreditCard" Class="w-5 h-5" />
+            <a href="/trabajador/registrar-venta" class="trab-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none @(IsActive("/trabajador/registrar-venta") ? "active" : "")">
+                <i class="fa-solid fa-credit-card" style="width: 20px; text-align: center; font-size: 1rem;"></i>
                 Registrar Venta
             </a>
-            <a href="/trabajador/devoluciones" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/trabajador/devoluciones") ? "active" : "")" style="color: #EAF7EE;">
-                <Icons Name="HelpCircle" Class="w-5 h-5" />
+            <a href="/trabajador/devoluciones" class="trab-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none @(IsActive("/trabajador/devoluciones") ? "active" : "")">
+                <i class="fa-solid fa-rotate-left" style="width: 20px; text-align: center; font-size: 1rem;"></i>
                 Devoluciones
             </a>
         </nav>
@@ -87,17 +87,17 @@
     @if (_isMobileSidebarOpen)
     {
         <div class="sheet-backdrop z-3" @onclick="ToggleMobileSidebar"></div>
-        <div class="sheet-panel show bg-sidebar text-white p-0 d-flex flex-column justify-between z-3" style="width: 260px; background-color: var(--sidebar) !important;">
+        <div class="sheet-panel show text-white p-0 d-flex flex-column justify-between z-3" style="width: 270px; background-color: #004d26 !important;">
             <div>
                 <!-- Brand Mobile Header -->
-                <div class="p-4 border-bottom border-white-10 d-flex align-items-center justify-content-between">
+                <div class="p-4 border-bottom d-flex align-items-center justify-content-between" style="border-color: rgba(255,255,255,0.12) !important;">
                     <a href="/trabajador" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 text-decoration-none text-white">
-                        <div class="d-flex align-items-center justify-content-center rounded bg-white-10" style="width: 40px; height: 40px; background: rgba(255,255,255,0.15);">
-                            <Icons Name="ShoppingCart" Class="w-6 h-6 text-white" />
+                        <div class="d-flex align-items-center justify-content-center rounded" style="width: 40px; height: 40px; background: rgba(255,255,255,0.15);">
+                            <i class="fa-solid fa-cart-shopping text-white" style="font-size: 1.1rem;"></i>
                         </div>
                         <div>
                             <h1 class="font-bold m-0 leading-none" style="font-family: 'Outfit', sans-serif; font-size: 1.15rem;">Shiligama</h1>
-                            <p class="text-xs text-white-50 m-0" style="opacity: 0.7;">Panel de Trabajador</p>
+                            <p class="text-xs m-0" style="opacity: 0.7; color: #c8edd8;">Panel de Trabajador</p>
                         </div>
                     </a>
                     <button type="button" class="btn-close btn-close-white" @onclick="ToggleMobileSidebar"></button>
@@ -105,20 +105,20 @@
 
                 <!-- Navigation List Mobile -->
                 <nav class="p-3 d-flex flex-column gap-1 overflow-y-auto" style="max-height: calc(100vh - 160px);">
-                    <a href="/trabajador" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsPedidosActive ? "active" : "")">
-                        <Icons Name="FileText" Class="w-5 h-5" />
+                    <a href="/trabajador" @onclick="ToggleMobileSidebar" class="trab-sidebar-link d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none @(IsPedidosActive ? "active" : "")">
+                        <i class="fa-solid fa-clipboard-list" style="width: 20px; text-align: center; font-size: 1rem;"></i>
                         Pedidos
                     </a>
-                    <a href="/trabajador/productos" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/trabajador/productos") ? "active" : "")">
-                        <Icons Name="Package" Class="w-5 h-5" />
+                    <a href="/trabajador/productos" @onclick="ToggleMobileSidebar" class="trab-sidebar-link d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none @(IsActive("/trabajador/productos") ? "active" : "")">
+                        <i class="fa-solid fa-box" style="width: 20px; text-align: center; font-size: 1rem;"></i>
                         Productos
                     </a>
-                    <a href="/trabajador/registrar-venta" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/trabajador/registrar-venta") ? "active" : "")">
-                        <Icons Name="CreditCard" Class="w-5 h-5" />
+                    <a href="/trabajador/registrar-venta" @onclick="ToggleMobileSidebar" class="trab-sidebar-link d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none @(IsActive("/trabajador/registrar-venta") ? "active" : "")">
+                        <i class="fa-solid fa-credit-card" style="width: 20px; text-align: center; font-size: 1rem;"></i>
                         Registrar Venta
                     </a>
-                    <a href="/trabajador/devoluciones" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/trabajador/devoluciones") ? "active" : "")">
-                        <Icons Name="HelpCircle" Class="w-5 h-5" />
+                    <a href="/trabajador/devoluciones" @onclick="ToggleMobileSidebar" class="trab-sidebar-link d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none @(IsActive("/trabajador/devoluciones") ? "active" : "")">
+                        <i class="fa-solid fa-rotate-left" style="width: 20px; text-align: center; font-size: 1rem;"></i>
                         Devoluciones
                     </a>
                 </nav>
@@ -129,7 +129,7 @@
     }
 
     <!-- Content Workspace -->
-    <div class="flex-grow-1 d-flex flex-column" style="padding-left: 0px; padding-left: 260px; max-width: 100%;">
+    <div class="flex-grow-1 d-flex flex-column" style="padding-left: 0px; padding-left: 280px; max-width: 100%;">
 
         <!-- Top Bar Header -->
         <header class="sticky-top bg-card border-bottom py-3 px-3 px-lg-4 border-color-default" style="z-index: 1; backdrop-filter: blur(8px); background-color: rgba(var(--bs-body-bg-rgb), 0.95);">
@@ -137,7 +137,7 @@
                 <!-- Mobile Spacer left (for float button) -->
                 <div class="d-lg-none" style="width: 48px;"></div>
 
-                <!-- Search bar filter mock (mismo espacio que admin) -->
+                <!-- Search bar filter mock -->
                 <div class="flex-grow-1 max-w-md" style="max-width: 400px;">
                     <div class="position-relative w-100"></div>
                 </div>
@@ -148,15 +148,12 @@
                     <!-- Theme Selector -->
                     <ThemeSelector />
 
-
-
                     <!-- User drop menu -->
                     <div class="dropdown">
-                        <button class="btn btn-ghost p-1 rounded-circle border-0 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px;">
-                            <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" style="width: 32px; height: 32px; opacity: 0.9;">
-                                <i class="fas fa-user-circle" style="font-size: 1.15rem;"></i>
-                            </div>
+                            <button class="btn btn-secondary p-0 d-flex align-items-center justify-content-center border-0 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false"  style="width: 40px; height: 40px; border-radius: var(--radius); background-color: var(--secondary);" title="Menú de Usuario">
+                            <i class="fa-solid fa-user text-foreground" style="font-size: 1.1rem;"></i>
                         </button>
+                       
                         <ul class="dropdown-menu dropdown-menu-end border shadow-lg p-2" style="width: 220px; border-radius: var(--radius);">
                             <li class="px-3 py-2 border-bottom border-color-default mb-1">
                                 <p class="text-sm font-semibold text-foreground m-0">@(Auth.CurrentUser?.Name ?? "Trabajador")</p>
@@ -164,7 +161,7 @@
                             </li>
                             <li>
                                 <a class="dropdown-item d-flex align-items-center text-foreground py-2" href="/trabajador/perfil" style="border-radius: var(--radius);">
-                                    <i class="fas fa-user-circle me-2 text-muted-foreground" style="font-size: 0.9rem;"></i>
+                                    <i class="fa-solid fa-user me-2 text-muted-foreground" style="font-size: 0.9rem; width: 16px; text-align: center;"></i>
                                     Mi Perfil
                                 </a>
                             </li>
@@ -199,14 +196,19 @@
         width: 4px;
     }
 
-    /* Hover bg classes for dark green drawer (igual que AdminLayout) */
-    .hover-bg-white-10:hover {
-        background-color: rgba(255, 255, 255, 0.08) !important;
+    /* Sidebar link base */
+    .trab-sidebar-link {
+        color: rgba(255, 255, 255, 0.75);
+        transition: background-color 0.18s ease, color 0.18s ease;
+    }
+
+    .trab-sidebar-link:hover {
+        background-color: rgba(255, 255, 255, 0.09) !important;
         color: #ffffff !important;
     }
 
-    .hover-bg-white-10.active {
-        background-color: rgba(255, 255, 255, 0.15) !important;
+    .trab-sidebar-link.active {
+        background-color: rgba(255, 255, 255, 0.16) !important;
         color: #ffffff !important;
         font-weight: 600;
     }

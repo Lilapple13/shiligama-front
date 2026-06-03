@@ -11,14 +11,12 @@
     private string _search = "";
     private string _motivoFilter = "";
 
-    // Modal state
+    // ── Modal: Registrar / Editar ───────────────────────────────
     private bool _showModal = false;
     private bool _isEditing = false;
     private string _editingId = "";
 
     // Form fields
-    private string _formProductName = "";
-    private int _formQuantity = 0;
     private string _formReason = "";
     private DateTime _formDate = DateTime.Now;
     private string _formObservations = "";
@@ -43,7 +41,20 @@
             p => (Selected: false, Qty: 1)) ?? new();
     }
 
-    // Delete confirmation
+    // ── Modal: Ver detalle ──────────────────────────────────────
+    private bool _showDetailModal = false;
+    private Return? _detailReturn = null;
+
+    private void OpenDetail(Return r)
+    {
+        _detailReturn = r;
+        _showDetailModal = true;
+        _openDropdownId = "";
+    }
+
+    private void CloseDetailModal() => _showDetailModal = false;
+
+    // ── Delete confirmation ─────────────────────────────────────
     private bool _showDeleteConfirm = false;
     private string _deleteTargetId = "";
     private string _deleteTargetName = "";
@@ -60,8 +71,8 @@
     private IEnumerable<Return> Filtered => _returns
         .Where(r =>
             (string.IsNullOrEmpty(_search) ||
-             r.Product.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
-             r.ProductCode.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
+             r.OrderId.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
+             r.Customer.Contains(_search, StringComparison.OrdinalIgnoreCase) ||
              r.RegisteredBy.Contains(_search, StringComparison.OrdinalIgnoreCase)) &&
             (string.IsNullOrEmpty(_motivoFilter) || r.Reason.Equals(_motivoFilter, StringComparison.OrdinalIgnoreCase))
         )
@@ -70,25 +81,23 @@
     // KPI Calculations
     private int DevolucionesEsteMes => _returns.Count(r => r.Date.Month == DateTime.Now.Month && r.Date.Year == DateTime.Now.Year);
     private decimal TotalMermas => _returns.Sum(r => r.Amount);
-    private (string Name, int Qty) ProductoMasDevuelto
+    private (string Name, int Count) PedidoMasDevuelto
     {
         get
         {
-            var grouped = _returns.GroupBy(r => r.Product)
-                .Select(g => new { Name = g.Key, TotalQty = g.Sum(x => x.Quantity) })
-                .OrderByDescending(x => x.TotalQty)
+            var grouped = _returns.GroupBy(r => r.OrderId)
+                .Select(g => new { Name = g.Key, Count = g.Count() })
+                .OrderByDescending(x => x.Count)
                 .FirstOrDefault();
-            return grouped != null ? (grouped.Name, grouped.TotalQty) : ("N/A", 0);
+            return grouped != null ? (grouped.Name, grouped.Count) : ("N/A", 0);
         }
     }
 
-    // Modal actions
+    // ── Modal actions ───────────────────────────────────────────
     private void OpenCreate()
     {
         _isEditing = false;
         _editingId = "";
-        _formProductName = "";
-        _formQuantity = 0;
         _formReason = "";
         _formDate = DateTime.Now;
         _formObservations = "";
@@ -103,66 +112,94 @@
     {
         _isEditing = true;
         _editingId = r.Id;
-        _formProductName = r.Product;
-        _formQuantity = r.Quantity;
         _formReason = r.Reason;
         _formDate = r.Date;
         _formObservations = r.Observations;
+
+        // Pre-load the associated order
+        var order = SalesSvc.GetRecentOrders().FirstOrDefault(o => o.Id == r.OrderId);
+        _selectedOrder = order;
+        if (order != null)
+        {
+            _returnSelections = order.Products?.ToDictionary(
+                p => p.Name,
+                p =>
+                {
+                    var rp = r.ReturnedProducts.FirstOrDefault(rpi => rpi.ProductName == p.Name);
+                    return rp != null ? (Selected: true, Qty: rp.Quantity) : (Selected: false, Qty: 1);
+                }) ?? new();
+        }
+        else
+        {
+            _returnSelections = new();
+        }
+
         _showModal = true;
         _openDropdownId = "";
     }
 
-    private void CloseModal()
-    {
-        _showModal = false;
-    }
+    private void CloseModal() => _showModal = false;
 
     private void Save()
     {
-        if (string.IsNullOrWhiteSpace(_formReason))
-            return;
+        if (string.IsNullOrWhiteSpace(_formReason)) return;
+        if (_selectedOrder == null) return;
+        bool anySelected = _returnSelections.Any(kv => kv.Value.Selected && kv.Value.Qty > 0);
+        if (!anySelected) return;
+
+        // Build list of returned products and total amount
+        var returnedItems = _returnSelections
+            .Where(kv => kv.Value.Selected && kv.Value.Qty > 0)
+            .Select(kv =>
+            {
+                var prod = _products.FirstOrDefault(p => p.Name.Equals(kv.Key, StringComparison.OrdinalIgnoreCase));
+                decimal unitPrice = prod?.Price ?? 10.00m;
+                return new ReturnItem
+                {
+                    ProductName = kv.Key,
+                    Quantity = kv.Value.Qty,
+                    UnitPrice = unitPrice
+                };
+            }).ToList();
+
+        decimal totalAmount = returnedItems.Sum(ri => ri.Subtotal);
+
+        // Legacy fields from first item (for admin view compatibility)
+        var firstItem = returnedItems.First();
+        var firstProd = _products.FirstOrDefault(p => p.Name.Equals(firstItem.ProductName, StringComparison.OrdinalIgnoreCase));
+        string legacyCode = firstProd != null ? $"PROD-{firstProd.Id:D3}" : "PROD-GEN";
 
         if (!_isEditing)
         {
-            // Register returns for each selected product
-            if (_selectedOrder == null) return;
-            bool anySelected = _returnSelections.Any(kv => kv.Value.Selected && kv.Value.Qty > 0);
-            if (!anySelected) return;
-
-            foreach (var kv in _returnSelections.Where(kv => kv.Value.Selected && kv.Value.Qty > 0))
+            var newReturn = new Return
             {
-                var prod = _products.FirstOrDefault(p => p.Name.Equals(kv.Key, StringComparison.OrdinalIgnoreCase));
-                string productCode = prod != null ? $"PROD-{prod.Id:D3}" : "PROD-GEN";
-                decimal amount = prod != null ? prod.Price * kv.Value.Qty : 10.00m * kv.Value.Qty;
-                var newReturn = new Return
-                {
-                    Product = kv.Key,
-                    ProductCode = productCode,
-                    Quantity = kv.Value.Qty,
-                    Reason = _formReason,
-                    RegisteredBy = Auth.CurrentUser?.Name ?? "Carlos Mendoza",
-                    Amount = amount,
-                    Observations = _formObservations
-                };
-                ReturnsSvc.AddReturn(newReturn);
-            }
+                OrderId = _selectedOrder.Id,
+                Customer = _selectedOrder.Customer,
+                Product = firstItem.ProductName,
+                ProductCode = legacyCode,
+                Quantity = returnedItems.Sum(ri => ri.Quantity),
+                Reason = _formReason,
+                RegisteredBy = Auth.CurrentUser?.Name ?? "Carlos Mendoza",
+                Amount = totalAmount,
+                Observations = _formObservations,
+                ReturnedProducts = returnedItems
+            };
+            ReturnsSvc.AddReturn(newReturn);
         }
         else
         {
-            // Editing: simple single-product update
-            if (string.IsNullOrWhiteSpace(_formProductName) || _formQuantity <= 0) return;
-            var prod = _products.FirstOrDefault(p => p.Name.Equals(_formProductName, StringComparison.OrdinalIgnoreCase));
-            string productCode = prod != null ? $"PROD-{prod.Id:D3}" : "PROD-GEN";
-            decimal amount = prod != null ? prod.Price * _formQuantity : 10.00m * _formQuantity;
             var existing = ReturnsSvc.GetReturnById(_editingId);
             if (existing != null)
             {
-                existing.Product = _formProductName;
-                existing.ProductCode = productCode;
-                existing.Quantity = _formQuantity;
+                existing.OrderId = _selectedOrder.Id;
+                existing.Customer = _selectedOrder.Customer;
+                existing.Product = firstItem.ProductName;
+                existing.ProductCode = legacyCode;
+                existing.Quantity = returnedItems.Sum(ri => ri.Quantity);
                 existing.Reason = _formReason;
-                existing.Amount = amount;
+                existing.Amount = totalAmount;
                 existing.Observations = _formObservations;
+                existing.ReturnedProducts = returnedItems;
                 ReturnsSvc.UpdateReturn(existing);
             }
         }
@@ -171,11 +208,11 @@
         _showModal = false;
     }
 
-    // Delete actions
+    // ── Delete actions ──────────────────────────────────────────
     private void OpenDeleteConfirm(Return r)
     {
         _deleteTargetId = r.Id;
-        _deleteTargetName = r.Product;
+        _deleteTargetName = r.OrderId;
         _showDeleteConfirm = true;
         _openDropdownId = "";
     }
@@ -194,7 +231,7 @@
         _deleteTargetId = "";
     }
 
-    // Dropdown
+    // ── Dropdown ────────────────────────────────────────────────
     private void ToggleDropdown(string id)
     {
         _openDropdownId = _openDropdownId == id ? "" : id;
@@ -240,7 +277,7 @@
             <div class="col-12 col-md-4">
                 <div class="worker-kpi-card kpi-dev-month">
                     <div class="metric-kpi-icon kpi-icon-success">
-                        <i class="fas fa-sync-alt"></i>
+                        <i class="fas fa-rotate-left"></i>
                     </div>
                     <div>
                         <div class="metric-kpi-value text-foreground">@DevolucionesEsteMes</div>
@@ -260,15 +297,15 @@
                     </div>
                 </div>
             </div>
-            <!-- Producto más devuelto -->
+            <!-- Pedido más devuelto -->
             <div class="col-12 col-md-4">
                 <div class="worker-kpi-card kpi-dev-most">
                     <div class="metric-kpi-icon kpi-icon-warning">
                         <i class="fas fa-box-open"></i>
                     </div>
                     <div>
-                        <div class="metric-kpi-value text-foreground" style="font-size: 1.25rem; line-height: 1.2; max-width: 220px; word-wrap: break-word;">@ProductoMasDevuelto.Name</div>
-                        <div class="metric-kpi-label">Más devuelto (@ProductoMasDevuelto.Qty und)</div>
+                        <div class="metric-kpi-value text-foreground" style="font-size: 1.1rem; line-height: 1.2; max-width: 220px; word-wrap: break-word;">@PedidoMasDevuelto.Name</div>
+                        <div class="metric-kpi-label">Pedido con más devoluciones (@PedidoMasDevuelto.Count)</div>
                     </div>
                 </div>
             </div>
@@ -281,7 +318,7 @@
                     <i class="fas fa-search position-absolute text-muted-foreground" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.85rem;"></i>
                     <input type="search" @bind="_search" @bind:event="oninput"
                            class="form-control text-foreground"
-                           placeholder="Buscar por producto, código o responsable..."
+                           placeholder="Buscar por ID pedido, cliente o responsable..."
                            style="padding-left: 40px; height: 42px; border-radius: 0.5rem;" />
                 </div>
                 <select @bind="_motivoFilter" class="form-select text-foreground" style="max-width: 220px; height: 42px; border-radius: 0.5rem;">
@@ -293,7 +330,7 @@
             </div>
         </div>
 
-        <!-- Table: Registro de Devoluciones -->
+        <!-- Table: Registro de Devoluciones por Pedido -->
         <div class="card bg-card border border-color-default shadow-sm overflow-hidden" style="border-radius: 1rem;">
             <div class="p-4 border-bottom border-color-default">
                 <h5 class="m-0 fw-bold text-foreground" style="font-size: 1.05rem;">Registro de Devoluciones</h5>
@@ -303,11 +340,10 @@
                     <thead class="border-bottom border-color-default table-head-muted">
                         <tr>
                             <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing: .05em;">Fecha</th>
-                            <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing: .05em;">Producto</th>
-                            <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase text-center" style="letter-spacing: .05em;">Cantidad</th>
+                            <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing: .05em;">ID Pedido</th>
                             <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing: .05em;">Motivo</th>
                             <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing: .05em;">Registrado por</th>
-                            <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase text-end" style="letter-spacing: .05em;">Monto</th>
+                            <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase text-end" style="letter-spacing: .05em;">Monto Total</th>
                             <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase text-center" style="letter-spacing: .05em;">Acciones</th>
                         </tr>
                     </thead>
@@ -317,15 +353,11 @@
                             <tr class="border-bottom border-color-default dev-table-row">
                                 <td class="px-4 py-3 text-foreground small">@dev.Date.ToString("dd MMM yyyy")</td>
                                 <td class="px-4 py-3">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div>
-                                            <span class="fw-semibold text-foreground small d-block">@dev.Product</span>
-                                            <span class="text-muted-foreground" style="font-size: 0.72rem;">@dev.ProductCode</span>
-                                        </div>
-                                        <i class="far fa-question-circle text-muted-foreground" style="font-size: 0.7rem; opacity: 0.5;" title="@dev.Observations"></i>
+                                    <div>
+                                        <span class="fw-semibold text-primary small d-block">@dev.OrderId</span>
+                                        <span class="text-muted-foreground" style="font-size: 0.72rem;">@dev.Customer</span>
                                     </div>
                                 </td>
-                                <td class="px-4 py-3 text-center text-foreground small fw-medium">@dev.Quantity</td>
                                 <td class="px-4 py-3">
                                     <span class="badge @GetReasonBadgeClass(dev.Reason) d-inline-flex align-items-center gap-1" style="border-radius: 0.4rem; padding: 0.35rem 0.65rem; font-size: 0.75rem; font-weight: 500;">
                                         <i class="@GetReasonIcon(dev.Reason)" style="font-size: 0.65rem;"></i> @dev.Reason
@@ -339,7 +371,10 @@
                                     </button>
                                     @if (_openDropdownId == dev.Id)
                                     {
-                                        <div class="position-absolute bg-card shadow-lg border border-color-default d-flex flex-column animate-fade-in" style="right: 20px; top: 100%; z-index: 100; border-radius: 0.5rem; min-width: 140px; overflow: hidden;">
+                                        <div class="position-absolute bg-card shadow-lg border border-color-default d-flex flex-column animate-fade-in" style="right: 20px; top: 100%; z-index: 100; border-radius: 0.5rem; min-width: 150px; overflow: hidden;">
+                                            <button class="btn btn-link text-start text-foreground text-decoration-none px-3 py-2 d-flex align-items-center gap-2 dropdown-action-btn" @onclick="@(() => OpenDetail(dev))" style="font-size: 0.85rem;">
+                                                <i class="fas fa-eye" style="font-size: 0.75rem; color: #1a6b3c;"></i> Ver
+                                            </button>
                                             <button class="btn btn-link text-start text-foreground text-decoration-none px-3 py-2 d-flex align-items-center gap-2 dropdown-action-btn" @onclick="@(() => OpenEdit(dev))" style="font-size: 0.85rem;">
                                                 <i class="fas fa-pen" style="font-size: 0.75rem; color: #6b7280;"></i> Editar
                                             </button>
@@ -354,8 +389,8 @@
                         @if (!Filtered.Any())
                         {
                             <tr>
-                                <td colspan="7" class="text-center py-5">
-                                    <i class="fas fa-undo-alt text-muted-foreground opacity-25 mb-2" style="font-size: 2.5rem;"></i>
+                                <td colspan="6" class="text-center py-5">
+                                    <i class="fas fa-rotate-left text-muted-foreground opacity-25 mb-2" style="font-size: 2.5rem;"></i>
                                     <p class="text-muted-foreground small m-0 mt-2">No se encontraron registros de devoluciones</p>
                                 </td>
                             </tr>
@@ -369,18 +404,141 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════ -->
+<!-- Modal: Ver Detalle de Devolución                  -->
+<!-- ═══════════════════════════════════════════════════ -->
+@if (_showDetailModal && _detailReturn != null)
+{
+    <div class="d-flex align-items-center justify-content-center" style="position: fixed; inset: 0; z-index: 1060; background-color: rgba(0,0,0,0.55);" @onclick="CloseDetailModal">
+        <div class="bg-card shadow-lg d-flex flex-column animate-fade-in" style="width: 100%; max-width: 600px; border-radius: 1rem; overflow: hidden; max-height: 88vh;" @onclick:stopPropagation>
+
+            <!-- Modal Header -->
+            <div class="p-4 pb-3 d-flex justify-content-between align-items-start" style="background: linear-gradient(135deg, #004d26 0%, #1a6b3c 100%);">
+                <div>
+                    <h5 class="fw-bold text-white mb-1" style="font-size: 1.15rem;">
+                        <i class="fas fa-rotate-left me-2 opacity-75"></i>Detalle de Devolución
+                    </h5>
+                    <span class="badge text-white opacity-75" style="background: rgba(255,255,255,0.2); border-radius: 0.4rem; font-size: 0.8rem;">@_detailReturn.Id</span>
+                </div>
+                <button class="btn btn-link p-0 m-0 text-decoration-none text-white opacity-75" style="font-size: 1.2rem;" @onclick="CloseDetailModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Order info banner -->
+            <div class="px-4 py-3 d-flex flex-wrap gap-3 border-bottom border-color-default" style="background: color-mix(in srgb, var(--primary) 6%, var(--card));">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-hashtag text-primary" style="font-size: 0.85rem;"></i>
+                    <div>
+                        <div class="small text-muted-foreground" style="font-size: 0.72rem; line-height: 1;">ID Pedido</div>
+                        <div class="fw-bold text-primary small">@_detailReturn.OrderId</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-user text-muted-foreground" style="font-size: 0.85rem;"></i>
+                    <div>
+                        <div class="small text-muted-foreground" style="font-size: 0.72rem; line-height: 1;">Cliente</div>
+                        <div class="fw-semibold text-foreground small">@_detailReturn.Customer</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-calendar-alt text-muted-foreground" style="font-size: 0.85rem;"></i>
+                    <div>
+                        <div class="small text-muted-foreground" style="font-size: 0.72rem; line-height: 1;">Fecha registro</div>
+                        <div class="fw-semibold text-foreground small">@_detailReturn.Date.ToString("dd MMM yyyy, HH:mm")</div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="@GetReasonIcon(_detailReturn.Reason) text-muted-foreground" style="font-size: 0.85rem;"></i>
+                    <div>
+                        <div class="small text-muted-foreground" style="font-size: 0.72rem; line-height: 1;">Motivo</div>
+                        <span class="badge @GetReasonBadgeClass(_detailReturn.Reason)" style="border-radius: 0.4rem; font-size: 0.75rem; padding: 0.25rem 0.55rem;">@_detailReturn.Reason</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products table -->
+            <div class="overflow-y-auto flex-grow-1" style="max-height: 340px;">
+                <div class="px-4 pt-3 pb-1">
+                    <h6 class="fw-bold text-foreground mb-2" style="font-size: 0.9rem;">
+                        <i class="fas fa-box me-2 text-primary opacity-75"></i>Productos devueltos
+                    </h6>
+                </div>
+                @if (_detailReturn.ReturnedProducts != null && _detailReturn.ReturnedProducts.Any())
+                {
+                    <table class="table table-borderless mb-0 align-middle" style="font-size: 0.85rem;">
+                        <thead style="background: color-mix(in srgb, var(--muted) 60%, transparent);">
+                            <tr>
+                                <th class="px-4 py-2 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing: .05em;">Producto</th>
+                                <th class="px-4 py-2 small fw-semibold text-muted-foreground text-uppercase text-center" style="letter-spacing: .05em;">Cant.</th>
+                                <th class="px-4 py-2 small fw-semibold text-muted-foreground text-uppercase text-end" style="letter-spacing: .05em;">P. Unit.</th>
+                                <th class="px-4 py-2 small fw-semibold text-muted-foreground text-uppercase text-end" style="letter-spacing: .05em;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in _detailReturn.ReturnedProducts)
+                            {
+                                <tr class="border-bottom border-color-default">
+                                    <td class="px-4 py-2 fw-medium text-foreground">@item.ProductName</td>
+                                    <td class="px-4 py-2 text-center text-foreground">@item.Quantity</td>
+                                    <td class="px-4 py-2 text-end text-muted-foreground">S/. @item.UnitPrice.ToString("0.00")</td>
+                                    <td class="px-4 py-2 text-end fw-semibold" style="color: #c62828;">-S/. @item.Subtotal.ToString("0.00")</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr style="background: color-mix(in srgb, var(--muted) 40%, transparent);">
+                                <td colspan="3" class="px-4 py-2 fw-bold text-foreground text-end">Total pérdida:</td>
+                                <td class="px-4 py-2 fw-bold text-end" style="color: #c62828; font-size: 0.95rem;">-S/. @_detailReturn.Amount.ToString("0.00")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted-foreground small px-4 py-2">Sin detalle de productos.</p>
+                }
+
+                <!-- Observations -->
+                @if (!string.IsNullOrWhiteSpace(_detailReturn.Observations))
+                {
+                    <div class="px-4 pb-3 pt-2">
+                        <div class="p-3 rounded" style="background: color-mix(in srgb, var(--muted) 50%, transparent); border-radius: 0.5rem; font-size: 0.83rem;">
+                            <span class="fw-semibold text-foreground">Observaciones: </span>
+                            <span class="text-muted-foreground">@_detailReturn.Observations</span>
+                        </div>
+                    </div>
+                }
+
+                <!-- Registered by -->
+                <div class="px-4 pb-4 pt-1 d-flex align-items-center gap-2 text-muted-foreground" style="font-size: 0.8rem;">
+                    <i class="fas fa-user-check" style="font-size: 0.8rem;"></i>
+                    Registrado por <strong class="text-foreground ms-1">@_detailReturn.RegisteredBy</strong>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 pt-2 d-flex justify-content-end border-top border-color-default">
+                <button class="btn btn-primary px-4 fw-semibold" @onclick="CloseDetailModal" style="border-radius: var(--radius); height: 40px;">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ═══════════════════════════════════════════════════ -->
 <!-- Modal: Registrar / Editar Devolución              -->
 <!-- ═══════════════════════════════════════════════════ -->
 @if (_showModal)
 {
     <div class="d-flex align-items-center justify-content-center" style="position: fixed; inset: 0; z-index: 1050; background-color: rgba(0,0,0,0.55);" @onclick="CloseModal">
-        <div class="bg-card shadow-lg d-flex flex-column animate-fade-in" style="width: 100%; max-width: 500px; border-radius: 1rem; overflow: hidden;" @onclick:stopPropagation>
+        <div class="bg-card shadow-lg d-flex flex-column animate-fade-in" style="width: 100%; max-width: 520px; border-radius: 1rem; overflow: hidden;" @onclick:stopPropagation>
 
             <!-- Modal Header -->
             <div class="p-4 pb-2 d-flex justify-content-between align-items-start">
                 <div>
                     <h5 class="fw-bold text-foreground mb-1" style="font-size: 1.15rem;">@(_isEditing ? "Editar Devolución" : "Registrar Devolución")</h5>
-                    <p class="text-muted-foreground small m-0" style="font-size: 0.85rem;">Ingresa los datos de la devolución o merma</p>
+                    <p class="text-muted-foreground small m-0" style="font-size: 0.85rem;">Selecciona el pedido y los productos a devolver</p>
                 </div>
                 <button class="btn btn-link text-muted-foreground p-0 m-0 text-decoration-none" style="font-size: 1.2rem;" @onclick="CloseModal">
                     <i class="fas fa-times"></i>
@@ -390,103 +548,80 @@
             <!-- Modal Body -->
             <div class="p-4 pt-3 d-flex flex-column gap-3" style="max-height: 70vh; overflow-y: auto;">
 
-                @if (!_isEditing)
-                {
-                    <!-- Order Search -->
-                    <div>
-                        <label class="form-label small fw-semibold text-foreground mb-1">
-                            Pedido entregado <span class="text-danger">*</span>
-                        </label>
-                        <div class="position-relative">
-                            <i class="fas fa-search position-absolute text-muted-foreground" style="left:12px; top:50%; transform:translateY(-50%); font-size:0.85rem;"></i>
-                            <input type="search" @bind="_orderSearch" @bind:event="oninput"
-                                   class="form-control text-foreground"
-                                   placeholder="Buscar por # pedido o cliente..."
-                                   style="padding-left:36px; border-radius:0.5rem; height:42px;" />
-                        </div>
-
-                        <!-- Order list -->
-                        @if (!string.IsNullOrEmpty(_orderSearch) || _selectedOrder != null)
-                        {
-                            <div class="d-flex flex-column gap-1 mt-2" style="max-height: 160px; overflow-y: auto;">
-                                @foreach (var order in DeliveredOrders)
-                                {
-                                    bool isSelected = _selectedOrder?.Id == order.Id;
-                                    <div class="p-2 rounded border cursor-pointer d-flex justify-content-between align-items-center"
-                                         style="border-color: @(isSelected ? "var(--primary)" : "var(--border)") !important; background: @(isSelected ? "rgba(26,107,60,0.06)" : "var(--card)"); font-size: 0.82rem; transition: all 0.15s;"
-                                         @onclick="@(() => SelectOrder(order))">
-                                        <div>
-                                            <span class="fw-bold text-foreground">@order.Id</span>
-                                            <span class="text-muted-foreground ms-2">@order.Customer</span>
-                                        </div>
-                                        <span class="text-muted-foreground">@order.Date.ToString("dd/MM/yy")</span>
-                                    </div>
-                                }
-                                @if (!DeliveredOrders.Any())
-                                {
-                                    <p class="text-muted-foreground small p-2 m-0">No se encontraron pedidos entregados con ese criterio.</p>
-                                }
-                            </div>
-                        }
+                <!-- Order Search -->
+                <div>
+                    <label class="form-label small fw-semibold text-foreground mb-1">
+                        Pedido entregado <span class="text-danger">*</span>
+                    </label>
+                    <div class="position-relative">
+                        <i class="fas fa-search position-absolute text-muted-foreground" style="left:12px; top:50%; transform:translateY(-50%); font-size:0.85rem;"></i>
+                        <input type="search" @bind="_orderSearch" @bind:event="oninput"
+                               class="form-control text-foreground"
+                               placeholder="Buscar por # pedido o cliente..."
+                               style="padding-left:36px; border-radius:0.5rem; height:42px;" />
                     </div>
 
-                    <!-- Selected order products -->
-                    @if (_selectedOrder != null && _selectedOrder.Products != null)
+                    <!-- Order list -->
+                    @if (!string.IsNullOrEmpty(_orderSearch) || _selectedOrder != null)
                     {
-                        <div>
-                            <label class="form-label small fw-semibold text-foreground mb-2">
-                                <i class="fas fa-shopping-basket me-1 text-primary"></i>
-                                Productos del pedido <span class="text-muted-foreground fw-normal">(@_selectedOrder.Id)</span>
-                            </label>
-                            <div class="d-flex flex-column gap-2">
-                                @foreach (var product in _selectedOrder.Products)
-                                {
-                                    var prodName = product.Name;
-                                    var sel = _returnSelections.ContainsKey(prodName) ? _returnSelections[prodName] : (Selected: false, Qty: 1);
-                                    <div class="d-flex align-items-center gap-3 p-2 rounded border @(sel.Selected ? "border-success" : "border-color-default")"
-                                         style="background: @(sel.Selected ? "rgba(25,135,84,0.05)" : "var(--card)"); border-radius: 0.5rem; transition: all 0.2s;">
-                                        <input type="checkbox" class="form-check-input flex-shrink-0" style="width:18px; height:18px;"
-                                               checked="@sel.Selected"
-                                               @onchange="@((e) => { _returnSelections[prodName] = ((bool)(e.Value ?? false), sel.Qty); StateHasChanged(); })" />
-                                        <div class="flex-grow-1">
-                                            <span class="fw-semibold text-foreground" style="font-size:0.85rem;">@product.Name</span>
-                                            <span class="text-muted-foreground ms-2" style="font-size:0.75rem;">Comprado: @product.Quantity uds.</span>
-                                        </div>
-                                        @if (sel.Selected)
-                                        {
-                                            <div class="d-flex align-items-center gap-1">
-                                                <label class="text-muted-foreground" style="font-size:0.75rem;">Cant.:</label>
-                                                <input type="number"
-                                                       class="form-control form-control-sm text-center"
-                                                       style="width:64px; border-radius:0.4rem;"
-                                                       value="@sel.Qty"
-                                                       min="1" max="@product.Quantity"
-                                                       @oninput="@((e) => { if(int.TryParse(e.Value?.ToString(), out int v)) _returnSelections[prodName] = (sel.Selected, Math.Clamp(v, 1, product.Quantity)); StateHasChanged(); })" />
-                                            </div>
-                                        }
+                        <div class="d-flex flex-column gap-1 mt-2" style="max-height: 160px; overflow-y: auto;">
+                            @foreach (var order in DeliveredOrders)
+                            {
+                                bool isSelected = _selectedOrder?.Id == order.Id;
+                                <div class="p-2 rounded border cursor-pointer d-flex justify-content-between align-items-center"
+                                     style="border-color: @(isSelected ? "var(--primary)" : "var(--border)") !important; background: @(isSelected ? "rgba(26,107,60,0.06)" : "var(--card)"); font-size: 0.82rem; transition: all 0.15s; cursor: pointer;"
+                                     @onclick="@(() => SelectOrder(order))">
+                                    <div>
+                                        <span class="fw-bold text-foreground">@order.Id</span>
+                                        <span class="text-muted-foreground ms-2">@order.Customer</span>
                                     </div>
-                                }
-                            </div>
+                                    <span class="text-muted-foreground">@order.Date.ToString("dd/MM/yy")</span>
+                                </div>
+                            }
+                            @if (!DeliveredOrders.Any())
+                            {
+                                <p class="text-muted-foreground small p-2 m-0">No se encontraron pedidos entregados con ese criterio.</p>
+                            }
                         </div>
                     }
-                }
-                else
+                </div>
+
+                <!-- Selected order products -->
+                @if (_selectedOrder != null && _selectedOrder.Products != null)
                 {
-                    <!-- Edit mode: simple single product -->
                     <div>
-                        <label class="form-label small fw-semibold text-foreground mb-1">Producto <span class="text-danger">*</span></label>
-                        <select @bind="_formProductName" class="form-select text-foreground" style="border-radius: 0.5rem; height: 42px;">
-                            <option value="">Seleccionar producto...</option>
-                            @foreach (var prod in _products)
+                        <label class="form-label small fw-semibold text-foreground mb-2">
+                            <i class="fas fa-shopping-basket me-1 text-primary"></i>
+                            Productos del pedido <span class="text-muted-foreground fw-normal">(@_selectedOrder.Id)</span>
+                        </label>
+                        <div class="d-flex flex-column gap-2">
+                            @foreach (var product in _selectedOrder.Products)
                             {
-                                <option value="@prod.Name">@prod.Name</option>
+                                var prodName = product.Name;
+                                var sel = _returnSelections.ContainsKey(prodName) ? _returnSelections[prodName] : (Selected: false, Qty: 1);
+                                <div class="d-flex align-items-center gap-3 p-2 rounded border @(sel.Selected ? "border-success" : "border-color-default")"
+                                     style="background: @(sel.Selected ? "rgba(25,135,84,0.05)" : "var(--card)"); border-radius: 0.5rem; transition: all 0.2s;">
+                                    <input type="checkbox" class="form-check-input flex-shrink-0" style="width:18px; height:18px;"
+                                           checked="@sel.Selected"
+                                           @onchange="@((e) => { _returnSelections[prodName] = ((bool)(e.Value ?? false), sel.Qty); StateHasChanged(); })" />
+                                    <div class="flex-grow-1">
+                                        <span class="fw-semibold text-foreground" style="font-size:0.85rem;">@product.Name</span>
+                                        <span class="text-muted-foreground ms-2" style="font-size:0.75rem;">Comprado: @product.Quantity uds.</span>
+                                    </div>
+                                    @if (sel.Selected)
+                                    {
+                                        <div class="d-flex align-items-center gap-1">
+                                            <label class="text-muted-foreground" style="font-size:0.75rem;">Cant.:</label>
+                                            <input type="number"
+                                                   class="form-control form-control-sm text-center"
+                                                   style="width:64px; border-radius:0.4rem;"
+                                                   value="@sel.Qty"
+                                                   min="1" max="@product.Quantity"
+                                                   @oninput="@((e) => { if(int.TryParse(e.Value?.ToString(), out int v)) _returnSelections[prodName] = (sel.Selected, Math.Clamp(v, 1, product.Quantity)); StateHasChanged(); })" />
+                                        </div>
+                                    }
+                                </div>
                             }
-                        </select>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold text-foreground mb-1">Cantidad <span class="text-danger">*</span></label>
-                            <input type="number" @bind="_formQuantity" class="form-control text-foreground" min="0" style="border-radius: 0.5rem; height: 42px;" />
                         </div>
                     </div>
                 }
@@ -500,15 +635,6 @@
                         <option value="Dañado">Dañado / Roto</option>
                         <option value="Error de pedido">Error de pedido</option>
                     </select>
-                </div>
-
-                <!-- Fecha -->
-                <div>
-                    <label class="form-label small fw-semibold text-foreground mb-1">Fecha <span class="text-danger">*</span></label>
-                    <div class="position-relative">
-                        <i class="far fa-calendar-alt position-absolute text-muted-foreground" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.9rem;"></i>
-                        <input type="date" @bind="_formDate" class="form-control text-foreground" style="padding-left: 40px; border-radius: 0.5rem; height: 42px;" readonly />
-                    </div>
                 </div>
 
                 <!-- Observaciones -->
@@ -541,7 +667,7 @@
                     <i class="fas fa-exclamation-triangle" style="font-size: 1.5rem;"></i>
                 </div>
                 <h5 class="fw-bold text-foreground mb-2" style="font-size: 1.1rem;">¿Eliminar esta devolución?</h5>
-                <p class="page-subtitle mb-0">Estás a punto de eliminar el registro de <strong class="text-foreground">@_deleteTargetName</strong>. Esta acción no se puede deshacer.</p>
+                <p class="page-subtitle mb-0">Estás a punto de eliminar el registro del pedido <strong class="text-foreground">@_deleteTargetName</strong>. Esta acción no se puede deshacer.</p>
             </div>
             <div class="p-4 pt-2 d-flex justify-content-center gap-2">
                 <button class="btn btn-white border px-4" @onclick="CancelDelete" style="border-radius: 0.5rem; font-weight: 500; font-size: 0.9rem; border-color: #dee2e6; height: 42px;">Cancelar</button>
@@ -558,7 +684,7 @@
         background-color: #f8f9fa !important;
     }
 
-    /* ── Base KPI Card styles to match Dashboard exactly ── */
+    /* ── Base KPI Card ── */
     .worker-kpi-card {
         background: var(--card);
         border-radius: var(--radius);
@@ -572,10 +698,8 @@
         height: 175px;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
-    .worker-kpi-card:hover {
-        transform: translateY(-6px);
-    }
+
+    .worker-kpi-card:hover { transform: translateY(-6px); }
 
     .metric-kpi-icon {
         width: 48px;
@@ -602,91 +726,39 @@
         margin-top: 0.25rem;
     }
 
-    /* KPI Specific Border and Glow Styles */
-    .kpi-dev-month {
-        border: 2px solid var(--primary);
-        box-shadow: 0 6px 16px rgba(46, 125, 50, 0.12);
-    }
-    .kpi-dev-month:hover {
-        box-shadow: 0 12px 24px rgba(46, 125, 50, 0.25);
-        border-color: #4caf50;
-    }
+    .kpi-dev-month { border: 2px solid var(--primary); box-shadow: 0 6px 16px rgba(46,125,50,0.12); }
+    .kpi-dev-month:hover { box-shadow: 0 12px 24px rgba(46,125,50,0.25); border-color: #4caf50; }
 
-    .kpi-dev-mermas {
-        border: 2px solid #c62828;
-        box-shadow: 0 6px 16px rgba(198, 40, 40, 0.12);
-    }
-    .kpi-dev-mermas:hover {
-        box-shadow: 0 12px 24px rgba(198, 40, 40, 0.25);
-        border-color: #ef5350;
-    }
+    .kpi-dev-mermas { border: 2px solid #c62828; box-shadow: 0 6px 16px rgba(198,40,40,0.12); }
+    .kpi-dev-mermas:hover { box-shadow: 0 12px 24px rgba(198,40,40,0.25); border-color: #ef5350; }
 
-    .kpi-dev-most {
-        border: 2px solid #f59e0b;
-        box-shadow: 0 6px 16px rgba(245, 158, 11, 0.12);
-    }
-    .kpi-dev-most:hover {
-        box-shadow: 0 12px 24px rgba(245, 158, 11, 0.25);
-        border-color: #fbbf24;
-    }
+    .kpi-dev-most { border: 2px solid #f59e0b; box-shadow: 0 6px 16px rgba(245,158,11,0.12); }
+    .kpi-dev-most:hover { box-shadow: 0 12px 24px rgba(245,158,11,0.25); border-color: #fbbf24; }
+
+    .kpi-icon-success { background-color: rgba(26,107,60,0.1); color: var(--primary); }
+    .kpi-icon-danger  { background-color: rgba(198,40,40,0.1); color: #c62828; }
+    .kpi-icon-warning { background-color: rgba(245,158,11,0.1); color: #b45309; }
 
     /* Badge styles for reasons */
-    .badge-reason-vencido {
-        background-color: #fdecea !important;
-        color: #c62828 !important;
-    }
+    .badge-reason-vencido { background-color: #fdecea !important; color: #c62828 !important; }
+    .badge-reason-danado  { background-color: #fff8e1 !important; color: #e65100 !important; }
+    .badge-reason-error   { background-color: #e8f5e9 !important; color: var(--primary) !important; }
+    .badge-reason-otro    { background-color: #f3e5f5 !important; color: #7b1fa2 !important; }
 
-    .badge-reason-danado {
-        background-color: #fff8e1 !important;
-        color: #e65100 !important;
-    }
-
-    .badge-reason-error {
-        background-color: #e8f5e9 !important;
-        color: var(--primary) !important;
-    }
-
-    .badge-reason-otro {
-        background-color: #f3e5f5 !important;
-        color: #7b1fa2 !important;
-    }
-
-    .dark .badge-reason-vencido {
-        background-color: rgba(220, 53, 69, 0.2) !important;
-        color: #ef5350 !important;
-    }
-
-    .dark .badge-reason-danado {
-        background-color: rgba(255, 193, 7, 0.2) !important;
-        color: #fbbf24 !important;
-    }
-
-    .dark .badge-reason-error {
-        background-color: rgba(25, 135, 84, 0.2) !important;
-        color: var(--primary) !important;
-    }
-
-    .dark .badge-reason-otro {
-        background-color: rgba(124, 58, 237, 0.2) !important;
-        color: #a78bfa !important;
-    }
+    .dark .badge-reason-vencido { background-color: rgba(220,53,69,0.2) !important; color: #ef5350 !important; }
+    .dark .badge-reason-danado  { background-color: rgba(255,193,7,0.2) !important;  color: #fbbf24 !important; }
+    .dark .badge-reason-error   { background-color: rgba(25,135,84,0.2) !important;  color: var(--primary) !important; }
+    .dark .badge-reason-otro    { background-color: rgba(124,58,237,0.2) !important; color: #a78bfa !important; }
 
     /* Table row hover */
-    .dev-table-row {
-        transition: background-color 0.15s ease;
-    }
-    .dev-table-row:hover {
-        background-color: #f8fdf9;
-    }
-    .dark .dev-table-row:hover {
-        background-color: rgba(255, 255, 255, 0.03) !important;
-    }
+    .dev-table-row { transition: background-color 0.15s ease; }
+    .dev-table-row:hover { background-color: #f8fdf9; }
+    .dark .dev-table-row:hover { background-color: rgba(255,255,255,0.03) !important; }
 
     /* Dropdown action button hover */
-    .dropdown-action-btn:hover {
-        background-color: #f8f9fa !important;
-    }
-    .dark .dropdown-action-btn:hover {
-        background-color: var(--secondary) !important;
-    }
+    .dropdown-action-btn:hover { background-color: #f8f9fa !important; }
+    .dark .dropdown-action-btn:hover { background-color: var(--secondary) !important; }
+
+    /* Cursor pointer helper */
+    .cursor-pointer { cursor: pointer; }
 </style>
