@@ -7,110 +7,112 @@
     private string _search = "";
     private string _channelFilter = "";
     private string _payFilter = "";
+    private string _comprobanteFilter = "";
+    private DateTime? _fechaDesde;
+    private DateTime? _fechaHasta;
+    private string? _dateError;
 
-    protected override void OnInitialized()
+    private int _pageSize = 10;
+    private int _currentPage = 1;
+
+    protected override void OnInitialized() => _sales = SalesSvc.GetSales();
+
+    private void ValidateDates()
     {
-        _sales = SalesSvc.GetSales();
+        if (_fechaDesde.HasValue && _fechaHasta.HasValue && _fechaHasta.Value < _fechaDesde.Value)
+            _dateError = "La fecha final no puede ser anterior a la fecha inicial.";
+        else
+            _dateError = null;
+        _currentPage = 1;
     }
 
-    private IEnumerable<Sale> Filtered => _sales.Where(s =>
+    private IEnumerable<Sale> Filtered => _dateError != null ? Enumerable.Empty<Sale>() : _sales.Where(s =>
         (string.IsNullOrEmpty(_search) || s.Cliente.Contains(_search, StringComparison.OrdinalIgnoreCase) || s.Id.Contains(_search, StringComparison.OrdinalIgnoreCase)) &&
-        (string.IsNullOrEmpty(_channelFilter) || s.Canal.Equals(_channelFilter, StringComparison.OrdinalIgnoreCase)) &&
-        (string.IsNullOrEmpty(_payFilter) || s.MetodoPago.Equals(_payFilter, StringComparison.OrdinalIgnoreCase))
+        (string.IsNullOrEmpty(_channelFilter)     || s.Canal.Equals(_channelFilter, StringComparison.OrdinalIgnoreCase)) &&
+        (string.IsNullOrEmpty(_payFilter)         || s.MetodoPago.Equals(_payFilter, StringComparison.OrdinalIgnoreCase)) &&
+        (string.IsNullOrEmpty(_comprobanteFilter) || s.Comprobante.Equals(_comprobanteFilter, StringComparison.OrdinalIgnoreCase)) &&
+        (!_fechaDesde.HasValue || s.Fecha.Date >= _fechaDesde.Value.Date) &&
+        (!_fechaHasta.HasValue || s.Fecha.Date <= _fechaHasta.Value.Date)
     );
 
-    private decimal TotalRevenue => Filtered.Sum(s => s.Total);
-    private decimal AvgTicket => Filtered.Any() ? Filtered.Average(s => s.Total) : 0;
-    private int TotalTransactions => Filtered.Count();
+    private decimal TotalRevenue     => Filtered.Sum(s => s.Total);
+    private decimal AvgTicket        => Filtered.Any() ? Filtered.Average(s => s.Total) : 0;
+    private int     TotalTransactions => Filtered.Count();
+
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling(Filtered.Count() / (double)_pageSize));
+    private IEnumerable<Sale> Paged => Filtered.Skip((_currentPage - 1) * _pageSize).Take(_pageSize);
+    private void OnFilterChange() { _currentPage = 1; }
+    private void GoToPage(int p)  { if (p >= 1 && p <= TotalPages) _currentPage = p; }
 
     private string GetChannelClass(string ch) => ch.ToLower() switch
     {
-        "web" => "bg-primary-subtle text-primary",
+        "web"        => "bg-primary-subtle text-primary",
         "presencial" => "bg-success-subtle text-success",
-        "whatsapp" => "bg-info-subtle text-info",
-        _ => "bg-light text-dark"
+        _            => "bg-light text-dark"
     };
-
-    private string GetPayIcon(string method) => method.ToLower() switch
+    private string GetPayIcon(string m) => m.ToLower() switch
     {
-        "yape" => "📱 Yape",
-        "plin" => "📱 Plin",
-        "tarjeta" => "💳 Tarjeta",
+        "yape"     => "📱 Yape",
+        "plin"     => "📱 Plin",
+        "tarjeta"  => "💳 Tarjeta",
         "efectivo" => "💵 Efectivo",
-        _ => method
+        _          => m
     };
 }
 
 <PageTitle>Historial de Ventas – Shiligama Admin</PageTitle>
 
 <div class="d-flex flex-column gap-4">
-    <!-- Header -->
     <div>
         <h1 class="page-title mb-0">Historial de Ventas</h1>
         <p class="page-subtitle">Reportes de ingresos consolidados físicos y virtuales</p>
     </div>
 
-    <!-- Stats summary widgets -->
+    <!-- Stats -->
     <div class="row g-3">
         <div class="col-md-4">
             <div class="card p-3 d-flex flex-column gap-1">
                 <span class="small text-muted-foreground fw-medium">Ingresos Totales</span>
                 <span class="fs-3 fw-bold text-primary">S/. @TotalRevenue.ToString("0.00")</span>
-                <span class="text-xs text-muted-foreground mt-1">Con filtros aplicados</span>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card p-3 d-flex flex-column gap-1">
                 <span class="small text-muted-foreground fw-medium">Ticket Promedio</span>
                 <span class="fs-3 fw-bold text-foreground">S/. @AvgTicket.ToString("0.00")</span>
-                <span class="text-xs text-muted-foreground mt-1">Valor promedio por ticket</span>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card p-3 d-flex flex-column gap-1">
                 <span class="small text-muted-foreground fw-medium">Transacciones</span>
                 <span class="fs-3 fw-bold text-foreground">@TotalTransactions</span>
-                <span class="text-xs text-muted-foreground mt-1">Ventas registradas</span>
             </div>
         </div>
     </div>
 
-    <!-- Filters -->
-    <div class="card p-4" style="border-radius: 12px;">
+    <!-- Filtros -->
+    <div class="card p-4" style="border-radius:12px;">
         <div class="row g-2 align-items-center">
-
-            <!-- Buscar cliente o comprobante -->
+            <!-- Búsqueda -->
             <div class="col-md-6">
                 <div class="position-relative">
-                    <i class="fa-solid fa-magnifying-glass position-absolute top-50 translate-middle-y text-muted"
-                       style="left: 16px; font-size: 14px;"></i>
-
-                    <input type="search"
-                           @bind="_search"
-                           @bind:event="oninput"
-                           class="form-control text-foreground"
-                           placeholder="Buscar por cliente o comprobante..."
-                           style="height: 56px; border-radius: 10px; padding-left: 42px;" />
+                    <i class="fa-solid fa-magnifying-glass position-absolute top-50 translate-middle-y text-muted" style="left:16px;font-size:14px;"></i>
+                    <input type="search" @bind="_search" @bind:event="oninput" @bind:after="OnFilterChange"
+                           class="form-control text-foreground" placeholder="Buscar por cliente o comprobante..."
+                           style="height:56px;border-radius:10px;padding-left:42px;" />
                 </div>
             </div>
-
-            <!-- Filtro de canales -->
+            <!-- Canal (sin whatsapp) -->
             <div class="col-md-3">
-                <select @bind="_channelFilter"
-                        class="form-select text-foreground"
-                        style="height: 56px; border-radius: 10px;">
+                <select @bind="_channelFilter" @bind:after="OnFilterChange" class="form-select text-foreground" style="height:56px;border-radius:10px;">
                     <option value="">Todos los canales</option>
                     <option value="web">Canal Web</option>
                     <option value="presencial">Físico / Tienda</option>
-                    <option value="whatsapp">WhatsApp</option>
                 </select>
             </div>
-
-            <!-- Filtro de pagos -->
+            <!-- Método de pago -->
             <div class="col-md-3">
-                <select @bind="_payFilter"
-                        class="form-select text-foreground"
-                        style="height: 56px; border-radius: 10px;">
+                <select @bind="_payFilter" @bind:after="OnFilterChange" class="form-select text-foreground" style="height:56px;border-radius:10px;">
                     <option value="">Todos los pagos</option>
                     <option value="efectivo">Efectivo</option>
                     <option value="tarjeta">Tarjeta</option>
@@ -118,11 +120,41 @@
                     <option value="plin">Plin</option>
                 </select>
             </div>
-
+            <!-- Tipo de comprobante -->
+            <div class="col-md-3">
+                <select @bind="_comprobanteFilter" @bind:after="OnFilterChange" class="form-select text-foreground" style="height:44px;border-radius:10px;">
+                    <option value="">Todos los comprobantes</option>
+                    <option value="boleta">Boleta</option>
+                    <option value="factura">Factura</option>
+                    <option value="ninguno">Sin comprobante</option>
+                </select>
+            </div>
+            <!-- Fecha Desde -->
+            <div class="col-md-3">
+                <label class="form-label small text-muted-foreground mb-1">Desde</label>
+                <input type="date" @bind="_fechaDesde" @bind:after="ValidateDates"
+                       class="form-control text-foreground @(_dateError != null ? "is-invalid" : "")"
+                       style="height:44px;border-radius:10px;" />
+            </div>
+            <!-- Fecha Hasta -->
+            <div class="col-md-3">
+                <label class="form-label small text-muted-foreground mb-1">Hasta</label>
+                <input type="date" @bind="_fechaHasta" @bind:after="ValidateDates"
+                       class="form-control text-foreground @(_dateError != null ? "is-invalid" : "")"
+                       style="height:44px;border-radius:10px;" />
+            </div>
+            @if (_dateError != null)
+            {
+                <div class="col-12">
+                    <div class="px-2 py-1 rounded small text-danger" style="background:color-mix(in srgb,#c62828 10%,transparent);font-size:.85rem;">
+                        <i class="fa-solid fa-triangle-exclamation me-1"></i>@_dateError
+                    </div>
+                </div>
+            }
         </div>
     </div>
 
-    <!-- Table -->
+    <!-- Tabla -->
     <div class="card overflow-hidden">
         <div class="table-responsive">
             <table class="table table-borderless mb-0">
@@ -133,50 +165,53 @@
                         <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Fecha</th>
                         <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Canal</th>
                         <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Método Pago</th>
+                        <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Comprobante</th>
                         <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Total</th>
-                        <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Estado</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var sale in Filtered)
+                    @foreach (var sale in Paged)
                     {
                         <tr class="border-bottom border-color-default align-middle">
                             <td class="px-4 py-3 fw-bold text-primary small">@sale.Id</td>
                             <td class="px-4 py-3 small">
                                 <span class="fw-medium text-foreground d-block">@sale.Cliente</span>
-                                <span class="text-xs text-muted-foreground text-capitalize">Doc: @sale.Comprobante</span>
                             </td>
-                            <td class="px-4 py-3 text-muted-foreground small">
-                                @sale.Fecha.ToString("dd/MM/yyyy HH:mm")
-                            </td>
+                            <td class="px-4 py-3 text-muted-foreground small">@sale.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
                             <td class="px-4 py-3 small">
-                                <span class="badge @(GetChannelClass(sale.Canal)) text-capitalize px-2 py-1" style="border-radius:var(--radius);">
-                                    @sale.Canal
-                                </span>
+                                <span class="badge @(GetChannelClass(sale.Canal)) text-capitalize px-2 py-1" style="border-radius:var(--radius);">@sale.Canal</span>
                             </td>
-                            <td class="px-4 py-3 text-foreground small">
-                                @GetPayIcon(sale.MetodoPago)
-                            </td>
-                            <td class="px-4 py-3 fw-semibold text-foreground small">
-                                S/. @sale.Total.ToString("0.00")
-                            </td>
-                            <td class="px-4 py-3 small">
-                                <span class="badge @(sale.Estado.ToLower() == "completado" ? "bg-success" : "bg-warning") px-2 py-1" style="border-radius:var(--radius);">
-                                    @sale.Estado
-                                </span>
-                            </td>
+                            <td class="px-4 py-3 text-foreground small">@GetPayIcon(sale.MetodoPago)</td>
+                            <td class="px-4 py-3 text-foreground small text-capitalize">@sale.Comprobante</td>
+                            <td class="px-4 py-3 fw-semibold text-foreground small">S/. @sale.Total.ToString("0.00")</td>
+                           
                         </tr>
                     }
-                    @if (!Filtered.Any())
+                    @if (!Paged.Any())
                     {
-                        <tr>
-                            <td colspan="7" class="text-center py-5 text-muted-foreground">
-                                No se encontraron registros de ventas
-                            </td>
-                        </tr>
+                        <tr><td colspan="8" class="text-center py-5 text-muted-foreground">No se encontraron registros de ventas</td></tr>
                     }
                 </tbody>
             </table>
         </div>
     </div>
+
+    <!-- Paginación -->
+    @if (TotalPages > 1)
+    {
+        <div class="d-flex justify-content-center align-items-center gap-2 py-2">
+            <button class="btn btn-sm rounded-circle pag-btn" @onclick="@(() => GoToPage(_currentPage - 1))" disabled="@(_currentPage == 1)" style="width:36px;height:36px;"><i class="fa-solid fa-chevron-left" style="font-size:.75rem;"></i></button>
+            @for (int p = 1; p <= TotalPages; p++) { var pg = p;
+                <button class="btn btn-sm rounded-circle pag-btn @(pg == _currentPage ? "pag-active" : "")" @onclick="@(() => GoToPage(pg))" style="width:36px;height:36px;font-size:.85rem;font-weight:600;">@pg</button>
+            }
+            <button class="btn btn-sm rounded-circle pag-btn" @onclick="@(() => GoToPage(_currentPage + 1))" disabled="@(_currentPage == TotalPages)" style="width:36px;height:36px;"><i class="fa-solid fa-chevron-right" style="font-size:.75rem;"></i></button>
+        </div>
+    }
 </div>
+
+<style>
+    .pag-btn { background:var(--card); border:1px solid var(--border); color:var(--foreground); transition:all .15s; }
+    .pag-btn:hover:not(:disabled) { background:var(--secondary); }
+    .pag-btn:disabled { opacity:.4; }
+    .pag-active { background:#1A6B3C !important; color:#fff !important; border-color:#1A6B3C !important; }
+</style>

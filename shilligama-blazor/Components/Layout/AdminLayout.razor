@@ -55,7 +55,7 @@
 
         <!-- Sidebar Navigation -->
         <nav class="flex-grow-1 p-3 overflow-y-auto d-flex flex-column gap-1">
-            <a href="/admin" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none hover-bg-white-10 @(IsActive("/admin") && !IsActive("/admin/pedidos") && !IsActive("/admin/productos") && !IsActive("/admin/inventario") && !IsActive("/admin/ventas") && !IsActive("/admin/proveedores") && !IsActive("/admin/personal") && !IsActive("/admin/reportes") && !IsActive("/admin/devoluciones") && !IsActive("/admin/notificaciones") ? "active" : "")">
+            <a href="/admin" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none hover-bg-white-10 @(IsActive("/admin") && !IsActive("/admin/pedidos") && !IsActive("/admin/productos") && !IsActive("/admin/promociones") && !IsActive("/admin/inventario") && !IsActive("/admin/ventas") && !IsActive("/admin/personal") && !IsActive("/admin/reportes") && !IsActive("/admin/devoluciones") && !IsActive("/admin/notificaciones") ? "active" : "")">
                 <Icons Name="Store" Class="w-5 h-5" />
                 Dashboard
             </a>
@@ -68,6 +68,10 @@
                 <Icons Name="Package" Class="w-5 h-5" />
                 Productos
             </a>
+            <a href="/admin/promociones" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/promociones") ? "active" : "")" style="color: #EAF7EE;">
+                <Icons Name="Tag" Class="w-5 h-5" />
+                Promociones
+            </a>
             <a href="/admin/inventario" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/inventario") ? "active" : "")" style="color: #EAF7EE;">
                 <Icons Name="Building2" Class="w-5 h-5" />
                 Inventario
@@ -75,10 +79,6 @@
             <a href="/admin/ventas" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/ventas") ? "active" : "")" style="color: #EAF7EE;">
                 <Icons Name="TrendingUp" Class="w-5 h-5" />
                 Ventas
-            </a>
-            <a href="/admin/proveedores" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/proveedores") ? "active" : "")" style="color: #EAF7EE;">
-                <Icons Name="Truck" Class="w-5 h-5" />
-                Proveedores
             </a>
             <a href="/admin/personal" class="admin-sidebar-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/personal") ? "active" : "")" style="color: #EAF7EE;">
                 <Icons Name="User" Class="w-5 h-5" />
@@ -98,17 +98,6 @@
             </a>
         </nav>
 
-        <!-- Sidebar Footer -->
-        <div class="p-3 border-top border-white-10 d-flex flex-column gap-1">
-            <a href="/admin/configuracion" class="d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/configuracion") ? "active" : "")" style="color: #EAF7EE;">
-                <Icons Name="Settings" Class="w-5 h-5" />
-                Configuración
-            </a>
-            <button type="button" @onclick="HandleLogout" class="btn btn-link d-flex align-items-center gap-3 px-3 py-3 rounded text-decoration-none text-white-75 hover-bg-white-10 border-0 text-start w-100 shadow-none" style="color: #EAF7EE;">
-                <Icons Name="LogOut" Class="w-5 h-5" />
-                Cerrar sesión
-            </button>
-        </div>
     </aside>
 
     <!-- Mobile Navigation Drawer -->
@@ -133,7 +122,7 @@
 
                 <!-- Navigation List Mobile -->
                 <nav class="p-3 d-flex flex-column gap-1 overflow-y-auto" style="max-height: calc(100vh - 160px);">
-                    <a href="/admin" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin") && !IsActive("/admin/pedidos") && !IsActive("/admin/productos") && !IsActive("/admin/inventario") && !IsActive("/admin/ventas") && !IsActive("/admin/proveedores") && !IsActive("/admin/personal") && !IsActive("/admin/reportes") && !IsActive("/admin/devoluciones") && !IsActive("/admin/notificaciones") ? "active" : "")">
+                    <a href="/admin" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin") && !IsActive("/admin/pedidos") && !IsActive("/admin/productos") && !IsActive("/admin/inventario") && !IsActive("/admin/ventas") && !IsActive("/admin/personal") && !IsActive("/admin/reportes") && !IsActive("/admin/devoluciones") && !IsActive("/admin/notificaciones") ? "active" : "")">
                         <Icons Name="Store" Class="w-5 h-5" />
                         Dashboard
                     </a>
@@ -145,6 +134,10 @@
                         <Icons Name="Package" Class="w-5 h-5" />
                         Productos
                     </a>
+                    <a href="/admin/promociones" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/promociones") ? "active" : "")">
+                        <Icons Name="Tag" Class="w-5 h-5" />
+                        Promociones
+                    </a>
                     <a href="/admin/inventario" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/inventario") ? "active" : "")">
                         <Icons Name="Building2" Class="w-5 h-5" />
                         Inventario
@@ -152,10 +145,6 @@
                     <a href="/admin/ventas" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/ventas") ? "active" : "")">
                         <Icons Name="TrendingUp" Class="w-5 h-5" />
                         Ventas
-                    </a>
-                    <a href="/admin/proveedores" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/proveedores") ? "active" : "")">
-                        <Icons Name="Truck" Class="w-5 h-5" />
-                        Proveedores
                     </a>
                     <a href="/admin/personal" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/personal") ? "active" : "")">
                         <Icons Name="User" Class="w-5 h-5" />
@@ -174,17 +163,6 @@
                         Notificaciones
                     </a>
                 </nav>
-            </div>
-
-            <div class="p-3 border-top border-white-10 d-flex flex-column gap-1">
-                <a href="/admin/configuracion" @onclick="ToggleMobileSidebar" class="d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 @(IsActive("/admin/configuracion") ? "active" : "")">
-                    <Icons Name="Settings" Class="w-5 h-5" />
-                    Configuración
-                </a>
-                <button type="button" @onclick="HandleLogout" class="btn btn-link d-flex align-items-center gap-3 px-3 py-2.5 rounded text-decoration-none text-white-75 hover-bg-white-10 border-0 text-start w-100 shadow-none" style="font-size: inherit; color: inherit;">
-                    <Icons Name="LogOut" Class="w-5 h-5" />
-                    Cerrar sesión
-                </button>
             </div>
         </div>
     }

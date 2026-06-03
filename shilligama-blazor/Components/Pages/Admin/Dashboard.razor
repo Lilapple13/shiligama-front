@@ -2,13 +2,13 @@
 @layout AdminLayout
 @inject SalesService SalesSvc
 @inject ProductService ProductSvc
-@inject SupplierService SupplierSvc
 @inject StaffService StaffSvc
+@inject ReturnsService ReturnsSvc
 @inject IJSRuntime JS
 
 @code {
     private List<KpiItem> _kpis = new();
-    private List<Sale> _recentSales = new();
+    private List<Order> _recentOrders = new();
 
     private record KpiItem(string Title, string Value, string Subtitle, string FaIcon, string Tone, string Trend, bool TrendUp);
 
@@ -24,31 +24,71 @@
     {
         if (!firstRender) return;
 
-        var sales    = SalesSvc.GetSales();
+        var sales = SalesSvc.GetSales();
+        var orders = SalesSvc.GetRecentOrders();
         var products = ProductSvc.GetProducts();
+        var staff = StaffSvc.GetStaff();
+        var returns7d = ReturnsSvc.GetReturns()
+                            .Where(r => r.Date >= DateTime.Today.AddDays(-7))
+                            .ToList();
         var todaySales = sales.Where(s => s.Fecha.Date == DateTime.Today).Sum(s => s.Total);
+        var avgTicket = sales.Any() ? sales.Average(s => s.Total) : 0m;
+        var promoCount = products.Count(p => p.IsPromo);
+        var pendientes = orders.Count(o => o.Status == "pendiente");
+        var bajStock = products.Count(p => p.Stock < 10);
+        var agotados = products.Count(p => p.Stock == 0);
+        var activeStaff = staff.Count(s => s.Estado == "activo");
+        var monthTotal = sales.Sum(s => s.Total);
 
         _kpis = new()
         {
+            // Fila 1 — Ventas
             new("Ventas hoy",
                 $"S/. {todaySales:0.00}",
-                "8 transacciones hoy",
+                "transacciones del día",
                 "fa-wallet", "primary", "+12.5%", true),
-            new("Pedidos pendientes",
-                $"{SalesSvc.GetRecentOrders().Count(o => o.Status == "pendiente")}",
-                "+3 nuevos hoy",
-                "fa-clock", "warning", "+3", true),
-            new("Productos con bajo stock",
-                $"{products.Count(p => p.Stock < 10)}",
-                "-5 requieren atención",
-                "fa-box-open", "danger", "-5", false),
             new("Ingresos del mes",
-                $"S/. {sales.Sum(s => s.Total):0.00}",
+                $"S/. {monthTotal:0.00}",
                 "vs. mes anterior",
                 "fa-chart-line", "info", "+8.2%", true),
+            new("Ticket promedio",
+                $"S/. {avgTicket:0.00}",
+                "por transacción",
+                "fa-receipt", "info", "+3.1%", true),
+            new("Productos en promo",
+                $"{promoCount}",
+                "con descuento activo",
+                "fa-tags", "warning", "", true),
+
+            // Fila 2 — Operaciones
+            new("Pedidos pendientes",
+                $"{pendientes}",
+                "sin despachar aún",
+                "fa-clock", "warning", pendientes > 0 ? $"+{pendientes}" : "0", pendientes == 0),
+            new("Stock bajo",
+                $"{bajStock}",
+                "productos < 10 unidades",
+                "fa-box-open", "danger", $"-{bajStock}", false),
+            new("Productos agotados",
+                $"{agotados}",
+                "sin stock disponible",
+                "fa-times-circle", "danger", agotados > 0 ? $"{agotados}" : "0", false),
+            new("Personal activo",
+                $"{activeStaff}",
+                $"de {staff.Count} registrados",
+                "fa-users", "primary", "", true),
         };
 
-        _recentSales = sales.OrderByDescending(s => s.Fecha).Take(6).ToList();
+        // Ordenar pedidos: pendiente → preparando → en_camino → entregado → cancelado
+        var statusOrder = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+        {
+            {"pendiente",0}, {"preparando",1}, {"en_camino",2}, {"entregado",3}, {"cancelado",4}
+        };
+        _recentOrders = orders
+            .OrderBy(o => statusOrder.TryGetValue(o.Status, out var r) ? r : 99)
+            .ThenByDescending(o => o.Date)
+            .Take(6)
+            .ToList();
 
         StateHasChanged();
         await RenderCharts();
@@ -56,20 +96,38 @@
 
     private async Task RenderCharts()
     {
-        // Sales chart
         var labels = Enumerable.Range(-6, 7).Select(d => DateTime.Today.AddDays(d).ToString("dd/MM")).ToArray();
-        var data   = Enumerable.Range(-6, 7).Select(d =>
+        var data = Enumerable.Range(-6, 7).Select(d =>
             SalesSvc.GetSales().Where(s => s.Fecha.Date == DateTime.Today.AddDays(d)).Sum(s => s.Total)
         ).ToArray();
         await JS.InvokeVoidAsync("chartHelper.renderSalesChart", "salesChart", labels, data);
 
-        // Channels chart
         var presencialData = new[] { 8, 10, 9, 12, 15, 18, 14 };
-        var onlineData     = new[] { 5, 7,  6,  8, 10, 12, 9  };
+        var onlineData = new[] { 5, 7, 6, 8, 10, 12, 9 };
         await JS.InvokeVoidAsync("chartHelper.renderChannelsChart", "channelsChart",
             Enumerable.Range(-6, 7).Select(d => DateTime.Today.AddDays(d).ToString("ddd")).ToArray(),
             presencialData, onlineData);
     }
+
+    private string GetStatusClass(string status) => status.ToLower() switch
+    {
+        "entregado" => "bg-success-subtle text-success",
+        "en_camino" => "bg-primary-subtle text-primary",
+        "preparando" => "bg-warning-subtle text-warning",
+        "pendiente" => "bg-secondary text-muted-foreground",
+        "cancelado" => "bg-danger-subtle text-danger",
+        _ => "bg-light text-dark"
+    };
+
+    private string GetStatusLabel(string status) => status.ToLower() switch
+    {
+        "entregado" => "Entregado",
+        "en_camino" => "En Camino",
+        "preparando" => "Preparando",
+        "pendiente" => "Pendiente",
+        "cancelado" => "Cancelado",
+        _ => status
+    };
 }
 
 <PageTitle>Dashboard – Shiligama Admin</PageTitle>
@@ -83,11 +141,11 @@
         <p class="page-subtitle">Resumen general de operaciones y métricas clave</p>
     </div>
 
-    <!-- KPI Cards -->
+    <!-- KPI Cards — 2 filas de 4 -->
     <div class="row g-3">
         @foreach (var kpi in _kpis)
         {
-            <div class="col-6 col-xl-3">
+            <div class="col-6 col-lg-3">
                 <div class="metric-card-kpi">
                     <div class="flex-grow-1">
                         <div class="metric-kpi-label mb-1">@kpi.Title</div>
@@ -97,7 +155,7 @@
                             @if (!string.IsNullOrEmpty(kpi.Trend))
                             {
                                 <span class="badge small py-1 @(kpi.TrendUp ? "trend-up" : "trend-down")">
-                                    <i class="fas @(kpi.TrendUp?"fa-arrow-up":"fa-arrow-down") me-1" style="font-size:0.6rem;"></i>@kpi.Trend
+                                    <i class="fas @(kpi.TrendUp ? "fa-arrow-up" : "fa-arrow-down") me-1" style="font-size:0.6rem;"></i>@kpi.Trend
                                 </span>
                             }
                         </div>
@@ -110,9 +168,14 @@
         }
     </div>
 
-    <!-- Charts Row (2 columns) -->
+    <!-- Separador de sección -->
+    <div class="d-flex align-items-center gap-2 mt-1">
+        <span class="small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.06em;">Análisis de ventas</span>
+        <div class="flex-grow-1" style="height:1px;background:var(--border);"></div>
+    </div>
+
+    <!-- Charts Row -->
     <div class="row g-4">
-        <!-- Sales Line Chart -->
         <div class="col-lg-7">
             <div class="card p-4 h-100">
                 <div class="d-flex align-items-center justify-content-between mb-3">
@@ -129,8 +192,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Channels Bar Chart -->
         <div class="col-lg-5">
             <div class="card p-4 h-100">
                 <div class="mb-3">
@@ -146,86 +207,70 @@
         </div>
     </div>
 
-    <!-- Recent Sales + Quick Stats -->
-    <div class="row g-4">
-        <!-- Recent Transactions Table -->
-        <div class="col-lg-8">
-            <div class="card overflow-hidden">
-                <div class="d-flex align-items-center justify-content-between p-4 border-bottom border-color-default">
-                    <div>
-                        <h2 class="fs-5 fw-semibold text-foreground mb-0">Pedidos Recientes</h2>
-                        <p class="text-muted-foreground small m-0">Últimos pedidos realizados en el sistema</p>
-                    </div>
-                    <a href="/admin/pedidos" class="btn btn-secondary btn-sm" style="border-radius:var(--radius);">Ver todos</a>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-borderless mb-0 align-middle">
-                        <thead class="border-bottom border-color-default">
-                            <tr>
-                                <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Pedido</th>
-                                <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Cliente</th>
-                                <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Total</th>
-                                <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Canal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (_recentSales.Any())
-                            {
-                                @foreach (var sale in _recentSales)
-                                {
-                                    <tr class="border-bottom border-color-default">
-                                        <td class="px-4 py-3 fw-bold text-primary small">@sale.Id</td>
-                                        <td class="px-4 py-3">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white flex-shrink-0"
-                                                     style="width:28px;height:28px;font-size:.75rem;">
-                                                    @((sale.Cliente?.Length > 0 ? sale.Cliente[0] : 'C').ToString())
-                                                </div>
-                                                <span class="text-foreground small">@sale.Cliente</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-3 fw-semibold text-foreground small">S/. @sale.Total.ToString("0.00")</td>
-                                        <td class="px-4 py-3">
-                                            <span class="badge" style="background:color-mix(in srgb,#1976d2 15%,transparent);color:#1976d2;font-size:0.7rem;border-radius:9999px;">
-                                                <i class="fas @(sale.Canal == "presencial" ? "fa-store" : "fa-globe") me-1"></i>@sale.Canal
-                                            </span>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="4" class="text-center py-5 text-muted-foreground">Sin ventas recientes</td>
-                                </tr>
-                            }
-                        </tbody>    
-                    </table>
-                </div>
-            </div>
-        </div>
+    <!-- Separador -->
+    <div class="d-flex align-items-center gap-2 mt-1">
+        <span class="small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.06em;">Actividad reciente</span>
+        <div class="flex-grow-1" style="height:1px;background:var(--border);"></div>
+    </div>
 
-        <!-- Quick Links -->
-        <div class="col-lg-4">
-            <div class="card p-4 h-100 d-flex flex-column gap-2">
-                <h2 class="fs-5 fw-semibold text-foreground mb-2">Acceso Rápido</h2>
-                @foreach (var (href, icon, label, color) in new[]{
-                    ("/admin/inventario",   "fa-boxes",           "Gestionar Inventario",  "#1A6B3C"),
-                    ("/admin/personal",     "fa-users",           "Gestionar Personal",    "#2563EB"),
-                    ("/admin/reportes",     "fa-chart-bar",       "Ver Reportes",          "#7C3AED"),
-                    ("/admin/proveedores",  "fa-truck",           "Proveedores",           "#EA580C"),
-                    ("/admin/devoluciones", "fa-undo-alt",        "Devoluciones",          "#c62828"),
-                })
-                {
-                    <a href="@href" class="d-flex align-items-center gap-3 p-3 rounded text-decoration-none hover-shadow transition-all" style="border:1px solid var(--border);border-radius:var(--radius)!important;">
-                        <div class="metric-kpi-icon" style="width:36px;height:36px;font-size:1rem;background:color-mix(in srgb,@color 15%,transparent);color:@color;">
-                            <i class="fas @icon"></i>
-                        </div>
-                        <span class="fw-medium text-foreground small">@label</span>
-                        <i class="fas fa-chevron-right text-muted-foreground ms-auto" style="font-size:0.75rem;"></i>
-                    </a>
-                }
+    <!-- Recent Orders -->
+    <div class="card overflow-hidden">
+        <div class="d-flex align-items-center justify-content-between p-4 border-bottom border-color-default">
+            <div>
+                <h2 class="fs-5 fw-semibold text-foreground mb-0">Pedidos Recientes</h2>
+                <p class="text-muted-foreground small m-0">Últimos pedidos ordenados por estado activo</p>
             </div>
+            <a href="/admin/pedidos" class="btn btn-secondary btn-sm" style="border-radius:var(--radius);">Ver todos</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-borderless mb-0 align-middle">
+                <thead class="border-bottom border-color-default">
+                    <tr>
+                        <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Pedido</th>
+                        <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Cliente</th>
+                        <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Total</th>
+                        <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Canal</th>
+                        <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (_recentOrders.Any())
+                    {
+                        @foreach (var order in _recentOrders)
+                        {
+                            <tr class="border-bottom border-color-default">
+                                <td class="px-4 py-3 fw-bold text-primary small">@order.Id</td>
+                                <td class="px-4 py-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white flex-shrink-0"
+                                             style="width:28px;height:28px;font-size:.75rem;">
+                                            @((order.Customer?.Length > 0 ? order.Customer[0] : 'C').ToString())
+                                        </div>
+                                        <span class="text-foreground small">@order.Customer</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3 fw-semibold text-foreground small">S/. @order.Total.ToString("0.00")</td>
+                                <td class="px-4 py-3">
+                                    <span class="badge" style="background:color-mix(in srgb,#1976d2 15%,transparent);color:#1976d2;font-size:0.7rem;border-radius:9999px;">
+                                        <i class="fas @(order.Channel?.ToLower() == "presencial" ? "fa-store" : "fa-globe") me-1"></i>@order.Channel
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="badge @(GetStatusClass(order.Status)) py-1 px-2" style="border-radius:var(--radius);font-size:.75rem;">
+                                        @GetStatusLabel(order.Status)
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted-foreground">Sin pedidos recientes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

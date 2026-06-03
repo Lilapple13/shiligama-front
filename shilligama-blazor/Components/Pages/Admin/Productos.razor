@@ -6,19 +6,47 @@
     private List<Product> _products = new();
     private List<Category> _categories = new();
     private string _search = "";
+    private decimal? _minPrice;
+    private decimal? _maxPrice;
+    private bool _soloPromo = false;
+
+    // Paginación
+    private int _pageSize = 8;
+    private int _currentPage = 1;
+
+    // Modal editar/crear
     private bool _showModal = false;
     private bool _isEditing = false;
     private Product _form = new();
 
+    // Modales confirmación
+    private bool _showDeleteConfirm = false;
+    private bool _showDeletedToast  = false;
+    private bool _showEditConfirm   = false;
+    private bool _showEditedToast   = false;
+    private int   _pendingDeleteId;
+    private System.Threading.CancellationTokenSource? _undoCts;
+    private bool _undoAvailable = false;
+    private Product? _deletedBackup;
+
     protected override void OnInitialized()
     {
-        _products = ProductSvc.GetProducts();
+        _products   = ProductSvc.GetProducts();
         _categories = ProductSvc.GetCategories();
     }
 
     private IEnumerable<Product> Filtered => _products.Where(p =>
-        string.IsNullOrEmpty(_search) ||
-        p.Name.Contains(_search, StringComparison.OrdinalIgnoreCase));
+        (string.IsNullOrEmpty(_search) || p.Name.Contains(_search, StringComparison.OrdinalIgnoreCase)) &&
+        (!_minPrice.HasValue || p.Price >= _minPrice.Value) &&
+        (!_maxPrice.HasValue || p.Price <= _maxPrice.Value) &&
+        (!_soloPromo || p.IsPromo)
+    );
+
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling(Filtered.Count() / (double)_pageSize));
+    private IEnumerable<Product> Paged => Filtered.Skip((_currentPage - 1) * _pageSize).Take(_pageSize);
+
+    private void OnFilterChange() { _currentPage = 1; }
+    private void GoToPage(int p) { if (p >= 1 && p <= TotalPages) _currentPage = p; }
 
     private void OpenCreate()
     {
@@ -32,14 +60,24 @@
         _form = new Product
         {
             Id = p.Id, Name = p.Name, Description = p.Description,
-            Price = p.Price, OriginalPrice = p.OriginalPrice, Stock = p.Stock,
-            Category = p.Category, Image = p.Image, IsPromo = p.IsPromo
+            Price = p.Price, Stock = p.Stock,
+            Category = p.Category, Image = p.Image
         };
         _isEditing = true;
         _showModal = true;
     }
 
-    private void Save()
+    private void TrySubmit()
+    {
+        if (_form.Price <= 0)
+        {
+            // Basic validation: price must be positive
+            return;
+        }
+        _showEditConfirm = true;
+    }
+
+    private async Task ConfirmSave()
     {
         if (_isEditing)
         {
@@ -51,9 +89,46 @@
             _products.Add(_form);
         }
         _showModal = false;
+        _showEditConfirm = false;
+        _showEditedToast = true;
+        StateHasChanged();
+        await Task.Delay(3000);
+        _showEditedToast = false;
+        StateHasChanged();
     }
 
-    private void Delete(int id) => _products.RemoveAll(p => p.Id == id);
+    private void CancelSave() { _showEditConfirm = false; }
+
+    // Eliminar
+    private void AskDelete(int id) { _pendingDeleteId = id; _showDeleteConfirm = true; }
+    private void CancelDelete()    { _showDeleteConfirm = false; }
+    private async Task ConfirmDelete()
+    {
+        _deletedBackup = _products.FirstOrDefault(p => p.Id == _pendingDeleteId);
+        _products.RemoveAll(p => p.Id == _pendingDeleteId);
+        _showDeleteConfirm = false;
+        _showDeletedToast  = true;
+        _undoAvailable     = true;
+        StateHasChanged();
+        _undoCts?.Cancel();
+        _undoCts = new System.Threading.CancellationTokenSource();
+        try
+        {
+            await Task.Delay(5000, _undoCts.Token);
+            _showDeletedToast = false;
+            _undoAvailable    = false;
+            StateHasChanged();
+        }
+        catch (TaskCanceledException) { }
+    }
+    private void UndoDelete()
+    {
+        if (_deletedBackup != null) { _products.Insert(0, _deletedBackup); _deletedBackup = null; }
+        _undoCts?.Cancel();
+        _showDeletedToast = false;
+        _undoAvailable    = false;
+        StateHasChanged();
+    }
 }
 
 <PageTitle>Productos – Shiligama Admin</PageTitle>
@@ -65,31 +140,44 @@
             <h1 class="page-title mb-0">Gestión de Productos</h1>
             <p class="page-subtitle">@_products.Count productos registrados</p>
         </div>
-
-        <button @onclick="OpenCreate"
-                class="btn btn-primary d-flex align-items-center gap-2 fw-medium"
-                style="border-radius:var(--radius);">
-            <i class="fa-solid fa-plus"></i>
-            Nuevo Producto
+        <button @onclick="OpenCreate" class="btn btn-primary d-flex align-items-center gap-2 fw-medium" style="border-radius:var(--radius);">
+            <i class="fa-solid fa-plus"></i> Nuevo Producto
         </button>
     </div>
 
-    <!-- Search -->
+    <!-- Filtros -->
     <div class="card p-3">
-        <div class="position-relative">
-
-            <i class="fa-solid fa-magnifying-glass position-absolute top-50 translate-middle-y text-muted"
-               style="left:14px;"></i>
-
-            <input type="search"
-                   @bind="_search"
-                   @bind:event="oninput"
-                   class="form-control text-foreground"
-                   placeholder="Buscar productos..."
-                   style="padding-left:40px;" />
+        <div class="row g-2 align-items-center">
+            <!-- Búsqueda -->
+            <div class="col-md-4">
+                <div class="position-relative">
+                    <i class="fa-solid fa-magnifying-glass position-absolute top-50 translate-middle-y text-muted" style="left:14px;"></i>
+                    <input type="search" @bind="_search" @bind:event="oninput" @bind:after="OnFilterChange"
+                           class="form-control text-foreground" placeholder="Buscar productos..." style="padding-left:40px;" />
+                </div>
+            </div>
+            <!-- Precio mínimo -->
+            <div class="col-md-2">
+                <input type="number" step=".01" min="0" @bind="_minPrice" @bind:after="OnFilterChange"
+                       class="form-control text-foreground" placeholder="Precio mín." />
+            </div>
+            <!-- Precio máximo -->
+            <div class="col-md-2">
+                <input type="number" step=".01" min="0" @bind="_maxPrice" @bind:after="OnFilterChange"
+                       class="form-control text-foreground" placeholder="Precio máx." />
+            </div>
+            <!-- Solo en promoción -->
+            <div class="col-md-4">
+                <div class="form-check d-flex align-items-center gap-2 m-0">
+                    <input class="form-check-input mt-0" type="checkbox" id="soloPromo"
+                           @bind="_soloPromo" @bind:after="OnFilterChange" style="width:22px;height:22px;" />
+                    <label class="form-check-label text-foreground small fw-medium" for="soloPromo">
+                        Solo productos en promoción
+                    </label>
+                </div>
+            </div>
         </div>
     </div>
-
 
     <!-- Table -->
     <div class="card overflow-hidden">
@@ -100,18 +188,16 @@
                         <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Producto</th>
                         <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase d-none d-md-table-cell" style="letter-spacing:.05em;">Categoría</th>
                         <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Precio</th>
-                        <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase" style="letter-spacing:.05em;">Stock</th>
                         <th class="px-4 py-3 small fw-semibold text-muted-foreground text-uppercase text-end" style="letter-spacing:.05em;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var product in Filtered)
+                    @foreach (var product in Paged)
                     {
                         <tr class="border-bottom border-color-default" style="transition:background .15s;">
                             <td class="px-4 py-3 d-flex align-items-center gap-3">
                                 <img src="@product.Image" alt="@product.Name"
-                                     class="rounded-3 flex-shrink-0 object-fit-cover"
-                                     style="width:44px;height:44px;"
+                                     class="rounded-3 flex-shrink-0 object-fit-cover" style="width:44px;height:44px;"
                                      onerror="this.src='https://placehold.co/44x44/e8f5e9/1A6B3C?text=🛒'" />
                                 <div>
                                     <p class="fw-medium text-foreground mb-0 small">@product.Name</p>
@@ -128,45 +214,52 @@
                                     <br /><span class="text-decoration-line-through text-muted-foreground" style="font-size:.75rem;">S/. @product.OriginalPrice.Value.ToString("0.00")</span>
                                 }
                             </td>
-                            <td class="px-4 py-3 align-middle">
-                                <span class="badge @(product.Stock > 10 ? "bg-success-subtle text-success" : product.Stock > 0 ? "bg-warning-subtle text-warning" : "bg-danger-subtle text-danger")"
-                                      style="border-radius:var(--radius);font-size:.8rem;padding:.3em .7em;">
-                                    @product.Stock
-                                </span>
-                            </td>
                             <td class="px-4 py-3 text-end align-middle">
-                                <div class="d-flex align-items-center justify-content-end gap-2">
+                                <div class="d-flex align-items-center justify-content-end gap-1">
                                     <button @onclick="@(() => OpenEdit(product))"
-                                            class="btn btn-ghost btn-sm text-muted-foreground d-flex align-items-center gap-1"
-                                            style="border-radius:var(--radius);">
-                                        <Icons Name="Edit2" Class="w-4 h-4" />
-                                        <span class="d-none d-md-inline">Editar</span>
+                                            class="btn btn-ghost btn-sm text-muted-foreground"
+                                            style="border-radius:var(--radius);" title="Editar">
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
-                                    <button @onclick="@(() => Delete(product.Id))"
-                                            class="btn btn-ghost btn-sm text-danger d-flex align-items-center gap-1"
-                                            style="border-radius:var(--radius);">
-                                        <Icons Name="Trash2" Class="w-4 h-4" />
-                                        <span class="d-none d-md-inline">Eliminar</span>
+                                    <button @onclick="@(() => AskDelete(product.Id))"
+                                            class="btn btn-ghost btn-sm text-danger"
+                                            style="border-radius:var(--radius);" title="Eliminar">
+                                        <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
                         </tr>
                     }
-                    @if (!Filtered.Any())
+                    @if (!Paged.Any())
                     {
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-muted-foreground">
-                                No se encontraron productos
-                            </td>
-                        </tr>
+                        <tr><td colspan="4" class="text-center py-5 text-muted-foreground">No se encontraron productos</td></tr>
                     }
                 </tbody>
             </table>
         </div>
     </div>
+
+    <!-- Paginación -->
+    @if (TotalPages > 1)
+    {
+        <div class="d-flex justify-content-center align-items-center gap-2 py-2">
+            <button class="btn btn-sm rounded-circle pag-btn" @onclick="@(() => GoToPage(_currentPage - 1))" disabled="@(_currentPage == 1)" style="width:36px;height:36px;">
+                <i class="fa-solid fa-chevron-left" style="font-size:.75rem;"></i>
+            </button>
+            @for (int p = 1; p <= TotalPages; p++)
+            {
+                var pg = p;
+                <button class="btn btn-sm rounded-circle pag-btn @(pg == _currentPage ? "pag-active" : "")"
+                        @onclick="@(() => GoToPage(pg))" style="width:36px;height:36px;font-size:.85rem;font-weight:600;">@pg</button>
+            }
+            <button class="btn btn-sm rounded-circle pag-btn" @onclick="@(() => GoToPage(_currentPage + 1))" disabled="@(_currentPage == TotalPages)" style="width:36px;height:36px;">
+                <i class="fa-solid fa-chevron-right" style="font-size:.75rem;"></i>
+            </button>
+        </div>
+    }
 </div>
 
-<!-- Product Modal -->
+<!-- ── Modal Crear/Editar ── -->
 @if (_showModal)
 {
     <div class="modal show d-block fade-in" tabindex="-1" style="background:rgba(0,0,0,.5);" @onclick="@(() => _showModal = false)">
@@ -177,57 +270,130 @@
                     <button type="button" class="btn-close" @onclick="@(() => _showModal = false)"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <EditForm Model="_form" OnValidSubmit="Save">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label small fw-medium text-foreground">Nombre</label>
-                                <input type="text" @bind="_form.Name" required class="form-control text-foreground" />
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label small fw-medium text-foreground">Descripción</label>
-                                <textarea @bind="_form.Description" class="form-control text-foreground" rows="2"></textarea>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-medium text-foreground">Precio</label>
-                                <input type="number" step=".01" @bind="_form.Price" required class="form-control text-foreground" />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-medium text-foreground">Precio Original (opcional)</label>
-                                <input type="number" step=".01" @bind="_form.OriginalPrice" class="form-control text-foreground" placeholder="Dejar vacío si no hay oferta" />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-medium text-foreground">Stock</label>
-                                <input type="number" @bind="_form.Stock" required class="form-control text-foreground" />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-medium text-foreground">Categoría</label>
-                                <select @bind="_form.Category" class="form-select text-foreground">
-                                    @foreach (var cat in _categories)
-                                    {
-                                        <option value="@cat.Id">@cat.Name</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label small fw-medium text-foreground">URL de imagen</label>
-                                <input type="url" @bind="_form.Image" class="form-control text-foreground" placeholder="https://..." />
-                            </div>
-                            <div class="col-12">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="isPromo" @bind="_form.IsPromo" />
-                                    <label class="form-check-label small text-foreground" for="isPromo">Marcar como producto en promoción</label>
-                                </div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label small fw-medium text-foreground">Nombre</label>
+                            <input type="text" @bind="_form.Name" required class="form-control text-foreground" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-medium text-foreground">Descripción</label>
+                            <textarea @bind="_form.Description" class="form-control text-foreground" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium text-foreground">Precio actual</label>
+                            <input type="number" step=".01" @bind="_form.Price" required class="form-control text-foreground" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium text-foreground">Stock</label>
+                            <input type="number" @bind="_form.Stock" required class="form-control text-foreground" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-medium text-foreground">Categoría</label>
+                            <select @bind="_form.Category" class="form-select text-foreground">
+                                @foreach (var cat in _categories)
+                                {
+                                    <option value="@cat.Id">@cat.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-medium text-foreground">URL de imagen</label>
+                            <input type="url" @bind="_form.Image" class="form-control text-foreground" placeholder="https://..." />
+                        </div>
+                        <div class="col-12">
+                            <div class="px-3 py-2 rounded small d-flex align-items-center gap-2" style="background:color-mix(in srgb,#1A6B3C 10%,transparent);color:#1A6B3C;font-size:.82rem;">
+                                <i class="fa-solid fa-circle-info"></i>
+                                Para aplicar descuentos u ofertas a este producto, ve a <strong>Promociones</strong> y vincúlalo desde allí.
                             </div>
                         </div>
-                        <div class="d-flex justify-content-end gap-2 mt-4">
-                            <button type="button" @onclick="@(() => _showModal = false)" class="btn btn-secondary" style="border-radius:var(--radius);">Cancelar</button>
-                            <button type="submit" class="btn btn-primary fw-medium" style="border-radius:var(--radius);">
-                                @(_isEditing ? "Guardar cambios" : "Crear producto")
-                            </button>
-                        </div>
-                    </EditForm>
+
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" @onclick="@(() => _showModal = false)" class="btn btn-secondary" style="border-radius:var(--radius);">Cancelar</button>
+                        <button type="button" @onclick="TrySubmit" class="btn btn-primary fw-medium" style="border-radius:var(--radius);">
+                            @(_isEditing ? "Guardar cambios" : "Crear producto")
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 }
+
+<!-- ── Modal: Confirmar Guardar ── -->
+@if (_showEditConfirm)
+{
+    <div class="modal show d-block" tabindex="-1" style="background:rgba(0,0,0,.55);z-index:1060;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:380px;">
+            <div class="modal-content bg-card border-border">
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3" style="font-size:2.5rem;">💾</div>
+                    <h5 class="fw-bold text-foreground mb-1">¿Guardar cambios?</h5>
+                    <p class="text-muted-foreground small mb-4">Se @(_isEditing ? "actualizará" : "creará") el producto <strong>@_form.Name</strong>.</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-secondary" style="border-radius:var(--radius);" @onclick="CancelSave">Cancelar</button>
+                        <button type="button" class="btn btn-primary" style="border-radius:var(--radius);" @onclick="ConfirmSave">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ── Modal: Confirmar Eliminar ── -->
+@if (_showDeleteConfirm)
+{
+    <div class="modal show d-block" tabindex="-1" style="background:rgba(0,0,0,.45);">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:380px;">
+            <div class="modal-content bg-card border-border">
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3" style="font-size:2.5rem;">🗑️</div>
+                    <h5 class="fw-bold text-foreground mb-1">¿Eliminar producto?</h5>
+                    <p class="text-muted-foreground small mb-4">Podrás deshacer esta acción durante 5 segundos.</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-secondary" style="border-radius:var(--radius);" @onclick="CancelDelete">Cancelar</button>
+                        <button type="button" class="btn btn-danger" style="border-radius:var(--radius);" @onclick="ConfirmDelete">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ── Toast: Eliminado ── -->
+@if (_showDeletedToast)
+{
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
+        <div class="toast show align-items-center text-white border-0" style="background:#1A6B3C;border-radius:var(--radius);min-width:280px;">
+            <div class="d-flex align-items-center gap-2 px-3 py-2">
+                <i class="fa-solid fa-circle-check"></i>
+                <span class="small flex-grow-1">Producto eliminado</span>
+                @if (_undoAvailable)
+                {
+                    <button type="button" class="btn btn-sm btn-link text-white p-0 text-decoration-underline" @onclick="UndoDelete">Deshacer</button>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ── Toast: Guardado ── -->
+@if (_showEditedToast)
+{
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
+        <div class="toast show align-items-center text-white border-0" style="background:#1A6B3C;border-radius:var(--radius);min-width:280px;">
+            <div class="d-flex align-items-center gap-2 px-3 py-2">
+                <i class="fa-solid fa-circle-check"></i>
+                <span class="small">Producto @(_isEditing ? "actualizado" : "creado") correctamente</span>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .pag-btn { background:var(--card); border:1px solid var(--border); color:var(--foreground); transition:all .15s; }
+    .pag-btn:hover:not(:disabled) { background:var(--secondary); }
+    .pag-btn:disabled { opacity:.4; }
+    .pag-active { background:#1A6B3C !important; color:#fff !important; border-color:#1A6B3C !important; }
+</style>

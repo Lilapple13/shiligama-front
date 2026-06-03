@@ -112,7 +112,6 @@ C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-fr
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\scopedcss\bundle\shilligama_blazor.styles.css
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\scopedcss\projectbundle\shilligama_blazor.bundle.scp.css
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\a6g5htdkqg-{0}-ktm80c26os-ktm80c26os.gz
-C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\2t7tdq530p-{0}-n3bfny1jwn-n3bfny1jwn.gz
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\04teec2vld-{0}-ppsp9a40r0-ppsp9a40r0.gz
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\afqpcx2okj-{0}-abdmv1u4y3-abdmv1u4y3.gz
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\20v04azdi9-{0}-ej96puwv3k-ej96puwv3k.gz
@@ -173,7 +172,6 @@ C:\Users\efd12\OneDrive\Escritorio\FrontTA\shiligama-front\shilligama-blazor\obj
 C:\Users\efd12\OneDrive\Escritorio\FrontTA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.genruntimeconfig.cache
 C:\Users\efd12\OneDrive\Escritorio\FrontTA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\ref\shilligama_blazor.dll
 C:\Users\efd12\OneDrive\Escritorio\FrontTA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-vw22mviae8-vw22mviae8.gz
-C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-c28xlmbujk-c28xlmbujk.gz
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.exe
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.dll
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\EmbeddedAttribute.cs
@@ -216,7 +214,6 @@ C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\bin\Debug\net10
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\bin\Debug\net10.0\shilligama_blazor.pdb
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.genruntimeconfig.cache
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\ref\shilligama_blazor.dll
-C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\5n7s4x5ka7-{0}-jehmh76fo7-jehmh76fo7.gz
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\19cv9oe5r3-{0}-x7u8kcbftl-x7u8kcbftl.gz
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\t5hdcxfsxq-{0}-x7u8kcbftl-x7u8kcbftl.gz
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\bin\Debug\net10.0\appsettings.Development.json
@@ -273,3 +270,8 @@ C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\o12if6v7bs-{0}-tpadfy4hp4-tpadfy4hp4.gz
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\swwbyqylwv-{0}-u96rtlx85q-u96rtlx85q.gz
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-iak8fmgatn-iak8fmgatn.gz
+C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\5n7s4x5ka7-{0}-yzs50yym15-yzs50yym15.gz
+C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\2t7tdq530p-{0}-t2jtq8d96s-t2jtq8d96s.gz
+C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\o12if6v7bs-{0}-tpadfy4hp4-tpadfy4hp4.gz
+C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\swwbyqylwv-{0}-u96rtlx85q-u96rtlx85q.gz
