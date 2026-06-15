@@ -9,6 +9,7 @@
     private string _name = "";
     private string _dni = "12345678";
     private string _phone = "987654321";
+    private string _phonePrefix = "+51";
 
     private List<string> _addresses = new()
     {
@@ -32,11 +33,89 @@
         _name = Auth.CurrentUser?.Name ?? "Juan Pérez";
     }
 
+    private string _nameError = "";
+    private string _dniError = "";
+    private string _phoneError = "";
+
+    private void ValidateName()
+    {
+        if (string.IsNullOrWhiteSpace(_name))
+        {
+            _nameError = "El nombre completo es obligatorio.";
+        }
+        else if (!System.Text.RegularExpressions.Regex.IsMatch(_name.Trim(), @"^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$"))
+        {
+            _nameError = "El nombre completo solo debe contener letras.";
+        }
+        else
+        {
+            _nameError = "";
+        }
+    }
+
+    private void ValidateDni()
+    {
+        if (_dni != null)
+        {
+            _dni = new string(_dni.Where(char.IsDigit).ToArray());
+        }
+
+        if (string.IsNullOrWhiteSpace(_dni))
+        {
+            _dniError = "El DNI es obligatorio.";
+        }
+        else if (_dni.Length != 8)
+        {
+            _dniError = "El DNI debe contener exactamente 8 números.";
+        }
+        else
+        {
+            _dniError = "";
+        }
+    }
+
+    private void ValidatePhone()
+    {
+        if (_phone != null)
+        {
+            _phone = new string(_phone.Where(char.IsDigit).ToArray());
+        }
+
+        if (string.IsNullOrWhiteSpace(_phone))
+        {
+            _phoneError = "El teléfono es obligatorio.";
+        }
+        else if (_phone.Length != 9)
+        {
+            _phoneError = "El teléfono debe contener exactamente 9 números.";
+        }
+        else
+        {
+            _phoneError = "";
+        }
+    }
+
     private async Task SaveChanges()
     {
+        ValidateName();
+        ValidateDni();
+        ValidatePhone();
+
+        if (!string.IsNullOrEmpty(_nameError) || !string.IsNullOrEmpty(_dniError) || !string.IsNullOrEmpty(_phoneError))
+        {
+            return;
+        }
+
         _success = true;
-        await Task.Delay(2000);
-        _success = false;
+        await JS.InvokeVoidAsync("window.scrollTo", 0, 0);
+
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(4500);
+            _success = false;
+            await InvokeAsync(StateHasChanged);
+        });
+
         StateHasChanged();
     }
 
@@ -96,14 +175,7 @@
     <h1 class="fs-2 fw-bold text-foreground mb-1" style="font-family: 'Outfit', sans-serif; color: #111827 !important;">Configuración</h1>
     <p class="text-muted-foreground small mt-1 mb-4" style="font-size: 0.9rem; color: #4b5563 !important;">Administra tu información personal y preferencias de entrega</p>
 
-    @if (_success)
-    {
-        <div class="alert alert-success alert-dismissible fade show p-3 d-flex align-items-center gap-2 mb-4" style="border-radius: var(--radius);" role="alert">
-            <i class="fa-solid fa-check text-success" style="font-size: 1.1rem;"></i>
-            <div>¡Tus cambios han sido guardados con éxito!</div>
-            <button type="button" class="btn-close" @onclick="@(() => _success = false)"></button>
-        </div>
-    }
+
 
     <EditForm Model="this" OnValidSubmit="SaveChanges" class="d-flex flex-column gap-4">
         <!-- 1. Personal Information Card -->
@@ -121,14 +193,22 @@
             <div class="row g-3 mt-1">
                 <div class="col-md-7">
                     <label class="form-label small fw-medium text-foreground mb-1.5">Nombre completo</label>
-                    <input type="text" @bind="_name" required class="form-control text-foreground" style="height: 44px; border-radius: 8px; border: 1px solid #d1d5db;" />
+                    <input type="text" @bind="_name" @bind:event="oninput" @bind:after="ValidateName" required class="form-control text-foreground @(string.IsNullOrEmpty(_nameError) ? "" : "is-invalid")" style="height: 44px; border-radius: 8px; border: 1px solid #d1d5db;" />
+                    @if (!string.IsNullOrEmpty(_nameError))
+                    {
+                        <div class="text-danger small mt-1"><i class="fa-solid fa-triangle-exclamation me-1"></i>@_nameError</div>
+                    }
                 </div>
                 <div class="col-md-5">
                     <label class="form-label small fw-medium text-foreground mb-1.5">DNI</label>
                     <div class="position-relative">
-                        <i class="fa-regular fa-id-card text-muted-foreground position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.95rem;"></i>
-                        <input type="text" @bind="_dni" required class="form-control text-foreground" style="height: 44px; padding-left: 42px; border-radius: 8px; border: 1px solid #d1d5db;" />
+                        <i class="fa-regular fa-id-card text-muted-foreground position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.95rem; z-index: 10;"></i>
+                        <input type="text" @bind="_dni" @bind:event="oninput" @bind:after="ValidateDni" maxlength="8" required class="form-control text-foreground @(string.IsNullOrEmpty(_dniError) ? "" : "is-invalid")" style="height: 44px; padding-left: 42px; border-radius: 8px; border: 1px solid #d1d5db;" />
                     </div>
+                    @if (!string.IsNullOrEmpty(_dniError))
+                    {
+                        <div class="text-danger small mt-1"><i class="fa-solid fa-triangle-exclamation me-1"></i>@_dniError</div>
+                    }
                 </div>
             </div>
         </div>
@@ -147,10 +227,22 @@
             
             <div class="mt-1">
                 <label class="form-label small fw-medium text-foreground mb-1.5">Teléfono</label>
-                <div class="position-relative">
-                    <i class="fa-solid fa-phone text-muted-foreground position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.95rem;"></i>
-                    <input type="tel" @bind="_phone" required class="form-control text-foreground" style="height: 44px; padding-left: 42px; border-radius: 8px; border: 1px solid #d1d5db;" />
+                <div class="input-group">
+                    <select @bind="_phonePrefix" class="form-select flex-shrink-0" style="max-width: 120px; height: 44px; border-radius: 8px 0 0 8px; border: 1px solid #d1d5db; background-color: var(--secondary); color: var(--foreground); font-weight: 500;">
+                        <option value="+51">🇵🇪 +51</option>
+                        <option value="+52">🇲🇽 +52</option>
+                        <option value="+54">🇦🇷 +54</option>
+                        <option value="+56">🇨🇱 +56</option>
+                        <option value="+57">🇨🇴 +57</option>
+                        <option value="+58">🇻🇪 +58</option>
+                        <option value="+1">🇺🇸 +1</option>
+                    </select>
+                    <input type="text" @bind="_phone" @bind:event="oninput" @bind:after="ValidatePhone" maxlength="9" required class="form-control text-foreground @(string.IsNullOrEmpty(_phoneError) ? "" : "is-invalid")" style="height: 44px; border-radius: 0 8px 8px 0; border: 1px solid #d1d5db; border-left: none;" placeholder="999999999" />
                 </div>
+                @if (!string.IsNullOrEmpty(_phoneError))
+                {
+                    <div class="text-danger small mt-1"><i class="fa-solid fa-triangle-exclamation me-1"></i>@_phoneError</div>
+                }
                 <div class="form-text text-muted-foreground mt-1.5" style="font-size: 0.75rem;">Usaremos este número para contactarte sobre tus pedidos.</div>
             </div>
         </div>
@@ -245,6 +337,14 @@
                 </button>
             </div>
 
+            <!-- Buscador de dirección -->
+            <div class="px-4 py-2 border-bottom" style="background-color: #f9fafb;">
+                <div class="position-relative w-100">
+                    <i class="fa-solid fa-magnifying-glass text-muted-foreground position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.95rem;"></i>
+                    <input type="text" id="map-search-input" class="form-control text-foreground" style="height: 44px; padding-left: 42px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 0.9rem;" placeholder="Escribe una dirección (ej: Av. Larco 123, Miraflores)..." />
+                </div>
+            </div>
+
             <!-- Map -->
             <div id="address-map" style="width: 100%; height: 350px;"></div>
 
@@ -281,3 +381,47 @@
         </div>
     </div>
 }
+
+@if (_success)
+{
+    <div class="success-toast"
+         style="position: fixed; bottom: 28px; right: 28px; z-index: 99999;
+                display: flex; align-items: flex-start; gap: 14px;
+                background: #ffffff; color: #111827;
+                border: 1.5px solid #d1fae5;
+                border-radius: 16px;
+                padding: 16px 18px;
+                min-width: 300px; max-width: 360px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(22,163,74,0.12);">
+
+        <div style="width:42px;height:42px;border-radius:50%;background:#16a34a;
+                    display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                 fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+
+        <div style="flex:1;min-width:0;">
+            <p style="margin:0 0 4px 0;font-weight:700;font-size:0.95rem;color:#111827;">¡Cambios guardados!</p>
+            <p style="margin:0;font-size:0.78rem;color:#6b7280;line-height:1.4;">
+                Tus datos de perfil se actualizaron correctamente.
+            </p>
+        </div>
+
+        <button type="button"
+                style="background:none;border:none;cursor:pointer;padding:2px;color:#9ca3af;flex-shrink:0;
+                       font-size:1.1rem;line-height:1;margin-top:-2px;"
+                @onclick="() => _success = false">✕</button>
+    </div>
+}
+
+<style>
+@@keyframes toastSlideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to   { transform: translateX(0);   opacity: 1; }
+}
+.success-toast {
+    animation: toastSlideIn 0.35s cubic-bezier(.21,1.02,.73,1) forwards;
+}
+</style>

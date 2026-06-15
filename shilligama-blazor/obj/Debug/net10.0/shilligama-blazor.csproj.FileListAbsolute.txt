@@ -258,12 +258,9 @@ D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\shilligama_blazor.pdb
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\shilligama-blazor.genruntimeconfig.cache
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\ref\shilligama_blazor.dll
-D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\o12if6v7bs-{0}-xr1vmr0fny-xr1vmr0fny.gz
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\5n7s4x5ka7-{0}-yzs50yym15-yzs50yym15.gz
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\2t7tdq530p-{0}-t2jtq8d96s-t2jtq8d96s.gz
-D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\swwbyqylwv-{0}-wfqt4o3laz-wfqt4o3laz.gz
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-iak8fmgatn-iak8fmgatn.gz
-D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\me3m7818d0-{0}-iak8fmgatn-iak8fmgatn.gz
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\5n7s4x5ka7-{0}-yzs50yym15-yzs50yym15.gz
 C:\PROGRA3\FRONT END SHILIGAMA\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\2t7tdq530p-{0}-t2jtq8d96s-t2jtq8d96s.gz
@@ -275,3 +272,6 @@ C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-fr
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\2t7tdq530p-{0}-t2jtq8d96s-t2jtq8d96s.gz
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\o12if6v7bs-{0}-tpadfy4hp4-tpadfy4hp4.gz
 C:\Users\binny\OneDrive\Escritorio\Binny\6to_ciclo\PROGRA3\TA\Front\shiligama-front\shilligama-blazor\obj\Debug\net10.0\compressed\swwbyqylwv-{0}-u96rtlx85q-u96rtlx85q.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\swwbyqylwv-{0}-u96rtlx85q-u96rtlx85q.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\compressed\o12if6v7bs-{0}-qji32xpphj-qji32xpphj.gz
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

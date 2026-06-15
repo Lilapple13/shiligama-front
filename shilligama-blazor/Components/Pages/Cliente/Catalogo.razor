@@ -81,6 +81,7 @@
         _products = ProductSvc.GetProducts();
         _isLoading = false;
         ProductSvc.OnSearch += Refresh;
+        Cart.OnChange += RefreshCart;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -138,6 +139,76 @@
         StateHasChanged();
     }
 
+    private async Task DecreaseQty(Product p)
+    {
+        var item = Cart.GetCartItems().FirstOrDefault(i => i.Id == p.Id);
+        if (item != null)
+        {
+            await Cart.UpdateQuantityAsync(p.Id, item.Quantity - 1);
+        }
+    }
+
+    private async Task IncreaseQty(Product p)
+    {
+        var item = Cart.GetCartItems().FirstOrDefault(i => i.Id == p.Id);
+        if (item != null)
+        {
+            await Cart.UpdateQuantityAsync(p.Id, item.Quantity + 1);
+        }
+    }
+
+    private void RefreshCart()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private Dictionary<int, string> _tempInputs = new();
+    // Used to force Blazor to re-render the input element after blur
+    private Dictionary<int, int> _inputRenderKey = new();
+
+    private async Task ChangeQuantity(Product p, string? val)
+    {
+        if (val == null) return;
+        _tempInputs[p.Id] = val;
+
+        if (string.IsNullOrWhiteSpace(val))
+        {
+            // Dejar el valor temporalmente vacío para permitir que el usuario borre
+            return;
+        }
+
+        if (int.TryParse(val, out int qty))
+        {
+            if (qty < 1) qty = 1;
+            if (qty > p.Stock) qty = p.Stock;
+            await Cart.UpdateQuantityAsync(p.Id, qty);
+            // Actualizar el valor temporal para reflejar los límites (stock, etc.)
+            _tempInputs[p.Id] = qty.ToString();
+        }
+    }
+
+    private async Task HandleBlur(Product p)
+    {
+        var item = Cart.GetCartItems().FirstOrDefault(i => i.Id == p.Id);
+        if (item != null)
+        {
+            int finalQty;
+            if (!_tempInputs.TryGetValue(p.Id, out var val) || string.IsNullOrWhiteSpace(val) || !int.TryParse(val, out int qty) || qty < 1)
+            {
+                finalQty = item.Quantity < 1 ? 1 : item.Quantity;
+            }
+            else
+            {
+                finalQty = qty > p.Stock ? p.Stock : qty;
+            }
+            _tempInputs[p.Id] = finalQty.ToString();
+            await Cart.UpdateQuantityAsync(p.Id, finalQty);
+            // Bump render key to force Blazor to re-render the input element
+            _inputRenderKey[p.Id] = (_inputRenderKey.TryGetValue(p.Id, out var k) ? k : 0) + 1;
+        }
+        StateHasChanged();
+    }
+
     private string GetDiscountPct(Product p) =>
         p.OriginalPrice.HasValue ? $"-{100 - (int)(p.Price / p.OriginalPrice.Value * 100)}%" : "";
 
@@ -159,6 +230,7 @@
     public async ValueTask DisposeAsync()
     {
         ProductSvc.OnSearch -= Refresh;
+        Cart.OnChange -= RefreshCart;
         try
         {
             await JS.InvokeVoidAsync("carouselHelper.stopCarousel");
@@ -247,6 +319,71 @@
     border-color: #1A6B3C !important; box-shadow: 0 4px 10px rgba(26,107,60,0.2);
 }
 .dark .active-page { box-shadow: 0 4px 10px rgba(26,107,60,0.4); }
+
+.btn-agregar-pill {
+    background-color: white !important;
+    color: #1A6B3C !important;
+    border: 1.5px solid #1A6B3C !important;
+    border-radius: 24px !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.05em !important;
+    padding: 0.5rem 1.5rem !important;
+    transition: all 0.2s ease-in-out !important;
+    text-transform: uppercase !important;
+}
+.btn-agregar-pill:hover {
+    background-color: #1A6B3C !important;
+    color: white !important;
+}
+.btn-cart-control-round:hover {
+    transform: scale(1.08);
+}
+.qty-input {
+    width: 42px;
+    border: none;
+    text-align: center;
+    font-weight: 700;
+    outline: none;
+    font-size: 0.95rem;
+    color: var(--foreground);
+    background: transparent;
+}
+/* Hide spin buttons */
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.qty-input[type=number] {
+    -moz-appearance: textfield;
+}
+.subtotal-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6px;
+    background-color: #1A6B3C;
+    color: #ffffff;
+    font-weight: 700;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    padding: 5px 10px;
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+.cart-controls-container:hover .subtotal-badge,
+.product-card:hover .subtotal-badge {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
 </style>
 
 <div class="bg-background">
@@ -457,7 +594,7 @@
                         @foreach (var product in PaginatedProducts)
                         {
                             <div class="col-6 col-md-4 col-xl-3">
-                                <div class="card h-100 d-flex flex-column position-relative overflow-hidden"
+                                <div class="card product-card h-100 d-flex flex-column position-relative"
                                      style="transition:transform .2s,box-shadow .2s;border-radius:16px;
                                             border:1px solid var(--border);
                                             box-shadow:0 4px 12px rgba(0,0,0,0.03);cursor:pointer;">
@@ -540,27 +677,77 @@
                                             }
                                         </div>
 
-                                        <!-- Botón Agregar (único, con feedback) -->
-                                        <div class="mt-auto">
+                                        <!-- Botón Agregar / Controles de cantidad -->
+                                        <div class="mt-auto" style="height: 80px; display: flex; flex-direction: column; justify-content: flex-end;">
                                             @if (product.Stock > 0)
                                             {
-                                                <button @onclick="@(() => AddToCart(product))"
-                                                        class="btn text-white w-100 py-2 d-flex align-items-center justify-content-center gap-2"
-                                                        style="background-color:@(_addedIds.Contains(product.Id) ? "#16a34a" : "#1A6B3C");
-                                                               border:none;border-radius:8px;font-weight:500;
-                                                               font-size:0.9rem;transition:background-color 0.3s;"
-                                                        title="Agregar al carrito">
-                                                    @if (_addedIds.Contains(product.Id))
-                                                    {
-                                                        <i class="fa-solid fa-check" style="font-size:0.85rem;"></i>
-                                                        <span>¡Agregado!</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <i class="fa-solid fa-plus" style="font-size:0.85rem;"></i>
-                                                        <span>Agregar</span>
-                                                    }
-                                                </button>
+                                                var cartItem = Cart.GetCartItems().FirstOrDefault(i => i.Id == product.Id);
+                                                @if (cartItem == null)
+                                                {
+                                                    <button @onclick="@(() => AddToCart(product))"
+                                                            class="btn btn-agregar-pill w-100 d-flex align-items-center justify-content-center"
+                                                            style="height: 42px;"
+                                                            title="Agregar al carrito">
+                                                        <span>AGREGAR</span>
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <div class="cart-controls-container">
+                                                        <!-- Fila de controles: trash | cantidad | + con check -->
+                                                        <div class="d-flex align-items-center justify-content-between px-1 py-1" 
+                                                             style="border: 1.5px solid #e5e7eb; border-radius: 50px; background: white; height: 42px;">
+
+                                                            <!-- Botón Disminuir/Eliminar -->
+                                                            <button type="button"
+                                                                    class="btn btn-cart-control-round d-flex align-items-center justify-content-center flex-shrink-0"
+                                                                    @onclick="() => DecreaseQty(product)"
+                                                                    style="width: 34px; height: 34px; border-radius: 50%; border: none;
+                                                                           background: transparent; color: #6b7280; transition: all 0.2s;">
+                                                                @if (cartItem.Quantity == 1)
+                                                                {
+                                                                    <i class="fa-regular fa-trash-can" style="font-size: 0.9rem;"></i>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <i class="fa-solid fa-minus" style="font-size: 0.85rem;"></i>
+                                                                }
+                                                            </button>
+
+                                                            <!-- Cantidad editable por teclado -->
+                                                            @{ var renderKey = _inputRenderKey.TryGetValue(product.Id, out var rk) ? rk : 0; }
+                                                            <input type="number" class="qty-input" @key="@($"qty-{product.Id}-{renderKey}")"
+                                                                   value="@(_tempInputs.TryGetValue(product.Id, out var tmpVal) ? tmpVal : cartItem.Quantity.ToString())"
+                                                                   @oninput="@(e => ChangeQuantity(product, e.Value?.ToString()))"
+                                                                   @onblur="@(e => HandleBlur(product))"
+                                                                   min="1" max="@product.Stock" />
+
+                                                            <!-- Botón Incrementar con check verde encima -->
+                                                            <div class="position-relative flex-shrink-0">
+                                                                <button type="button"
+                                                                        class="btn btn-cart-control-round d-flex align-items-center justify-content-center"
+                                                                        @onclick="() => IncreaseQty(product)"
+                                                                        disabled="@(product.Stock <= cartItem.Quantity)"
+                                                                        style="width: 34px; height: 34px; border-radius: 50%;
+                                                                               border: 2px solid #1A6B3C; background: white;
+                                                                               color: #1A6B3C; transition: all 0.2s;">
+                                                                    <i class="fa-solid fa-plus" style="font-size: 0.85rem;"></i>
+                                                                </button>
+                                                                <!-- Badge check verde en la esquina superior derecha -->
+                                                                <span class="position-absolute d-flex align-items-center justify-content-center rounded-circle bg-success"
+                                                                      style="width:15px;height:15px;top:-3px;right:-3px;
+                                                                             border:2px solid white;font-size:0.5rem;">
+                                                                    <i class="fa-solid fa-check text-white"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Subtotal siempre visible — pill verde sólido -->
+                                                        <div class="subtotal-badge">
+                                                            S/. @((cartItem.Quantity * product.Price).ToString("0.00"))
+                                                        </div>
+                                                    </div>
+                                                }
                                             }
                                             else
                                             {

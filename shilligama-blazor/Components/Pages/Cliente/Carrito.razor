@@ -5,9 +5,13 @@
 @inject NavigationManager Navigation
 
 @code {
+    [SupplyParameterFromQuery(Name = "repeated")]
+    public bool Repeated { get; set; }
+
     private enum DeliveryMethod { Delivery, Pickup }
     private DeliveryMethod _deliveryMethod = DeliveryMethod.Delivery;
     private bool _showLoginRequired;
+    private bool _showRepeatedToast;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -17,7 +21,19 @@
             await Auth.InitializeAsync();
             Cart.OnChange += StateHasChanged;
             Auth.OnChange += StateHasChanged;
+
+            _showRepeatedToast = Repeated;
             StateHasChanged();
+
+            if (_showRepeatedToast)
+            {
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(4500);
+                    _showRepeatedToast = false;
+                    await InvokeAsync(StateHasChanged);
+                });
+            }
         }
     }
 
@@ -29,6 +45,24 @@
 
     private async Task Remove(int id) => await Cart.RemoveFromCartAsync(id);
     private async Task UpdateQty(int id, int qty) => await Cart.UpdateQuantityAsync(id, qty);
+    private async Task HandleQuantityInput(int id, int qty)
+    {
+        if (qty < 1)
+        {
+            var item = Cart.GetCartItems().FirstOrDefault(i => i.Id == id);
+            if (item != null)
+            {
+                item.Quantity = qty;
+                StateHasChanged();
+                await Task.Yield();
+                await Cart.UpdateQuantityAsync(id, 1);
+            }
+        }
+        else
+        {
+            await Cart.UpdateQuantityAsync(id, qty);
+        }
+    }
     private async Task ClearAll() => await Cart.ClearCartAsync();
 
     private void SetDeliveryMethod(DeliveryMethod method) => _deliveryMethod = method;
@@ -85,19 +119,42 @@
     background: transparent;
     border: none;
     color: var(--foreground);
-    padding: 0 8px;
+    padding: 0 10px;
     height: 100%;
-    font-size: 1rem;
+    font-size: 1.25rem;
     cursor: pointer;
     transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 .qty-control button:hover { background-color: var(--secondary); }
-.qty-control span {
+.qty-control input {
     color: var(--foreground);
     font-size: 0.9rem;
     font-weight: 500;
-    min-width: 24px;
+    width: 36px;
     text-align: center;
+    border: none;
+    background: transparent;
+    outline: none;
+    -moz-appearance: textfield;
+}
+.qty-control input::-webkit-outer-spin-button,
+.qty-control input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+@@keyframes toastSlideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to   { transform: translateX(0);   opacity: 1; }
+}
+@@keyframes toastSlideOut {
+    from { transform: translateX(0);   opacity: 1; }
+    to   { transform: translateX(120%); opacity: 0; }
+}
+.repeated-toast {
+    animation: toastSlideIn 0.35s cubic-bezier(.21,1.02,.73,1) forwards;
 }
 </style>
 
@@ -153,7 +210,10 @@
                                           style="font-size:0.725rem;">Cantidad</span>
                                     <div class="qty-control">
                                         <button @onclick="@(() => UpdateQty(item.Id, item.Quantity - 1))">−</button>
-                                        <span>@item.Quantity</span>
+                                        <input type="number"
+                                               @bind:get="item.Quantity"
+                                               @bind:set="@(async (qty) => await HandleQuantityInput(item.Id, qty))"
+                                               min="1" />
                                         <button @onclick="@(() => UpdateQty(item.Id, item.Quantity + 1))">+</button>
                                     </div>
                                 </div>
@@ -255,5 +315,39 @@
 </div>
 
 <LoginRequiredModal @bind-IsOpen="_showLoginRequired" ReturnUrl="@CheckoutReturnUrl" />
+
+@if (_showRepeatedToast)
+{
+    <div class="repeated-toast"
+         style="position: fixed; bottom: 28px; right: 28px; z-index: 99999;
+                display: flex; align-items: flex-start; gap: 14px;
+                background: #ffffff; color: #111827;
+                border: 1.5px solid #d1fae5;
+                border-radius: 16px;
+                padding: 16px 18px;
+                min-width: 300px; max-width: 360px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(16,185,129,0.12);">
+
+        <div style="width:42px;height:42px;border-radius:50%;background:#16a34a;
+                    display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                 fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+
+        <div style="flex:1;min-width:0;">
+            <p style="margin:0 0 4px 0;font-weight:700;font-size:0.95rem;color:#111827;">¡Pedido repetido con éxito!</p>
+            <p style="margin:0;font-size:0.78rem;color:#6b7280;line-height:1.4;">
+                Los productos se han añadido a tu carrito correctamente.
+            </p>
+        </div>
+
+        <button type="button"
+                style="background:none;border:none;cursor:pointer;padding:2px;color:#9ca3af;flex-shrink:0;
+                       font-size:1.1rem;line-height:1;margin-top:-2px;"
+                @onclick="() => _showRepeatedToast = false">✕</button>
+    </div>
+}
 
 @implements IDisposable

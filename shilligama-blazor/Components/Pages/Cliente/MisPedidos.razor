@@ -4,6 +4,8 @@
 @inject AuthService Auth
 @inject NavigationManager Navigation
 @inject CartService Cart
+@inject ProductService ProductSvc
+@inject IJSRuntime JS
 
 @code {
     private List<Order> _allOrders = new();
@@ -15,6 +17,25 @@
 
     private Order? _selectedOrder;
     private bool _showModal;
+
+    private Order? _orderToRepeat;
+    private bool _showRepeatModal;
+    private bool _showCancelledToast;
+    private Dictionary<int, bool> _selectedProductsToRepeat = new();
+    private Dictionary<int, int> _quantitiesToRepeat = new();
+
+    private int _currentPage = 1;
+    private const int _pageSize = 10;
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling((double)_filtered.Count / _pageSize));
+
+    private async Task GoToPage(int page)
+    {
+        if (page >= 1 && page <= TotalPages)
+        {
+            _currentPage = page;
+            await JS.InvokeVoidAsync("window.scrollTo", 0, 0);
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -32,6 +53,7 @@
             if (_dateTo.HasValue && o.Date.Date > _dateTo.Value.Date) return false;
             return true;
         }).ToList();
+        _currentPage = 1;
     }
 
     private void OnStatusChanged(ChangeEventArgs e)
@@ -57,22 +79,100 @@
     private void OpenDetail(Order o) { _selectedOrder = o; _showModal = true; }
     private void CloseModal() { _showModal = false; _selectedOrder = null; }
 
-    private async Task RepeatOrder(Order o)
+    private void OpenRepeatModal(Order o)
     {
-        foreach (var product in o.Products)
+        _orderToRepeat = o;
+        _selectedProductsToRepeat = o.Products.ToDictionary(p => p.Id, p => true);
+        _quantitiesToRepeat = o.Products.ToDictionary(p => p.Id, p => {
+            var prod = ProductSvc.GetProductById(p.Id);
+            int stock = prod?.Stock ?? int.MaxValue;
+            return p.Quantity > stock ? stock : p.Quantity;
+        });
+        _showRepeatModal = true;
+    }
+
+    private void CloseRepeatModal()
+    {
+        _showRepeatModal = false;
+        _orderToRepeat = null;
+    }
+
+    private void CancelOrder(Order order)
+    {
+        SalesSvc.UpdateOrderStatus(order.Id, "cancelado");
+        order.TimelineCancelado = DateTime.Now;
+        ApplyFilters();
+
+        _showCancelledToast = true;
+        _ = Task.Run(async () =>
         {
-            var p = new Product
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Price = product.Price,
-                Image = product.Image
-            };
-            // Añade cada producto respetando la cantidad original
-            for (int i = 0; i < product.Quantity; i++)
-                await Cart.AddToCartAsync(p);
+            await Task.Delay(4500);
+            _showCancelledToast = false;
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private void ToggleProductSelection(int id)
+    {
+        if (_selectedProductsToRepeat.ContainsKey(id))
+            _selectedProductsToRepeat[id] = !_selectedProductsToRepeat[id];
+    }
+
+    private void SetProductSelection(int id, object? val)
+    {
+        if (val is bool b)
+            _selectedProductsToRepeat[id] = b;
+        else if (val != null && bool.TryParse(val.ToString(), out bool parsed))
+            _selectedProductsToRepeat[id] = parsed;
+    }
+
+    private async Task HandleRepeatQuantityChange(int id, int qty)
+    {
+        var product = ProductSvc.GetProductById(id);
+        int maxStock = product?.Stock ?? int.MaxValue;
+
+        if (qty < 1)
+        {
+            _quantitiesToRepeat[id] = qty;
+            StateHasChanged();
+            await Task.Yield();
+            _quantitiesToRepeat[id] = 1;
         }
-        Navigation.NavigateTo("/carrito");
+        else if (qty > maxStock)
+        {
+            _quantitiesToRepeat[id] = qty;
+            StateHasChanged();
+            await Task.Yield();
+            _quantitiesToRepeat[id] = maxStock;
+        }
+        else
+        {
+            _quantitiesToRepeat[id] = qty;
+        }
+    }
+
+    private async Task ConfirmRepeatOrder()
+    {
+        if (_orderToRepeat == null) return;
+        await Cart.ClearCartAsync();
+        foreach (var product in _orderToRepeat.Products)
+        {
+            if (_selectedProductsToRepeat.TryGetValue(product.Id, out bool selected) && selected)
+            {
+                var p = new Product
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    Image = product.Image
+                };
+                int qty = _quantitiesToRepeat.GetValueOrDefault(product.Id, product.Quantity);
+                for (int i = 0; i < qty; i++)
+                    await Cart.AddToCartAsync(p);
+            }
+        }
+        CloseRepeatModal();
+        Navigation.NavigateTo("/carrito?repeated=true");
     }
 
     private string StatusBadgeClass(string s) => s.ToLower() switch
@@ -158,47 +258,64 @@
     </div>
 
     <div class="card border border-border rounded-4 p-3 mb-4">
-        <div class="d-flex flex-column flex-md-row align-items-md-center gap-2">
-            <select class="form-select form-select-sm" style="min-width:170px;max-width:220px;"
-                    @onchange="OnStatusChanged">
-                <option value="todos">Todos los estados</option>
-                <option value="pendiente">Pendiente</option>
-                <option value="preparando">En preparación</option>
-                <option value="en_camino">En camino</option>
-                <option value="entregado">Entregado</option>
-                <option value="cancelado">Cancelado</option>
-            </select>
-
-            <div class="input-group input-group-sm" style="max-width:190px;">
-                <span class="input-group-text"
-                      style="border:1.5px solid var(--border);border-right:none;
-                    background:var(--secondary);color:var(--foreground);">
-                    <Icons Name="Calendar" style="width:13px;height:13px;" />
-                </span>
-                <input type="date" class="form-control form-control-sm"
-                       style="border:1.5px solid var(--border);border-left:none;"
-                       value="@(_dateFrom?.ToString("yyyy-MM-dd") ?? "")"
-                       @onchange="OnDateFromChanged" />
+        <div class="row g-3 align-items-center">
+            <div class="col-12 col-md">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted-foreground small fw-medium flex-shrink-0">Estado:</span>
+                    <select class="form-select form-select-sm flex-grow-1"
+                            @onchange="OnStatusChanged">
+                        <option value="todos">Todos los estados</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="preparando">En preparación</option>
+                        <option value="en_camino">En camino</option>
+                        <option value="entregado">Entregado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="input-group input-group-sm" style="max-width:190px;">
-                <span class="input-group-text"
-                      style="border:1.5px solid var(--border);border-right:none;
-                    background:var(--secondary);color:var(--foreground);">
-                    <Icons Name="Calendar" style="width:13px;height:13px;" />
-                </span>
-                <input type="date" class="form-control form-control-sm"
-                       style="border:1.5px solid var(--border);border-left:none;"
-                       value="@(_dateTo?.ToString("yyyy-MM-dd") ?? "")"
-                       @onchange="OnDateToChanged" />
+            <div class="col-12 col-md">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted-foreground small fw-medium flex-shrink-0">Fecha inicio:</span>
+                    <div class="input-group input-group-sm flex-grow-1">
+                        <span class="input-group-text"
+                              style="border:1.5px solid var(--border);border-right:none;
+                            background:var(--secondary);color:var(--foreground);">
+                            <Icons Name="Calendar" style="width:13px;height:13px;" />
+                        </span>
+                        <input type="date" class="form-control form-control-sm"
+                               style="border:1.5px solid var(--border);border-left:none;"
+                               value="@(_dateFrom?.ToString("yyyy-MM-dd") ?? "")"
+                               @onchange="OnDateFromChanged" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted-foreground small fw-medium flex-shrink-0">Fecha fin:</span>
+                    <div class="input-group input-group-sm flex-grow-1">
+                        <span class="input-group-text"
+                              style="border:1.5px solid var(--border);border-right:none;
+                            background:var(--secondary);color:var(--foreground);">
+                            <Icons Name="Calendar" style="width:13px;height:13px;" />
+                        </span>
+                        <input type="date" class="form-control form-control-sm"
+                               style="border:1.5px solid var(--border);border-left:none;"
+                               value="@(_dateTo?.ToString("yyyy-MM-dd") ?? "")"
+                               @onchange="OnDateToChanged" />
+                    </div>
+                </div>
             </div>
 
             @if (_statusFilter != "todos" || _dateFrom.HasValue || _dateTo.HasValue)
             {
-                <button class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 flex-shrink-0"
-                        @onclick="ClearFilters">
-                    <Icons Name="X" style="width:13px;height:13px;" /> Limpiar
-                </button>
+                <div class="col-12 col-md-auto">
+                    <button class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 w-100 justify-content-center"
+                            @onclick="ClearFilters">
+                        <Icons Name="X" style="width:13px;height:13px;" /> Limpiar
+                    </button>
+                </div>
             }
         </div>
     </div>
@@ -221,7 +338,7 @@
     else
     {
         <div class="d-flex flex-column gap-3">
-            @foreach (var order in _filtered)
+            @foreach (var order in _filtered.Skip((_currentPage - 1) * _pageSize).Take(_pageSize))
             {
                 <div class="card border border-border rounded-4 overflow-hidden">
                     <div class="d-flex flex-column flex-lg-row">
@@ -304,15 +421,24 @@
                                 </p>
                             </div>
                             <div class="d-flex flex-row flex-lg-column gap-2">
-                                <button class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1"
+                                <button class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center gap-1"
                                         @onclick="() => OpenDetail(order)">
                                     <Icons Name="Eye" style="width:13px;height:13px;" />
                                     <span>Ver detalle</span>
                                 </button>
-                                @if (order.Status != "cancelado")
+                                @if (order.Status == "pendiente" || order.Status == "preparando")
                                 {
-                                    <button class="btn btn-primary btn-sm d-flex align-items-center gap-1"
-                                            @onclick="() => RepeatOrder(order)">
+                                    <button class="btn btn-danger btn-sm d-flex align-items-center justify-content-center gap-1"
+                                            style="padding: 0.6rem 1.2rem;"
+                                            @onclick="() => CancelOrder(order)">
+                                        <Icons Name="X" style="width:13px;height:13px;" />
+                                        <span>Cancelar</span>
+                                    </button>
+                                }
+                                else if (order.Status != "cancelado")
+                                {
+                                    <button class="btn btn-primary btn-sm d-flex align-items-center justify-content-center gap-1"
+                                            @onclick="() => OpenRepeatModal(order)">
                                         <Icons Name="RotateCcw" style="width:13px;height:13px;" />
                                         <span>Repetir</span>
                                     </button>
@@ -325,8 +451,41 @@
             }
         </div>
 
+        @if (TotalPages > 1)
+        {
+            <div class="d-flex justify-content-center align-items-center gap-2 mt-5 mb-4">
+                <button class="btn d-flex align-items-center justify-content-center pagination-nav-btn
+                               @(_currentPage == 1 ? "disabled" : "")"
+                        @onclick="(() => GoToPage(_currentPage - 1))"
+                        disabled="@(_currentPage == 1)"
+                        style="width:40px;height:40px;border-radius:50%;border:1px solid var(--border);
+                               background:var(--card);color:var(--foreground);transition:all 0.2s;">
+                    <i class="fas fa-chevron-left" style="font-size:0.85rem;"></i>
+                </button>
+                @for (int i = 1; i <= TotalPages; i++)
+                {
+                    var pageIndex = i;
+                    <button class="btn d-flex align-items-center justify-content-center pagination-num-btn
+                                   @(_currentPage == pageIndex ? "active-page" : "")"
+                            @onclick="(() => GoToPage(pageIndex))"
+                            style="width:40px;height:40px;border-radius:50%;border:1px solid var(--border);
+                                   transition:all 0.2s;font-weight:500;">
+                        @pageIndex
+                    </button>
+                }
+                <button class="btn d-flex align-items-center justify-content-center pagination-nav-btn
+                               @(_currentPage == TotalPages ? "disabled" : "")"
+                        @onclick="(() => GoToPage(_currentPage + 1))"
+                        disabled="@(_currentPage == TotalPages)"
+                        style="width:40px;height:40px;border-radius:50%;border:1px solid var(--border);
+                               background:var(--card);color:var(--foreground);transition:all 0.2s;">
+                    <i class="fas fa-chevron-right" style="font-size:0.85rem;"></i>
+                </button>
+            </div>
+        }
+
         <p class="text-center small text-muted-foreground mt-4">
-            Mostrando @_filtered.Count de @_allOrders.Count pedidos
+            Mostrando @((_currentPage - 1) * _pageSize + 1)-@(Math.Min(_currentPage * _pageSize, _filtered.Count)) de @_filtered.Count pedidos
         </p>
     }
 </div>
@@ -516,4 +675,248 @@
             </div>
         </div>
     </div>
+}
+
+@if (_showModal || _showRepeatModal)
+{
+    <style>
+        body {
+            overflow: hidden !important;
+        }
+        .qty-input-clean::-webkit-outer-spin-button,
+        .qty-input-clean::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .qty-input-clean {
+            -moz-appearance: textfield;
+        }
+    </style>
+}
+
+@if (_showRepeatModal && _orderToRepeat != null)
+{
+    <div class="modal fade show d-block" tabindex="-1"
+         style="background:rgba(0,0,0,.65);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);"
+         @onclick="CloseRepeatModal">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down"
+             @onclick:stopPropagation="true">
+            <div class="modal-content rounded-4 border-0"
+                 style="background-color:var(--card);color:var(--foreground);">
+
+                <div class="modal-header border-bottom border-border py-3">
+                    <h5 class="modal-title fw-bold text-foreground mb-0">¿Quieres repetir el pedido?</h5>
+                    <button class="btn-close ms-auto" @onclick="CloseRepeatModal"></button>
+                </div>
+
+                <div class="modal-body d-flex flex-column gap-3 py-4">
+                    @if (Cart.GetCartItems().Any())
+                    {
+                        <div class="alert alert-warning d-flex align-items-start gap-2 py-2 px-3 small border border-warning-subtle rounded-3 mb-2"
+                             style="background-color: color-mix(in srgb, var(--bs-warning) 10%, transparent); color: var(--bs-warning-text-emphasis);">
+                            <i class="fa-solid fa-triangle-exclamation text-warning flex-shrink-0 mt-1" style="font-size: 1rem;"></i>
+                            <div>
+                                Parece que tiene cosas en el carrito estas se borraran cuando repitas el pedido estas seguro de repetirlo
+                            </div>
+                        </div>
+                    }
+
+                    <p class="text-muted-foreground small mb-2">
+                        Selecciona los productos que deseas volver a comprar del pedido <strong>@_orderToRepeat.Id</strong>:
+                    </p>
+
+                    <div class="d-flex flex-column gap-2" style="max-height: 280px; overflow-y: auto;">
+                        @foreach (var item in _orderToRepeat.Products)
+                        {
+                            bool isChecked = _selectedProductsToRepeat.GetValueOrDefault(item.Id);
+                            int currentQty = _quantitiesToRepeat.GetValueOrDefault(item.Id, item.Quantity);
+                            <div class="d-flex align-items-center justify-content-between p-2 rounded-3 border border-border"
+                                 style="background: var(--card); cursor: pointer;"
+                                 @onclick="() => ToggleProductSelection(item.Id)">
+                                <div class="d-flex align-items-center gap-3" style="min-width: 0;">
+                                    <input type="checkbox"
+                                           checked="@isChecked"
+                                           @onchange="@((ChangeEventArgs e) => SetProductSelection(item.Id, e.Value))"
+                                           @onclick:stopPropagation="true"
+                                           class="form-check-input flex-shrink-0"
+                                           style="width: 18px; height: 18px; cursor: pointer;" />
+                                    <div class="rounded-2 bg-secondary-subtle d-flex align-items-center justify-content-center flex-shrink-0"
+                                         style="width:40px;height:40px;">
+                                        <Icons Name="Package" style="width:18px;height:18px;" Class="text-muted-foreground" />
+                                    </div>
+                                    <div style="min-width: 0;">
+                                        <p class="fw-semibold small mb-0 text-foreground text-truncate" style="max-width: 180px;">@item.Name</p>
+                                        <p class="text-muted-foreground mb-0" style="font-size:.75rem;">
+                                            S/. @item.Price.ToString("0.00") c/u
+                                        </p>
+                                        @{
+                                            var prod = ProductSvc.GetProductById(item.Id);
+                                            int stock = prod?.Stock ?? int.MaxValue;
+                                        }
+                                        @if (prod != null && currentQty >= stock)
+                                        {
+                                            <p class="mb-0 fw-medium d-flex align-items-center gap-1" style="font-size:.7rem; color: #f59e0b;">
+                                                <i class="fa-solid fa-triangle-exclamation"></i> Solo @stock disponibles
+                                            </p>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 flex-shrink-0 ms-2">
+                                    <div class="d-flex align-items-center border rounded overflow-hidden" 
+                                         style="height: 28px; background: var(--secondary); border-color: var(--border) !important;">
+                                        <button type="button"
+                                                class="btn btn-sm p-0 d-flex align-items-center justify-content-center border-0 text-foreground"
+                                                style="width: 24px; height: 100%; font-size: 1.1rem; background: transparent; cursor: pointer;"
+                                                @onclick:stopPropagation="true"
+                                                @onclick="async () => { int q = _quantitiesToRepeat.GetValueOrDefault(item.Id, item.Quantity); if (q > 1) await HandleRepeatQuantityChange(item.Id, q - 1); }">
+                                            −
+                                        </button>
+                                        <input type="number"
+                                               @bind:get="currentQty"
+                                               @bind:set="async (qty) => await HandleRepeatQuantityChange(item.Id, qty)"
+                                               @onclick:stopPropagation="true"
+                                               min="1"
+                                               class="qty-input-clean border-0 px-1"
+                                               style="width: 35px; height: 100%; font-size: 0.85rem; text-align: center; background: transparent; color: var(--foreground); outline: none;" />
+                                        <button type="button"
+                                                class="btn btn-sm p-0 d-flex align-items-center justify-content-center border-0 text-foreground"
+                                                style="width: 24px; height: 100%; font-size: 1.1rem; background: transparent; cursor: pointer;"
+                                                @onclick:stopPropagation="true"
+                                                @onclick="async () => { int q = _quantitiesToRepeat.GetValueOrDefault(item.Id, item.Quantity); await HandleRepeatQuantityChange(item.Id, q + 1); }">
+                                            +
+                                        </button>
+                                    </div>
+                                    <span class="fw-bold small text-foreground" style="min-width: 70px; text-align: right;">
+                                        S/. @((item.Price * currentQty).ToString("0.00"))
+                                    </span>
+                                </div>
+                             </div>
+                        }
+                    </div>
+
+                    @if (_orderToRepeat.Products.Any(item => {
+                        var prod = ProductSvc.GetProductById(item.Id);
+                        int qty = _quantitiesToRepeat.GetValueOrDefault(item.Id, item.Quantity);
+                        return prod != null && qty >= prod.Stock;
+                    }))
+                    {
+                        <div class="alert alert-warning d-flex align-items-start gap-2 py-2 px-3 small border border-warning-subtle rounded-3 mb-0"
+                             style="background-color: color-mix(in srgb, var(--bs-warning) 10%, transparent); color: var(--bs-warning-text-emphasis);">
+                            <i class="fa-solid fa-triangle-exclamation text-warning flex-shrink-0 mt-1" style="font-size: 1rem;"></i>
+                            <div>
+                                Algunos productos tienen stock insuficiente. Se ha ajustado la cantidad al máximo disponible.
+                            </div>
+                        </div>
+                    }
+
+                    <hr class="border-border my-2" />
+
+                    @{
+                        decimal modalSubtotal = _orderToRepeat.Products.Where(p => _selectedProductsToRepeat.GetValueOrDefault(p.Id)).Sum(p => p.Price * _quantitiesToRepeat.GetValueOrDefault(p.Id, p.Quantity));
+                        decimal modalDeliveryFee = modalSubtotal > 0 && _orderToRepeat.DeliveryMethod == "delivery" ? _orderToRepeat.DeliveryFee : 0m;
+                        decimal modalTotal = modalSubtotal + modalDeliveryFee;
+                        bool hasSelected = _selectedProductsToRepeat.Values.Any(v => v);
+                    }
+
+                    <div class="d-flex flex-column gap-1">
+                        <div class="d-flex justify-content-between small text-muted-foreground">
+                            <span>Subtotal</span>
+                            <span>S/. @modalSubtotal.ToString("0.00")</span>
+                        </div>
+                        @if (_orderToRepeat.DeliveryMethod == "delivery")
+                        {
+                            <div class="d-flex justify-content-between small text-muted-foreground">
+                                <span>Envío (@(_orderToRepeat.DeliveryMethod == "delivery" ? "Delivery" : "Recojo"))</span>
+                                <span>@(modalDeliveryFee > 0 ? $"S/. {modalDeliveryFee:0.00}" : "Gratis")</span>
+                            </div>
+                        }
+                        <div class="d-flex justify-content-between fw-bold pt-2 border-top border-border">
+                            <span class="text-foreground">Total</span>
+                            <span class="text-primary fs-5">S/. @modalTotal.ToString("0.00")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-top border-border py-3 d-flex gap-2">
+                    <button class="btn btn-outline-secondary flex-grow-1" @onclick="CloseRepeatModal" style="border-radius:var(--radius);">
+                        Cancelar
+                    </button>
+                    <button class="btn btn-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2"
+                            @onclick="ConfirmRepeatOrder"
+                            disabled="@(!hasSelected)"
+                            style="border-radius:var(--radius);">
+                        <Icons Name="RotateCcw" style="width:16px;height:16px;" />
+                        <span>Confirmar</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+}
+
+<style>
+@@keyframes toastSlideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to   { transform: translateX(0);   opacity: 1; }
+}
+@@keyframes toastSlideOut {
+    from { transform: translateX(0);   opacity: 1; }
+    to   { transform: translateX(120%); opacity: 0; }
+}
+.cancelled-toast {
+    animation: toastSlideIn 0.35s cubic-bezier(.21,1.02,.73,1) forwards;
+}
+
+.pagination-nav-btn:hover:not(.disabled) {
+    background-color: var(--secondary) !important;
+    border-color: #1A6B3C !important; color: #1A6B3C !important; transform: scale(1.05);
+}
+.pagination-nav-btn.disabled { opacity: 0.4; cursor: not-allowed; }
+.pagination-num-btn { background-color: var(--card) !important; color: var(--foreground) !important; }
+.pagination-num-btn:hover:not(.active-page) {
+    background-color: var(--secondary) !important;
+    border-color: #1A6B3C !important; color: #1A6B3C !important; transform: scale(1.05);
+}
+.active-page {
+    background-color: #1A6B3C !important; color: white !important;
+    border-color: #1A6B3C !important; box-shadow: 0 4px 10px rgba(26,107,60,0.2);
+}
+.dark .active-page { box-shadow: 0 4px 10px rgba(26,107,60,0.4); }
+</style>
+
+@if (_showCancelledToast)
+{
+    <div class="cancelled-toast"
+         style="position: fixed; bottom: 28px; right: 28px; z-index: 99999;
+                display: flex; align-items: flex-start; gap: 14px;
+                background: #ffffff; color: #111827;
+                border: 1.5px solid #fee2e2;
+                border-radius: 16px;
+                padding: 16px 18px;
+                min-width: 300px; max-width: 360px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(239,68,68,0.12);">
+
+        <div style="width:42px;height:42px;border-radius:50%;background:#dc2626;
+                    display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                 fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+
+        <div style="flex:1;min-width:0;">
+            <p style="margin:0 0 4px 0;font-weight:700;font-size:0.95rem;color:#111827;">¡Pedido cancelado!</p>
+            <p style="margin:0;font-size:0.78rem;color:#6b7280;line-height:1.4;">
+                El pedido se ha cancelado correctamente.
+              </p>
+          </div>
+
+          <button type="button"
+                  style="background:none;border:none;cursor:pointer;padding:2px;color:#9ca3af;flex-shrink:0;
+                         font-size:1.1rem;line-height:1;margin-top:-2px;"
+                  @onclick="() => _showCancelledToast = false">✕</button>
+      </div>
 }

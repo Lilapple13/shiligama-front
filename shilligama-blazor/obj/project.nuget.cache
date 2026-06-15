@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "/XXrLK5dVSk=",
+  "dgSpecHash": "/vAp2htfo14=",
   "success": true,
-  "projectFilePath": "C:\\Users\\binny\\OneDrive\\Escritorio\\Binny\\6to_ciclo\\PROGRA3\\TA\\Front\\shiligama-front\\shilligama-blazor\\shilligama-blazor.csproj",
+  "projectFilePath": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\shilligama-blazor.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\binny\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.8\\microsoft.aspnetcore.app.internal.assets.10.0.8.nupkg.sha512"
+    "C:\\Users\\DIOGO\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.8\\microsoft.aspnetcore.app.internal.assets.10.0.8.nupkg.sha512"
   ],
   "logs": []
 }
