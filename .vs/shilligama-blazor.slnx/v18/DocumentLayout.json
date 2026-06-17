@@ -3,14 +3,6 @@
   "WorkspaceRootPath": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|d:\\users\\diogo\\desktop\\26-1\\clases\\programacion_3\\ta\\frontend\\shilligama-blazor\\components\\pages\\admin\\dashboard.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\admin\\dashboard.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|d:\\users\\diogo\\desktop\\26-1\\clases\\programacion_3\\ta\\frontend\\shilligama-blazor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|d:\\users\\diogo\\desktop\\26-1\\clases\\programacion_3\\ta\\frontend\\shilligama-blazor\\components\\pages\\admin\\personal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{F420D133-D17C-1B03-0F4B-B89BED50869E}|shilligama-blazor\\shilligama-blazor.csproj|solutionrelative:shilligama-blazor\\components\\pages\\admin\\personal.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -70,35 +62,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Program.cs",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Program.cs",
-              "ToolTip": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Program.cs",
-              "RelativeToolTip": "shilligama-blazor\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-03T06:50:09.461Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Personal.razor",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Pages\\Admin\\Personal.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Personal.razor",
               "ToolTip": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Pages\\Admin\\Personal.razor",
               "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Personal.razor",
-              "ViewState": "AgIAALwBAAAAAAAAAADwv9kBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAG4BAAAAAAAAAADwv9kBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-03T06:12:56.897Z"
+              "WhenOpened": "2026-06-03T06:12:56.897Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Devoluciones.razor",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Pages\\Admin\\Devoluciones.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Devoluciones.razor",
@@ -110,7 +91,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "Ventas.razor",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Pages\\Admin\\Ventas.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Ventas.razor",
@@ -122,7 +103,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
               "Title": "Productos.razor",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Pages\\Admin\\Productos.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Productos.razor",
@@ -134,7 +115,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "Promociones.razor",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Pages\\Admin\\Promociones.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Promociones.razor",
@@ -146,20 +127,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Dashboard.razor",
-              "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Pages\\Admin\\Dashboard.razor",
-              "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Dashboard.razor",
-              "ToolTip": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Pages\\Admin\\Dashboard.razor",
-              "RelativeToolTip": "shilligama-blazor\\Components\\Pages\\Admin\\Dashboard.razor",
-              "ViewState": "AgIAAPcAAAAAAAAAAADwvxQBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-06-03T05:05:47.524Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 7,
               "Title": "Reportes.razor",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Pages\\Admin\\Reportes.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Reportes.razor",
@@ -171,7 +139,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 6,
               "Title": "SalesService.cs",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Services\\SalesService.cs",
               "RelativeDocumentMoniker": "shilligama-blazor\\Services\\SalesService.cs",
@@ -183,7 +151,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 5,
               "Title": "shilligama-blazor.csproj",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\shilligama-blazor.csproj",
               "RelativeDocumentMoniker": "shilligama-blazor\\shilligama-blazor.csproj",
@@ -195,7 +163,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 8,
               "Title": "Pedidos.razor",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Pages\\Admin\\Pedidos.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Pedidos.razor",
@@ -207,7 +175,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 10,
               "Title": "Inventario.razor",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Pages\\Admin\\Inventario.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Pages\\Admin\\Inventario.razor",
@@ -219,7 +187,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 9,
               "Title": "AdminLayout.razor",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Layout\\AdminLayout.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Layout\\AdminLayout.razor",
@@ -231,7 +199,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 11,
               "Title": "TrabajadorLayout.razor",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Layout\\TrabajadorLayout.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Layout\\TrabajadorLayout.razor",
@@ -243,7 +211,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 12,
               "Title": "MainLayout.razor",
               "DocumentMoniker": "D:\\Users\\DIOGO\\Desktop\\26-1\\Clases\\Programacion_3\\TA\\frontEND\\shilligama-blazor\\Components\\Layout\\MainLayout.razor",
               "RelativeDocumentMoniker": "shilligama-blazor\\Components\\Layout\\MainLayout.razor",

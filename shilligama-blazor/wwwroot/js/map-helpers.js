@@ -101,6 +101,27 @@ window.mapHelpers = {
         }, 300);
     },
 
+    clearSearchInput: function () {
+        const input = document.getElementById('map-search-input') || document.getElementById('map-search-input-checkout');
+        if (input) {
+            input.value = '';
+            const suggestionsBox = input.parentNode.querySelector('.list-group');
+            if (suggestionsBox) {
+                suggestionsBox.innerHTML = '';
+                suggestionsBox.style.display = 'none';
+            }
+        }
+
+        if (_marker && _map) {
+            _map.removeLayer(_marker);
+            _marker = null;
+        }
+
+        if (_dotnetRef) {
+            _dotnetRef.invokeMethodAsync('OnMapAddressSelected', '');
+        }
+    },
+
     destroyMap: function () {
         if (_map) {
             _map.remove();

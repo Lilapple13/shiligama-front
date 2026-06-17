@@ -123,7 +123,6 @@
 
     private IEnumerable<Product> FilteredProducts => _products.Where(p =>
         (string.IsNullOrEmpty(_selectedCategory) || p.Category == _selectedCategory) &&
-        (string.IsNullOrEmpty(SearchQuery) || p.Name.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase) || p.Description.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase)) &&
         p.Price >= _minPrice && (p.Price <= _maxPrice || _maxPrice >= 100)
     );
 
@@ -542,12 +541,7 @@
 
             <!-- Grid de productos -->
             <div class="col-lg-9">
-                @if (!string.IsNullOrEmpty(SearchQuery))
-                {
-                    <p class="text-muted-foreground small mb-3">
-                        Resultados para "<strong>@SearchQuery</strong>" — @FilteredProducts.Count() productos
-                    </p>
-                }
+
                 @if (_selectedCategory != null)
                 {
                     <div class="d-flex align-items-center gap-2 mb-3">

@@ -2,6 +2,7 @@ wwwroot\app.css
 wwwroot\js\boleta-helpers.js
 wwwroot\js\carousel.js
 wwwroot\js\chart-helpers.js
+wwwroot\js\checkout-guard.js
 wwwroot\js\localstorage-helpers.js
 wwwroot\js\map-helpers.js
 wwwroot\shiligama-pages.css
@@ -10,11 +11,12 @@ C:\Users\DIOGO\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.8\b
 C:\Users\DIOGO\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.8\build\..\_framework\blazor.server.js
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\wwwroot\app.css
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\Components\Layout\ReconnectModal.razor.js
-C:\Users\DIOGO\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.8\_framework\blazor.server.js
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\wwwroot\js\map-helpers.js
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\wwwroot\js\carousel.js
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\wwwroot\js\chart-helpers.js
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\wwwroot\js\localstorage-helpers.js
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\wwwroot\shiligama-pages.css
-C:\Users\DIOGO\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.8\_framework\blazor.web.js
-D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\wwwroot\js\map-helpers.js
+D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\wwwroot\js\checkout-guard.js
+C:\Users\DIOGO\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.8\_framework\blazor.server.js
 D:\Users\DIOGO\Desktop\26-1\Clases\Programacion_3\TA\frontEND\shilligama-blazor\wwwroot\js\boleta-helpers.js
+C:\Users\DIOGO\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.8\_framework\blazor.web.js

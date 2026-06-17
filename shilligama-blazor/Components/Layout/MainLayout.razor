@@ -9,12 +9,42 @@
     private string SearchQuery
     {
         get => Product.SearchQuery;
-        set => Product.NotifySearch(value);
+        set
+        {
+            Product.NotifySearch(value);
+            _isSearchDropdownOpen = !string.IsNullOrWhiteSpace(value);
+        }
     }
 
     private bool _isMobileMenuOpen = false;
     private bool _isMobileSearchOpen = false;
     private bool _isUserDropdownOpen = false;
+    private bool _isSearchDropdownOpen = false;
+
+    // Pages where the search bar should be hidden
+    private static readonly string[] _hiddenSearchPages = { "/checkout", "/configuracion", "/mis-pedidos", "/carrito" };
+
+    private bool ShouldShowSearchBar
+    {
+        get
+        {
+            var uri = new Uri(Navigation.Uri);
+            var path = uri.AbsolutePath.TrimEnd('/');
+            return !_hiddenSearchPages.Any(p => path.Equals(p, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+
+    private IEnumerable<Product> SearchResults
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Product.SearchQuery)) return Enumerable.Empty<Product>();
+            return Product.GetProducts()
+                .Where(p => p.Name.Contains(Product.SearchQuery, StringComparison.OrdinalIgnoreCase)
+                         || p.Description.Contains(Product.SearchQuery, StringComparison.OrdinalIgnoreCase))
+                .Take(8);
+        }
+    }
 
     private void ToggleUserDropdown()
     {
@@ -24,6 +54,33 @@
     private void CloseUserDropdown()
     {
         _isUserDropdownOpen = false;
+    }
+
+    private void CloseSearchDropdown()
+    {
+        _isSearchDropdownOpen = false;
+    }
+
+    private void NavigateToProduct(int productId)
+    {
+        _isSearchDropdownOpen = false;
+        _isMobileSearchOpen = false;
+        Product.NotifySearch("");
+        Navigation.NavigateTo($"/catalogo/{productId}");
+    }
+
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        // Reset search bar on every navigation
+        Product.NotifySearch("");
+        _isSearchDropdownOpen = false;
+        _isMobileSearchOpen = false;
+        InvokeAsync(StateHasChanged);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -52,6 +109,7 @@
     {
         if (e.Key == "Enter")
         {
+            _isSearchDropdownOpen = false;
             if (!Navigation.Uri.Contains("/catalogo", StringComparison.OrdinalIgnoreCase))
             {
                 Navigation.NavigateTo("/catalogo");
@@ -70,6 +128,7 @@
     {
         Cart.OnChange -= StateHasChanged;
         Auth.OnChange -= StateHasChanged;
+        Navigation.LocationChanged -= OnLocationChanged;
     }
 }
 
@@ -100,11 +159,105 @@
     .dropdown-divider {
         border-color: var(--border) !important;
     }
+
+    /* Search results dropdown */
+    .search-results-dropdown {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+        z-index: 1060;
+        max-height: 420px;
+        overflow-y: auto;
+        animation: searchDropdownIn 0.15s ease-out;
+    }
+
+    @@keyframes searchDropdownIn {
+        from { opacity: 0; transform: translateY(-6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .search-result-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        text-decoration: none;
+        color: var(--foreground);
+        transition: background-color 0.12s ease;
+        cursor: pointer;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
+
+    .search-result-item:hover {
+        background-color: var(--secondary);
+        color: var(--foreground);
+    }
+
+    .search-result-img {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 1px solid var(--border);
+    }
+
+    .search-result-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .search-result-name {
+        font-weight: 600;
+        font-size: 0.88rem;
+        line-height: 1.3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: var(--foreground);
+        font-family: 'Outfit', sans-serif;
+    }
+
+    .search-result-price {
+        font-weight: 700;
+        font-size: 0.88rem;
+        color: var(--primary);
+    }
+
+    .search-result-category {
+        font-size: 0.72rem;
+        color: var(--muted-foreground);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .search-no-results {
+        padding: 20px 14px;
+        text-align: center;
+        color: var(--muted-foreground);
+        font-size: 0.88rem;
+    }
+
+    .search-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1055;
+        background: transparent;
+    }
 </style>
 
-<div class="d-flex flex-column min-vh-100 bg-background text-foreground" @onclick="CloseUserDropdown">
+<div class="d-flex flex-column min-vh-100 bg-background text-foreground" @onclick="@(() => { CloseUserDropdown(); CloseSearchDropdown(); })">
     <!-- Navbar Header -->
-    <header class="sticky-top z-3 w-100 border-bottom bg-card shadow-sm border-color-default" style="backdrop-filter: blur(8px); background-color: rgba(var(--bs-body-bg-rgb), 0.95);">
+    <header class="sticky-top w-100 border-bottom bg-card shadow-sm border-color-default" style="backdrop-filter: blur(8px); background-color: rgba(var(--bs-body-bg-rgb), 0.95); z-index: 1030;">
         <div class="container-xl px-3 px-sm-4">
             <div class="d-flex align-items-center justify-content-between gap-3" style="height: 64px;">
                 
@@ -119,28 +272,72 @@
                 </a>
 
                 <!-- Search Bar - Desktop -->
-                <div class="d-none d-md-flex align-items-center flex-grow-1 max-w-xl mx-auto" style="max-width: 500px;">
-                    <div class="position-relative w-100 d-flex align-items-center">
-                        <i class="fa-solid fa-magnifying-glass text-muted-foreground position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.95rem; pointer-events: none;"></i>
-                        <input
-                            type="search"
-                            placeholder="Buscar productos..."
-                            @bind="SearchQuery"
-                            @bind:event="oninput"
-                            @onkeypress="HandleSearchKeyPress"
-                            class="form-control w-100 border-0 bg-muted text-foreground"
-                            style="padding-left: 42px; height: 40px; background-color: var(--secondary) !important; border-radius: var(--radius);"
-                        />
+                @if (ShouldShowSearchBar)
+                {
+                    <div class="d-none d-md-flex align-items-center flex-grow-1 max-w-xl mx-auto" style="max-width: 500px;" @onclick:stopPropagation>
+                        <div class="position-relative w-100 d-flex align-items-center">
+                            <i class="fa-solid fa-magnifying-glass text-muted-foreground position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.95rem; pointer-events: none;"></i>
+                            <input
+                                type="search"
+                                placeholder="Buscar productos..."
+                                @bind="SearchQuery"
+                                @bind:event="oninput"
+                                @onkeypress="HandleSearchKeyPress"
+                                class="form-control w-100 border-0 bg-muted text-foreground"
+                                style="padding-left: 42px; height: 40px; background-color: var(--secondary) !important; border-radius: var(--radius);"
+                            />
+                            @if (_isSearchDropdownOpen && SearchResults.Any())
+                            {
+                                <div class="search-results-dropdown">
+                                    @foreach (var product in SearchResults)
+                                    {
+                                        <div class="search-result-item" @onclick="@(() => NavigateToProduct(product.Id))">
+                                            <img src="@product.Image" alt="@product.Name" class="search-result-img"
+                                                 onerror="this.src='https://placehold.co/48x48/e8f5e9/1A6B3C?text=🛒'" />
+                                            <div class="search-result-info">
+                                                <div class="search-result-name">@product.Name</div>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="search-result-price">S/. @product.Price.ToString("0.00")</span>
+                                                    @if (product.OriginalPrice.HasValue)
+                                                    {
+                                                        <span class="text-decoration-line-through" style="font-size:0.75rem;color:var(--muted-foreground);">S/. @product.OriginalPrice.Value.ToString("0.00")</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                            @if (product.Stock > 0)
+                                            {
+                                                <span class="badge badge-en-stock" style="font-size:0.68rem;padding:2px 8px;border-radius:6px;">En stock</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge" style="background:#EF4444;color:white;font-size:0.68rem;padding:2px 8px;border-radius:6px;">Agotado</span>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else if (_isSearchDropdownOpen && !string.IsNullOrWhiteSpace(Product.SearchQuery) && !SearchResults.Any())
+                            {
+                                <div class="search-results-dropdown">
+                                    <div class="search-no-results">
+                                        <i class="fa-solid fa-magnifying-glass me-2"></i>No se encontraron productos
+                                    </div>
+                                </div>
+                            }
+                        </div>
                     </div>
-                </div>
+                }
 
                 <!-- Right Actions -->
                 <div class="d-flex align-items-center gap-2">
                     
                     <!-- Mobile Search Trigger -->
-                    <button type="button" @onclick="ToggleMobileSearch" class="btn btn-ghost p-2 d-md-none text-foreground" style="border-radius: var(--radius);">
-                        <Icons Name="Search" Class="w-5 h-5" />
-                    </button>
+                    @if (ShouldShowSearchBar)
+                    {
+                        <button type="button" @onclick="ToggleMobileSearch" class="btn btn-ghost p-2 d-md-none text-foreground" style="border-radius: var(--radius);">
+                            <Icons Name="Search" Class="w-5 h-5" />
+                        </button>
+                    }
 
                     <!-- Theme Switcher -->
                     <ThemeSelector />
@@ -162,7 +359,7 @@
                             <i class="fa-solid fa-user text-foreground" style="font-size: 1.1rem;"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end card border shadow-lg p-2 @(_isUserDropdownOpen ? "show" : "")" 
-                            style="width: 240px; border-radius: var(--radius); position: absolute; right: 0; top: 100%; display: @(_isUserDropdownOpen ? "block" : "none"); margin-top: 8px; z-index: 1000;"
+                            style="width: 240px; border-radius: var(--radius); position: absolute; right: 0; top: 100%; display: @(_isUserDropdownOpen ? "block" : "none"); margin-top: 8px; z-index: 1050;"
                             @onclick="CloseUserDropdown" @onclick:stopPropagation>
                             <li class="px-3 py-2 border-bottom border-color-default mb-1">
                                 <p class="text-sm font-semibold text-foreground m-0">@(Auth.CurrentUser?.Name ?? "Invitado")</p>
@@ -226,7 +423,7 @@
         </div>
 
         <!-- Mobile Search Dropdown Drawer -->
-        @if (_isMobileSearchOpen)
+        @if (_isMobileSearchOpen && ShouldShowSearchBar)
         {
             <div class="d-md-none border-top bg-card p-3 shadow-inner border-color-default border-bottom">
                 <div class="position-relative">
@@ -241,6 +438,32 @@
                         style="padding-left: 42px; background-color: var(--secondary) !important;"
                         autofocus
                     />
+                    @if (_isSearchDropdownOpen && SearchResults.Any())
+                    {
+                        <div class="search-results-dropdown">
+                            @foreach (var product in SearchResults)
+                            {
+                                <div class="search-result-item" @onclick="@(() => NavigateToProduct(product.Id))">
+                                    <img src="@product.Image" alt="@product.Name" class="search-result-img"
+                                         onerror="this.src='https://placehold.co/48x48/e8f5e9/1A6B3C?text=🛒'" />
+                                    <div class="search-result-info">
+                                        <div class="search-result-name">@product.Name</div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="search-result-price">S/. @product.Price.ToString("0.00")</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else if (_isSearchDropdownOpen && !string.IsNullOrWhiteSpace(Product.SearchQuery) && !SearchResults.Any())
+                    {
+                        <div class="search-results-dropdown">
+                            <div class="search-no-results">
+                                <i class="fa-solid fa-magnifying-glass me-2"></i>No se encontraron productos
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         }

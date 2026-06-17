@@ -3,6 +3,7 @@
 @inject CartService Cart
 @inject AuthService Auth
 @inject SalesService SalesSvc
+@inject AddressService AddressSvc
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 @implements IDisposable
@@ -16,19 +17,19 @@
     private string _address = "";
     private string _payMethod = "tarjeta";
 
-    private List<string> _addresses = new()
-    {
-        "Avenida Universitaria 123",
-        "Av Los Olivos 321",
-        "Av Los Olivos 432"
-    };
+    private List<string> _addresses = new();
 
     private string _cardNumber = "";
     private string _cardName   = "";
     private string _cardExpiry = "";
     private string _cardCvv    = "";
 
-    private decimal _cashAmount;
+    private decimal _cashAmountField;
+    private decimal _cashAmount
+    {
+        get => _cashAmountField;
+        set => _cashAmountField = Math.Round(value, 1, MidpointRounding.AwayFromZero);
+    }
     private decimal CashChange => _cashAmount >= Total ? _cashAmount - Total : 0;
     private bool    CashEnough => _cashAmount >= Total;
 
@@ -44,8 +45,13 @@
     private bool _addressMenuOpen = false;
     private bool _showLoginRequired;
     private bool _authReady;
+    private bool _showLeaveConfirm;
+    private string _pendingLeaveUrl = "/carrito";
     private string _pendingAddress = "";
     private DotNetObjectReference<Checkout>? _dotnetRef;
+    private DotNetObjectReference<Checkout>? _guardRef;
+    private IDisposable? _locationChangingRegistration;
+    private bool _guardActive;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -53,6 +59,9 @@
         {
             await Cart.InitializeAsync();
             await Auth.InitializeAsync();
+            await AddressSvc.InitializeAsync();
+            AddressSvc.OnChange += OnAddressesChanged;
+            _addresses = AddressSvc.GetAddresses();
 
             if (!string.IsNullOrEmpty(DeliveryParam))
                 _deliveryMethod = DeliveryParam;
@@ -67,8 +76,95 @@
             }
 
             _authReady = true;
+            UpdateNavigationGuard();
             StateHasChanged();
         }
+    }
+
+    private void OnAddressesChanged()
+    {
+        _addresses = AddressSvc.GetAddresses();
+        InvokeAsync(StateHasChanged);
+    }
+
+    private bool ShouldGuardNavigation =>
+        _authReady && Auth.IsCliente() && !_success && Cart.GetCartItems().Any();
+
+    private void UpdateNavigationGuard()
+    {
+        var shouldGuard = ShouldGuardNavigation;
+
+        if (shouldGuard && !_guardActive)
+        {
+            _locationChangingRegistration ??= Navigation.RegisterLocationChangingHandler(OnLocationChangingAsync);
+            _guardRef ??= DotNetObjectReference.Create(this);
+            _ = JS.InvokeVoidAsync("checkoutGuard.enable", _guardRef);
+            _guardActive = true;
+        }
+        else if (!shouldGuard && _guardActive)
+        {
+            DisableNavigationGuard();
+        }
+    }
+
+    private void DisableNavigationGuard()
+    {
+        _locationChangingRegistration?.Dispose();
+        _locationChangingRegistration = null;
+        _ = JS.InvokeVoidAsync("checkoutGuard.disable");
+        _guardActive = false;
+    }
+
+    private ValueTask OnLocationChangingAsync(LocationChangingContext context)
+    {
+        if (!ShouldGuardNavigation || _showLeaveConfirm)
+            return ValueTask.CompletedTask;
+
+        var targetPath = new Uri(context.TargetLocation).AbsolutePath;
+        if (targetPath.Equals("/checkout", StringComparison.OrdinalIgnoreCase))
+            return ValueTask.CompletedTask;
+
+        context.PreventNavigation();
+        _pendingLeaveUrl = new Uri(context.TargetLocation).PathAndQuery;
+        _showLeaveConfirm = true;
+        _ = InvokeAsync(StateHasChanged);
+        return ValueTask.CompletedTask;
+    }
+
+    [JSInvokable]
+    public void OnBrowserBackAttempt()
+    {
+        if (!ShouldGuardNavigation) return;
+
+        _pendingLeaveUrl = "/carrito";
+        _showLeaveConfirm = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void AskLeave(string url)
+    {
+        if (!ShouldGuardNavigation)
+        {
+            Navigation.NavigateTo(url);
+            return;
+        }
+
+        _pendingLeaveUrl = url;
+        _showLeaveConfirm = true;
+    }
+
+    private void CancelLeave()
+    {
+        _showLeaveConfirm = false;
+        _pendingLeaveUrl = "/carrito";
+    }
+
+    private void ConfirmLeave()
+    {
+        _showLeaveConfirm = false;
+        var url = _pendingLeaveUrl;
+        DisableNavigationGuard();
+        Navigation.NavigateTo(url);
     }
 
     private string CheckoutReturnUrl =>
@@ -79,7 +175,9 @@
     private decimal Total       => Subtotal + DeliveryFee;
 
     private bool CanPlaceOrder =>
-        _deliveryMethod != "delivery" || !string.IsNullOrWhiteSpace(_address);
+        (_deliveryMethod != "delivery" || !string.IsNullOrWhiteSpace(_address)) &&
+        (_payMethod != "efectivo" || CashEnough) &&
+        (_payMethod != "yape" || _yapeConfirmed);
 
     private string FormatCard(string raw)
     {
@@ -145,10 +243,17 @@
     {
         if (!string.IsNullOrWhiteSpace(_pendingAddress))
         {
-            _addresses.Add(_pendingAddress);
+            await AddressSvc.AddAddressAsync(_pendingAddress);
+            _addresses = AddressSvc.GetAddresses();
             _address = _pendingAddress;
         }
         await CloseCheckoutMap();
+    }
+
+    private async Task ClearMapSearch()
+    {
+        _pendingAddress = "";
+        await JS.InvokeVoidAsync("mapHelpers.clearSearchInput");
     }
 
     [JSInvokable]
@@ -168,13 +273,17 @@
             Subtotal, DeliveryFee, Total,
             _payMethod, _deliveryMethod, _address);
         await Cart.ClearCartAsync();
+        DisableNavigationGuard();
         _success   = true;
         _isLoading = false;
     }
 
     public void Dispose()
     {
+        AddressSvc.OnChange -= OnAddressesChanged;
+        DisableNavigationGuard();
         _dotnetRef?.Dispose();
+        _guardRef?.Dispose();
     }
 }
 
@@ -332,6 +441,26 @@
 /* Texto "falta por pagar" */
 .cash-text-warn { color: #b45309; }
 .dark .cash-text-warn { color: #fbbf24; }
+/* Flechas del input numérico más grandes */
+.cash-amount-input::-webkit-inner-spin-button,
+.cash-amount-input::-webkit-outer-spin-button {
+    -webkit-appearance: inner-spin-button !important;
+    display: block !important;
+    opacity: 1 !important;
+    width: 60px;
+    height: 100%;
+    cursor: pointer;
+}
+.cash-amount-input {
+    -moz-appearance: spinner-textfield !important;
+    padding-right: 60px !important;
+}
+/* Quick amount disabled style */
+.cash-quick-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
 </style>
 
 <LoginRequiredModal @bind-IsOpen="_showLoginRequired" ReturnUrl="@CheckoutReturnUrl" />
@@ -380,12 +509,13 @@ else if (!_authReady)
 }
 else
 {
-    <header class="border-bottom bg-card py-3 sticky-top">
+    <header class="border-bottom bg-card py-3 sticky-top" style="z-index: 1010;">
         <div class="container-xl px-3 d-flex align-items-center" style="max-width:960px;">
-            <a href="/carrito"
-               class="text-muted-foreground text-decoration-none d-flex align-items-center gap-1 small">
+            <button type="button"
+                    class="btn btn-link text-muted-foreground text-decoration-none d-flex align-items-center gap-1 small p-0 border-0"
+                    @onclick="@(() => AskLeave("/carrito"))">
                 <Icons Name="ArrowLeft" style="width:16px;height:16px;" /> Volver al carrito
-            </a>
+            </button>
             <div class="mx-auto d-flex align-items-center gap-2">
                 <Icons Name="Lock" Class="text-primary" style="width:16px;height:16px;" />
                 <h1 class="fs-5 fw-semibold text-foreground mb-0">Pago Seguro</h1>
@@ -741,8 +871,9 @@ else
                                     @foreach (var amount in new[] { 20m, 50m, 100m, 200m })
                                     {
                                         <button type="button"
-                                                class="btn btn-sm @(_cashAmount == amount ? "btn-primary" : "btn-outline-secondary")"
+                                                class="btn btn-sm cash-quick-btn @(_cashAmount == amount ? "btn-primary" : "btn-outline-secondary")"
                                                 style="height:44px;font-weight:600;"
+                                                disabled="@(amount < Total)"
                                                 @onclick="() => OnCashQuick(amount)">
                                             S/. @amount
                                         </button>
@@ -756,9 +887,9 @@ else
                                 </label>
                                 <div class="input-group checkout-input-group">
                                     <span class="input-group-text fw-medium">S/.</span>
-                                    <input type="number" class="form-control text-center fw-bold fs-5"
+                                    <input type="number" class="form-control text-center fw-bold fs-5 cash-amount-input"
                                            style="height:52px;"
-                                           placeholder="0.00" step="0.10" min="0"
+                                           placeholder="0.00" step="0.1" min="0"
                                            @bind="_cashAmount" @bind:event="oninput" />
                                 </div>
                             </div>
@@ -867,7 +998,16 @@ else
             <div class="px-4 py-2 border-bottom" style="background-color: #f9fafb;">
                 <div class="position-relative w-100">
                     <i class="fa-solid fa-magnifying-glass text-muted-foreground position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.95rem;"></i>
-                    <input type="text" id="map-search-input-checkout" class="form-control text-foreground" style="height: 44px; padding-left: 42px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 0.9rem;" placeholder="Escribe una dirección (ej: Av. Larco 123, Miraflores)..." />
+                    <input type="text" id="map-search-input-checkout" class="form-control text-foreground" style="height: 44px; padding-left: 42px; padding-right: 42px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 0.9rem;" placeholder="Escribe una dirección (ej: Av. Larco 123, Miraflores)..." />
+                    <button type="button"
+                            @onclick="ClearMapSearch"
+                            title="Limpiar búsqueda"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+                                   background: none; border: none; color: #9ca3af; cursor: pointer;
+                                   width: 28px; height: 28px; border-radius: 50%; display: flex;
+                                   align-items: center; justify-content: center; line-height: 1;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
             </div>
 
@@ -899,6 +1039,25 @@ else
                             disabled="@(string.IsNullOrWhiteSpace(_pendingAddress))">
                         <i class="fa-solid fa-check"></i> Confirmar
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (_showLeaveConfirm)
+{
+    <div class="modal show d-block" tabindex="-1" style="background:rgba(0,0,0,.45); z-index: 2000;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
+            <div class="modal-content bg-card border-border">
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3" style="font-size:2.5rem;">⚠️</div>
+                    <h5 class="fw-bold text-foreground mb-1">¿Está seguro que quiere salir?</h5>
+                    <p class="text-muted-foreground small mb-4">Si sales ahora, perderás el progreso de tu pago.</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-outline-secondary" style="border-radius:var(--radius);" @onclick="ConfirmLeave">Salir</button>
+                        <button type="button" class="btn btn-primary" style="border-radius:var(--radius);" @onclick="CancelLeave">Continuar con el pago</button>
+                    </div>
                 </div>
             </div>
         </div>

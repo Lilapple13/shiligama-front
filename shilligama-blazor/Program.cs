@@ -10,6 +10,7 @@ builder.Services.AddRazorComponents()
 // Register Custom Shiligama Services
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CartService>();
+builder.Services.AddScoped<AddressService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<SalesService>();
 builder.Services.AddSingleton<SupplierService>();

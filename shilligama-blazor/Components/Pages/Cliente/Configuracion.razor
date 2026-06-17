@@ -1,6 +1,7 @@
 @page "/configuracion"
 @layout MainLayout
 @inject AuthService Auth
+@inject AddressService AddressSvc
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 @implements IDisposable
@@ -11,18 +12,13 @@
     private string _phone = "987654321";
     private string _phonePrefix = "+51";
 
-    private List<string> _addresses = new()
-    {
-        "Avenida Universitaria 123",
-        "Av Los Olivos 321",
-        "Av Los Olivos 432"
-    };
+    private List<string> _addresses = new();
     private bool _success = false;
     private bool _showMapModal = false;
     private string _pendingAddress = "";
     private DotNetObjectReference<Configuracion>? _dotnetRef;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (!Auth.IsLoggedIn())
         {
@@ -30,7 +26,16 @@
             return;
         }
 
+        await AddressSvc.InitializeAsync();
+        AddressSvc.OnChange += OnAddressesChanged;
+        _addresses = AddressSvc.GetAddresses();
         _name = Auth.CurrentUser?.Name ?? "Juan Pérez";
+    }
+
+    private void OnAddressesChanged()
+    {
+        _addresses = AddressSvc.GetAddresses();
+        InvokeAsync(StateHasChanged);
     }
 
     private string _nameError = "";
@@ -119,9 +124,10 @@
         StateHasChanged();
     }
 
-    private void DeleteAddress(string addr)
+    private async Task DeleteAddress(string addr)
     {
-        _addresses.Remove(addr);
+        await AddressSvc.RemoveAddressAsync(addr);
+        _addresses = AddressSvc.GetAddresses();
     }
 
     private async Task OpenMapModal()
@@ -144,9 +150,16 @@
     {
         if (!string.IsNullOrWhiteSpace(_pendingAddress))
         {
-            _addresses.Add(_pendingAddress);
+            await AddressSvc.AddAddressAsync(_pendingAddress);
+            _addresses = AddressSvc.GetAddresses();
         }
         await CloseMapModal();
+    }
+
+    private async Task ClearMapSearch()
+    {
+        _pendingAddress = "";
+        await JS.InvokeVoidAsync("mapHelpers.clearSearchInput");
     }
 
     [JSInvokable]
@@ -158,6 +171,7 @@
 
     public void Dispose()
     {
+        AddressSvc.OnChange -= OnAddressesChanged;
         _dotnetRef?.Dispose();
     }
 }
@@ -341,7 +355,16 @@
             <div class="px-4 py-2 border-bottom" style="background-color: #f9fafb;">
                 <div class="position-relative w-100">
                     <i class="fa-solid fa-magnifying-glass text-muted-foreground position-absolute" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.95rem;"></i>
-                    <input type="text" id="map-search-input" class="form-control text-foreground" style="height: 44px; padding-left: 42px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 0.9rem;" placeholder="Escribe una dirección (ej: Av. Larco 123, Miraflores)..." />
+                    <input type="text" id="map-search-input" class="form-control text-foreground" style="height: 44px; padding-left: 42px; padding-right: 42px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 0.9rem;" placeholder="Escribe una dirección (ej: Av. Larco 123, Miraflores)..." />
+                    <button type="button"
+                            @onclick="ClearMapSearch"
+                            title="Limpiar búsqueda"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+                                   background: none; border: none; color: #9ca3af; cursor: pointer;
+                                   width: 28px; height: 28px; border-radius: 50%; display: flex;
+                                   align-items: center; justify-content: center; line-height: 1;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
             </div>
 
